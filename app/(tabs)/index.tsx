@@ -35,14 +35,16 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: '#f8fafc',
+    paddingTop: 0,
   },
   mapPlaceholder: {
     flex: 1,
     justifyContent: 'center',
     alignItems: 'center',
-    padding: 32,
+    padding: 24,
     backgroundColor: '#f1f5f9',
     margin: 16,
+    marginTop: 8,
     borderRadius: 12,
     borderWidth: 2,
     borderColor: '#e2e8f0',
@@ -72,6 +74,7 @@ const styles = StyleSheet.create({
   infoCard: {
     backgroundColor: '#ffffff',
     margin: 16,
+    marginTop: 0,
     padding: 20,
     borderRadius: 12,
     shadowColor: '#000',

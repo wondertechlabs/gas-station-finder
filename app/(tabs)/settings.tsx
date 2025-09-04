@@ -130,9 +130,11 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: '#f8fafc',
+    paddingTop: 0,
   },
   scrollView: {
     flex: 1,
+    paddingTop: 8,
   },
   section: {
     marginTop: 24,

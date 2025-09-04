@@ -27,7 +27,7 @@ export default function TabLayout() {
       <Tabs.Screen
         name="index"
         options={{
-          title: 'Mapa de Estaciones',
+          title: 'Mapa',
           tabBarIcon: ({ size, color }) => (
             <Ionicons name="map" size={size} color={color} />
           ),
@@ -36,7 +36,7 @@ export default function TabLayout() {
       <Tabs.Screen
         name="list"
         options={{
-          title: 'Estaciones de Servicio',
+          title: 'Estaciones',
           tabBarIcon: ({ size, color }) => (
             <Ionicons name="list" size={size} color={color} />
           ),
@@ -45,7 +45,7 @@ export default function TabLayout() {
       <Tabs.Screen
         name="filters"
         options={{
-          title: 'Filtros de Búsqueda',
+          title: 'Filtros',
           tabBarIcon: ({ size, color }) => (
             <Ionicons name="filter" size={size} color={color} />
           ),
@@ -54,7 +54,7 @@ export default function TabLayout() {
       <Tabs.Screen
         name="settings"
         options={{
-          title: 'Configuración',
+          title: 'Ajustes',
           tabBarIcon: ({ size, color }) => (
             <Ionicons name="settings" size={size} color={color} />
           ),
