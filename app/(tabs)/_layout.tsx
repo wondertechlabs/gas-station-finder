@@ -11,6 +11,9 @@ export default function TabLayout() {
         headerStyle: {
           backgroundColor: Colors.background,
           shadowColor: Colors.gray200,
+        }
+      }
+      }
     <>
       <StatusBar style="dark" backgroundColor={Colors.background} />
       <Tabs
