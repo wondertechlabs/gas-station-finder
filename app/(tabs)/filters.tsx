@@ -61,13 +61,6 @@ export default function FiltersTab() {
 
   return (
     <SafeAreaView style={styles.container}>
-      <View style={styles.header}>
-        <Text style={styles.title}>Filtros de Búsqueda</Text>
-        <Text style={styles.subtitle}>
-          Personaliza tu búsqueda de estaciones
-        </Text>
-      </View>
-
       <ScrollView style={styles.scrollView}>
         <View style={styles.section}>
           <Text style={styles.sectionTitle}>Tipo de Combustible</Text>
@@ -156,22 +149,6 @@ const styles = StyleSheet.create({
   },
   scrollView: {
     flex: 1,
-  },
-  header: {
-    padding: 20,
-    backgroundColor: '#ffffff',
-    borderBottomWidth: 1,
-    borderBottomColor: '#e2e8f0',
-  },
-  title: {
-    fontSize: 24,
-    fontWeight: '700',
-    color: '#1e293b',
-    marginBottom: 4,
-  },
-  subtitle: {
-    fontSize: 16,
-    color: '#64748b',
   },
   section: {
     backgroundColor: '#ffffff',

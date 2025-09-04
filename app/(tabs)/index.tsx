@@ -8,11 +8,6 @@ const { width, height } = Dimensions.get('window');
 export default function MapTab() {
   return (
     <SafeAreaView style={styles.container}>
-      <View style={styles.header}>
-        <Text style={styles.title}>Mapa de Estaciones</Text>
-        <Text style={styles.subtitle}>Encuentra gasolineras cerca de ti</Text>
-      </View>
-      
       <View style={styles.mapPlaceholder}>
         <View style={styles.iconContainer}>
           <Ionicons name="map" size={48} color="#2563eb" />
@@ -40,22 +35,6 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: '#f8fafc',
-  },
-  header: {
-    padding: 20,
-    backgroundColor: '#ffffff',
-    borderBottomWidth: 1,
-    borderBottomColor: '#e2e8f0',
-  },
-  title: {
-    fontSize: 24,
-    fontWeight: '700',
-    color: '#1e293b',
-    marginBottom: 4,
-  },
-  subtitle: {
-    fontSize: 16,
-    color: '#64748b',
   },
   mapPlaceholder: {
     flex: 1,
