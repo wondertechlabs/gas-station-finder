@@ -1,110 +1,48 @@
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useState, useEffect } from 'react';
 import { 
   View, 
   FlatList, 
   StyleSheet, 
   RefreshControl,
-  Text,
-  ActivityIndicator 
+  ActivityIndicator,
+  Text 
 } from 'react-native';
 import { GasStationService } from '@/services/gasStationService';
 import { GasStation } from '@/types/gasStation';
 import { GasStationCard } from '@/components/GasStationCard';
 import { SearchBar } from '@/components/SearchBar';
-import { EmptyState } from '@/components/EmptyState';
-import * as Location from 'expo-location';
-import { Platform } from 'react-native';
-
-// Managua center coordinates
-const MANAGUA_CENTER = {
-  latitude: 12.1364,
-  longitude: -86.2514,
-};
 
 export default function ListTab() {
-  const isMounted = useRef(true);
   const [gasStations, setGasStations] = useState<GasStation[]>([]);
   const [filteredStations, setFilteredStations] = useState<GasStation[]>([]);
   const [loading, setLoading] = useState(true);
   const [refreshing, setRefreshing] = useState(false);
   const [searchQuery, setSearchQuery] = useState('');
-  const [userLocation, setUserLocation] = useState<Location.LocationObject | null>(null);
 
   useEffect(() => {
-    isMounted.current = true;
     loadGasStations();
-    if (Platform.OS !== 'web') {
-      getCurrentLocation();
-    }
-    return () => {
-      isMounted.current = false;
-    };
   }, []);
 
   useEffect(() => {
     filterStations();
   }, [searchQuery, gasStations]);
 
-  const getCurrentLocation = async () => {
-    try {
-      const location = await Location.getCurrentPositionAsync({
-        accuracy: Location.Accuracy.High,
-      });
-      if (isMounted.current) {
-        setUserLocation(location);
-      }
-    } catch (error) {
-      console.error('Error getting location:', error);
-    }
-  };
-
   const loadGasStations = async () => {
     try {
-      if (isMounted.current) {
-        setLoading(true);
-      }
-      
-      let latitude = MANAGUA_CENTER.latitude;
-      let longitude = MANAGUA_CENTER.longitude;
-      
-      if (Platform.OS !== 'web') {
-        try {
-          const location = await Location.getCurrentPositionAsync({
-            accuracy: Location.Accuracy.High,
-          });
-          latitude = location.coords.latitude;
-          longitude = location.coords.longitude;
-        } catch (error) {
-          console.error('Error getting location, using Managua center:', error);
-        }
-      }
-      
-      const stations = await GasStationService.findNearby(
-        latitude,
-        longitude,
-        10000 // 10km radius for list view
-      );
-      
-      if (isMounted.current) {
-        setGasStations(stations);
-      }
+      setLoading(true);
+      const stations = await GasStationService.findNearby();
+      setGasStations(stations);
     } catch (error) {
       console.error('Error loading gas stations:', error);
     } finally {
-      if (isMounted.current) {
-        setLoading(false);
-      }
+      setLoading(false);
     }
   };
 
   const onRefresh = async () => {
-    if (isMounted.current) {
-      setRefreshing(true);
-    }
+    setRefreshing(true);
     await loadGasStations();
-    if (isMounted.current) {
-      setRefreshing(false);
-    }
+    setRefreshing(false);
   };
 
   const filterStations = () => {
@@ -119,16 +57,11 @@ export default function ListTab() {
       station.address.toLowerCase().includes(searchQuery.toLowerCase())
     );
     
-    if (isMounted.current) {
-      setFilteredStations(filtered);
-    }
+    setFilteredStations(filtered);
   };
 
   const renderGasStation = ({ item }: { item: GasStation }) => (
-    <GasStationCard
-      station={item}
-      userLocation={userLocation}
-    />
+    <GasStationCard station={item} />
   );
 
   if (loading) {
@@ -142,6 +75,11 @@ export default function ListTab() {
 
   return (
     <View style={styles.container}>
+      <View style={styles.header}>
+        <Text style={styles.title}>Estaciones de Servicio</Text>
+        <Text style={styles.subtitle}>Managua, Nicaragua</Text>
+      </View>
+      
       <SearchBar
         value={searchQuery}
         onChangeText={setSearchQuery}
@@ -160,12 +98,6 @@ export default function ListTab() {
             colors={['#2563eb']}
           />
         }
-        ListEmptyComponent={
-          <EmptyState
-            title="No se encontraron estaciones"
-            subtitle="Intenta ampliar tu búsqueda o verifica tu conexión"
-          />
-        }
       />
     </View>
   );
@@ -175,6 +107,22 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: '#f8fafc',
+  },
+  header: {
+    padding: 20,
+    backgroundColor: '#ffffff',
+    borderBottomWidth: 1,
+    borderBottomColor: '#e2e8f0',
+  },
+  title: {
+    fontSize: 24,
+    fontWeight: '700',
+    color: '#1e293b',
+    marginBottom: 4,
+  },
+  subtitle: {
+    fontSize: 16,
+    color: '#64748b',
   },
   listContainer: {
     padding: 16,

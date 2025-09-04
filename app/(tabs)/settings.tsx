@@ -6,7 +6,7 @@ import {
   ScrollView,
   TouchableOpacity,
   Alert,
-}
+} from 'react-native';
 import { MapPin, Globe, Shield, Star, ChevronRight } from 'lucide-react-native';
 
 interface SettingItemProps {
@@ -53,7 +53,6 @@ export default function SettingsTab() {
     );
   };
 
-
   const handlePrivacy = () => {
     Alert.alert(
       'Privacidad',
@@ -61,7 +60,6 @@ export default function SettingsTab() {
       [{ text: 'OK' }]
     );
   };
-
 
   const handleRateApp = () => {
     Alert.alert(
@@ -99,7 +97,6 @@ export default function SettingsTab() {
           subtitle="Español (Nicaragua)"
           onPress={handleLanguage}
         />
-
       </View>
 
       <View style={styles.section}>
@@ -111,7 +108,6 @@ export default function SettingsTab() {
           subtitle="Política de datos"
           onPress={handlePrivacy}
         />
-
 
         <SettingItem
           icon={<Star size={22} color="#2563eb" />}

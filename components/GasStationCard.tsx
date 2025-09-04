@@ -1,18 +1,22 @@
 import React from 'react';
-import { View, Text, StyleSheet, TouchableOpacity } from 'react-native';
+import { View, Text, StyleSheet, TouchableOpacity, Alert } from 'react-native';
 import { GasStation } from '@/types/gasStation';
-import { NavigationService } from '@/services/navigationService';
 import { Fuel, MapPin, Clock, Star, Navigation } from 'lucide-react-native';
-import * as Location from 'expo-location';
 
 interface GasStationCardProps {
   station: GasStation;
-  userLocation: Location.LocationObject | null;
 }
 
-export function GasStationCard({ station, userLocation }: GasStationCardProps) {
+export function GasStationCard({ station }: GasStationCardProps) {
   const handleNavigate = () => {
-    NavigationService.navigateToStation(station);
+    Alert.alert(
+      'Navegación',
+      `¿Abrir navegación hacia ${station.name}?`,
+      [
+        { text: 'Cancelar', style: 'cancel' },
+        { text: 'Navegar', onPress: () => console.log('Navigate to:', station.name) }
+      ]
+    );
   };
 
   const formatDistance = (distance?: number): string => {

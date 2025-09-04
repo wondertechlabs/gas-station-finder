@@ -1,161 +1,36 @@
-import React, { useState, useEffect, useRef } from 'react';
-import { View, StyleSheet, Alert, Dimensions, Platform, Text } from 'react-native';
-import * as Location from 'expo-location';
-import { GasStationService } from '@/services/gasStationService';
-import { GasStation } from '@/types/gasStation';
-import { GasStationMarker } from '@/components/GasStationMarker';
-import { SearchRadius } from '@/components/SearchRadius';
-import { LocationButton } from '@/components/LocationButton';
-
-import { ExpoMap } from 'expo-maps';
+import React from 'react';
+import { View, Text, StyleSheet, Dimensions } from 'react-native';
+import { MapPin } from 'lucide-react-native';
 
 const { width, height } = Dimensions.get('window');
-const ASPECT_RATIO = width / height;
-const LATITUDE_DELTA = 0.02;
-const LONGITUDE_DELTA = LATITUDE_DELTA * ASPECT_RATIO;
-
-// Managua center coordinates
-const MANAGUA_CENTER = {
-  latitude: 12.1364,
-  longitude: -86.2514,
-  latitudeDelta: LATITUDE_DELTA,
-  longitudeDelta: LONGITUDE_DELTA,
-};
-
-interface Region {
-  latitude: number;
-  longitude: number;
-  latitudeDelta: number;
-  longitudeDelta: number;
-}
 
 export default function MapTab() {
-  const isMounted = useRef(true);
-  const [region, setRegion] = useState<Region>(MANAGUA_CENTER);
-  const [userLocation, setUserLocation] = useState<Location.LocationObject | null>(null);
-  const [gasStations, setGasStations] = useState<GasStation[]>([]);
-  const [searchRadius, setSearchRadius] = useState(5000); // 5km default
-  const [loading, setLoading] = useState(false);
-
-  useEffect(() => {
-    isMounted.current = true;
-    getCurrentLocation();
-    return () => {
-      isMounted.current = false;
-    };
-  }, []);
-
-  useEffect(() => {
-    if (userLocation) {
-      searchNearbyGasStations();
-    } else {
-      // Load stations for Managua center if no user location
-      searchNearbyGasStations();
-    }
-  }, [userLocation, searchRadius]);
-
-  const getCurrentLocation = async () => {
-    try {
-      const { status } = await Location.requestForegroundPermissionsAsync();
-      if (status !== 'granted') {
-        Alert.alert(
-          'Permisos requeridos',
-          'Esta aplicación necesita acceso a tu ubicación para encontrar estaciones de servicio cercanas.'
-        );
-        return;
-      }
-
-      const location = await Location.getCurrentPositionAsync({
-        accuracy: Location.Accuracy.High,
-      });
-
-      if (isMounted.current) {
-        setUserLocation(location);
-        setRegion({
-          latitude: location.coords.latitude,
-          longitude: location.coords.longitude,
-          latitudeDelta: LATITUDE_DELTA,
-          longitudeDelta: LONGITUDE_DELTA,
-        });
-      }
-    } catch (error) {
-      console.error('Error getting location:', error);
-      Alert.alert(
-        'Error de ubicación',
-        'No se pudo obtener tu ubicación actual. Usando ubicación de Managua.'
-      );
-    }
-  };
-
-  const searchNearbyGasStations = async (lat?: number, lng?: number) => {
-    const latitude = lat || userLocation?.coords.latitude || MANAGUA_CENTER.latitude;
-    const longitude = lng || userLocation?.coords.longitude || MANAGUA_CENTER.longitude;
-
-    if (isMounted.current) {
-      setLoading(true);
-    }
-    try {
-      const stations = await GasStationService.findNearby(
-        latitude,
-        longitude,
-        searchRadius
-      );
-      if (isMounted.current) {
-        setGasStations(stations);
-      }
-    } catch (error) {
-      console.error('Error searching gas stations:', error);
-      Alert.alert(
-        'Error de búsqueda',
-        'No se pudieron cargar las estaciones de servicio. Intenta nuevamente.'
-      );
-    } finally {
-      if (isMounted.current) {
-        setLoading(false);
-      }
-    }
-  };
-
-  const onRegionChange = (newRegion: Region) => {
-    setRegion(newRegion);
-  };
-
   return (
     <View style={styles.container}>
-      {Platform.OS !== 'web' ? (
-        <ExpoMap
-          style={styles.map}
-          initialRegion={region}
-          showUserLocation={true}
-        >
-          {gasStations.map((station) => (
-            <GasStationMarker
-              key={station.id}
-              station={station}
-            />
-          ))}
-        </ExpoMap>
-      ) : (
-        <View style={[styles.map, styles.webFallback]}>
-          <Text style={styles.webFallbackText}>
-            Mapa disponible en dispositivos móviles
-          </Text>
-          <Text style={styles.webFallbackSubtext}>
-            Para ver el mapa y las estaciones de servicio, abre esta aplicación en tu teléfono
-          </Text>
+      <View style={styles.header}>
+        <Text style={styles.title}>Mapa de Estaciones</Text>
+        <Text style={styles.subtitle}>Encuentra gasolineras cerca de ti</Text>
+      </View>
+      
+      <View style={styles.mapPlaceholder}>
+        <View style={styles.iconContainer}>
+          <MapPin size={48} color="#2563eb" />
         </View>
-      )}
+        <Text style={styles.placeholderTitle}>Mapa Interactivo</Text>
+        <Text style={styles.placeholderText}>
+          El mapa estará disponible próximamente con todas las estaciones de servicio de Managua
+        </Text>
+      </View>
 
-      <SearchRadius
-        radius={searchRadius}
-        onRadiusChange={setSearchRadius}
-        loading={loading}
-      />
-
-      <LocationButton
-        onPress={getCurrentLocation}
-        loading={loading}
-      />
+      <View style={styles.infoCard}>
+        <Text style={styles.infoTitle}>Características del Mapa</Text>
+        <View style={styles.featureList}>
+          <Text style={styles.feature}>• Ubicación en tiempo real</Text>
+          <Text style={styles.feature}>• Estaciones cercanas</Text>
+          <Text style={styles.feature}>• Precios actualizados</Text>
+          <Text style={styles.feature}>• Navegación directa</Text>
+        </View>
+      </View>
     </View>
   );
 }
@@ -163,26 +38,83 @@ export default function MapTab() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
+    backgroundColor: '#f8fafc',
   },
-  map: {
+  header: {
+    padding: 20,
+    backgroundColor: '#ffffff',
+    borderBottomWidth: 1,
+    borderBottomColor: '#e2e8f0',
+  },
+  title: {
+    fontSize: 24,
+    fontWeight: '700',
+    color: '#1e293b',
+    marginBottom: 4,
+  },
+  subtitle: {
+    fontSize: 16,
+    color: '#64748b',
+  },
+  mapPlaceholder: {
     flex: 1,
-  },
-  webFallback: {
-    backgroundColor: '#f5f5f5',
     justifyContent: 'center',
     alignItems: 'center',
-    padding: 20,
+    padding: 32,
+    backgroundColor: '#f1f5f9',
+    margin: 16,
+    borderRadius: 12,
+    borderWidth: 2,
+    borderColor: '#e2e8f0',
+    borderStyle: 'dashed',
   },
-  webFallbackText: {
-    fontSize: 18,
-    fontWeight: 'bold',
-    color: '#333',
-    textAlign: 'center',
+  iconContainer: {
+    width: 96,
+    height: 96,
+    borderRadius: 48,
+    backgroundColor: '#eff6ff',
+    alignItems: 'center',
+    justifyContent: 'center',
+    marginBottom: 16,
+  },
+  placeholderTitle: {
+    fontSize: 20,
+    fontWeight: '600',
+    color: '#374151',
     marginBottom: 8,
   },
-  webFallbackSubtext: {
-    fontSize: 14,
-    color: '#666',
+  placeholderText: {
+    fontSize: 16,
+    color: '#6b7280',
     textAlign: 'center',
+    lineHeight: 24,
+  },
+  infoCard: {
+    backgroundColor: '#ffffff',
+    margin: 16,
+    padding: 20,
+    borderRadius: 12,
+    shadowColor: '#000',
+    shadowOffset: {
+      width: 0,
+      height: 2,
+    },
+    shadowOpacity: 0.1,
+    shadowRadius: 3.84,
+    elevation: 5,
+  },
+  infoTitle: {
+    fontSize: 18,
+    fontWeight: '600',
+    color: '#1f2937',
+    marginBottom: 12,
+  },
+  featureList: {
+    gap: 8,
+  },
+  feature: {
+    fontSize: 16,
+    color: '#374151',
+    lineHeight: 24,
   },
 });

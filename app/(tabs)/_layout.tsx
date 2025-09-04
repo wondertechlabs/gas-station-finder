@@ -13,6 +13,7 @@ export default function TabLayout() {
           borderTopWidth: 1,
           borderTopColor: '#e5e7eb',
           paddingTop: 5,
+          height: 60,
         },
       }}>
       <Tabs.Screen
