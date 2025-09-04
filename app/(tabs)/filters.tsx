@@ -37,7 +37,7 @@ export default function FiltersTab() {
   const GAS_BRANDS = NICARAGUA_GAS_BRANDS.map(brand => ({
     id: brand.toLowerCase().replace(/\s+/g, '-'),
     name: brand,
-  }));
+  })).filter(brand => brand.name === 'UNO Gas' || brand.name === 'Puma');
 
 
   const toggleFuelType = (fuelId: string) => {
