@@ -114,4 +114,5 @@ const styles = StyleSheet.create({
   },
   loadingText: {
     marginTop: 16,
+  },
 });
