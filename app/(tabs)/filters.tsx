@@ -34,10 +34,6 @@ export default function FiltersTab() {
     { id: 'glp', name: 'GLP', color: Colors.accent },
   ];
 
-  const GAS_BRANDS = NICARAGUA_GAS_BRANDS.map(brand => ({
-    id: brand === 'UNO Gas' ? 'uno' : brand.toLowerCase().replace(/\s+/g, ''),
-    name: brand,
-  }));
 
   const toggleFuelType = (fuelId: string) => {
     const currentTypes = filters.fuelTypes;
