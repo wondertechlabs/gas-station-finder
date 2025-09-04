@@ -43,11 +43,8 @@ export const Colors = {
   
   // Brand colors for gas stations
   brands: {
-    shell: '#fbbf24',
-    petronic: '#dc2626',
-    texaco: '#dc2626',
-    uno: '#2563eb',
     puma: '#ea580c',
+    uno: '#2563eb',
     esso: '#dc2626',
     default: '#64748b',
   },

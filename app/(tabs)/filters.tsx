@@ -34,12 +34,8 @@ export default function FiltersTab() {
   ];
 
   const GAS_BRANDS = [
-    { id: 'petronic', name: 'Petronic' },
-    { id: 'shell', name: 'Shell' },
-    { id: 'texaco', name: 'Texaco' },
-    { id: 'uno', name: 'UNO Gas' },
     { id: 'puma', name: 'Puma' },
-    { id: 'esso', name: 'Esso' },
+    { id: 'uno', name: 'UNO Gas' },
   ];
 
   const toggleFuelType = (fuelId: string) => {
