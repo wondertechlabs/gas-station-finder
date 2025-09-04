@@ -5,15 +5,6 @@ import { Colors } from '@/constants/colors';
 
 export default function TabLayout() {
   return (
-    <Tabs
-      screenOptions={{
-        headerShown: true,
-        headerStyle: {
-          backgroundColor: Colors.background,
-          shadowColor: Colors.gray200,
-        }
-      }
-      }
     <>
       <StatusBar style="dark" backgroundColor={Colors.background} />
       <Tabs
