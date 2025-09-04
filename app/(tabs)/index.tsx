@@ -122,18 +122,29 @@ export default function MapTab() {
 
   return (
     <View style={styles.container}>
-      <ExpoMap
-        style={styles.map}
-        initialRegion={region}
-        showUserLocation={true}
-      >
-        {gasStations.map((station) => (
-          <GasStationMarker
-            key={station.id}
-            station={station}
-          />
-        ))}
-      </ExpoMap>
+      {Platform.OS !== 'web' ? (
+        <ExpoMap
+          style={styles.map}
+          initialRegion={region}
+          showUserLocation={true}
+        >
+          {gasStations.map((station) => (
+            <GasStationMarker
+              key={station.id}
+              station={station}
+            />
+          ))}
+        </ExpoMap>
+      ) : (
+        <View style={[styles.map, styles.webFallback]}>
+          <Text style={styles.webFallbackText}>
+            Mapa disponible en dispositivos móviles
+          </Text>
+          <Text style={styles.webFallbackSubtext}>
+            Para ver el mapa y las estaciones de servicio, abre esta aplicación en tu teléfono
+          </Text>
+        </View>
+      )}
 
       <SearchRadius
         radius={searchRadius}
@@ -155,5 +166,23 @@ const styles = StyleSheet.create({
   },
   map: {
     flex: 1,
+  },
+  webFallback: {
+    backgroundColor: '#f5f5f5',
+    justifyContent: 'center',
+    alignItems: 'center',
+    padding: 20,
+  },
+  webFallbackText: {
+    fontSize: 18,
+    fontWeight: 'bold',
+    color: '#333',
+    textAlign: 'center',
+    marginBottom: 8,
+  },
+  webFallbackSubtext: {
+    fontSize: 14,
+    color: '#666',
+    textAlign: 'center',
   },
 });

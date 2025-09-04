@@ -6,7 +6,6 @@ import {
   ScrollView,
   TouchableOpacity,
   Alert,
-} from 'react-native';
 import { MapPin, Globe, Shield, Star, ChevronRight } from 'lucide-react-native';
 
 interface SettingItemProps {
