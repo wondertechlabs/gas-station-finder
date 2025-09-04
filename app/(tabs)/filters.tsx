@@ -63,15 +63,6 @@ export default function FiltersTab() {
   return (
     <SafeAreaView style={styles.container}>
       <ScrollView style={styles.scrollView}>
-        <View style={styles.headerSection}>
-          <View style={styles.header}>
-            <Text style={styles.headerTitle}>Personaliza tu Búsqueda</Text>
-            <Text style={styles.headerSubtitle}>
-              Encuentra exactamente lo que necesitas
-            </Text>
-          </View>
-        </View>
-
         <View style={styles.section}>
           <Text style={styles.sectionTitle}>Tipo de Combustible</Text>
           <View style={styles.optionsContainer}>
@@ -160,29 +151,6 @@ const styles = StyleSheet.create({
   },
   scrollView: {
     flex: 1,
-  },
-  headerSection: {
-    marginBottom: 16,
-  },
-  header: {
-    padding: 24,
-    paddingTop: 32,
-    alignItems: 'center',
-    backgroundColor: Colors.background,
-    borderBottomWidth: 1,
-    borderBottomColor: Colors.gray100,
-  },
-  headerTitle: {
-    fontSize: 28,
-    fontWeight: '700',
-    color: Colors.text,
-    textAlign: 'center',
-    marginBottom: 8,
-  },
-  headerSubtitle: {
-    fontSize: 16,
-    color: Colors.textSecondary,
-    textAlign: 'center',
   },
   section: {
     backgroundColor: Colors.background,
