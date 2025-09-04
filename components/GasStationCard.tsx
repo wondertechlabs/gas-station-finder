@@ -2,7 +2,6 @@ import React from 'react';
 import { View, Text, StyleSheet, TouchableOpacity, Alert } from 'react-native';
 import { GasStation } from '@/types/gasStation';
 import { Ionicons } from '@expo/vector-icons';
-import { LinearGradient } from 'expo-linear-gradient';
 import { Colors } from '@/constants/colors';
 
 interface GasStationCardProps {
@@ -50,9 +49,9 @@ export function GasStationCard({ station }: GasStationCardProps) {
         <View style={styles.statusRow}>
           <View style={[
             styles.statusBadge,
-            { backgroundColor: station.isOpen ? Colors.success[500] : Colors.error[500] }
+            { backgroundColor: station.isOpen ? Colors.success : Colors.error }
           ]}>
-            <Ionicons name="time" size={12} color={Colors.text.inverse} />
+            <Ionicons name="time" size={12} color={Colors.textInverse} />
             <Text style={styles.statusText}>
               {station.isOpen ? 'Abierto' : 'Cerrado'}
             </Text>
@@ -67,13 +66,13 @@ export function GasStationCard({ station }: GasStationCardProps) {
       </View>
 
       <View style={styles.addressRow}>
-        <Ionicons name="location" size={14} color={Colors.neutral[500]} />
+        <Ionicons name="location" size={14} color={Colors.gray500} />
         <Text style={styles.address}>{station.address}</Text>
       </View>
 
       {station.rating && (
         <View style={styles.ratingRow}>
-          <Ionicons name="star" size={14} color={Colors.warning[400]} />
+          <Ionicons name="star" size={14} color={Colors.warning} />
           <Text style={styles.rating}>{station.rating.toFixed(1)}</Text>
         </View>
       )}
@@ -89,70 +88,57 @@ export function GasStationCard({ station }: GasStationCardProps) {
         ))}
       </View>
 
-      <LinearGradient
-        colors={[Colors.primary[500], Colors.secondary[600]]}
-        style={styles.navigateButton}
-      >
-        <TouchableOpacity style={styles.navigateButtonInner} onPress={handleNavigate}>
-          <Ionicons name="navigate" size={16} color={Colors.text.inverse} />
-          <Text style={styles.navigateText}>Navegar</Text>
-        </TouchableOpacity>
-      </LinearGradient>
+      <TouchableOpacity style={styles.navigateButton} onPress={handleNavigate}>
+        <Ionicons name="navigate" size={18} color={Colors.textInverse} />
+        <Text style={styles.navigateText}>Navegar</Text>
+      </TouchableOpacity>
     </View>
   );
 }
 
 const getFuelColor = (type: string): string => {
   const colors: { [key: string]: string } = {
-    'regular': Colors.success[500],
-    'super': Colors.warning[500],
-    'diesel': Colors.primary[500],
-    'glp': Colors.accent[500],
+    'regular': Colors.success,
+    'super': Colors.warning,
+    'diesel': Colors.primary,
+    'glp': Colors.accent,
   };
-  return colors[type] || Colors.neutral[400];
+  return colors[type] || Colors.gray400;
 };
 
 const styles = StyleSheet.create({
   card: {
-    backgroundColor: Colors.background.secondary,
-    borderRadius: 16,
-    padding: 16,
+    backgroundColor: Colors.background,
+    borderRadius: 20,
+    padding: 20,
     marginBottom: 12,
     marginHorizontal: 16,
-    shadowColor: Colors.neutral[900],
-    shadowOffset: {
-      width: 0,
-      height: 4,
-    },
-    shadowOpacity: 0.12,
-    shadowRadius: 8,
-    elevation: 8,
     borderWidth: 1,
-    borderColor: Colors.neutral[100],
+    borderColor: Colors.gray200,
   },
   header: {
-    marginBottom: 12,
+    marginBottom: 16,
   },
   titleRow: {
     flexDirection: 'row',
     alignItems: 'center',
-    marginBottom: 8,
+    marginBottom: 12,
   },
   brandIndicator: {
     width: 4,
-    height: 24,
+    height: 28,
     borderRadius: 2,
-    marginRight: 12,
+    marginRight: 16,
   },
   stationName: {
-    fontSize: 18,
-    fontWeight: '600',
-    color: Colors.text.primary,
+    fontSize: 20,
+    fontWeight: '700',
+    color: Colors.text,
     flex: 1,
   },
   distance: {
     fontSize: 14,
-    color: Colors.text.tertiary,
+    color: Colors.textTertiary,
     fontWeight: '600',
   },
   statusRow: {
@@ -162,90 +148,89 @@ const styles = StyleSheet.create({
   statusBadge: {
     flexDirection: 'row',
     alignItems: 'center',
-    paddingHorizontal: 10,
-    paddingVertical: 4,
-    borderRadius: 12,
-    gap: 4,
+    paddingHorizontal: 12,
+    paddingVertical: 6,
+    borderRadius: 16,
+    gap: 6,
   },
   statusText: {
     fontSize: 12,
-    fontWeight: '500',
-    color: Colors.text.inverse,
+    fontWeight: '600',
+    color: Colors.textInverse,
   },
   badge24: {
-    paddingHorizontal: 10,
-    paddingVertical: 4,
-    borderRadius: 12,
-    backgroundColor: Colors.accent[500],
+    paddingHorizontal: 12,
+    paddingVertical: 6,
+    borderRadius: 16,
+    backgroundColor: Colors.accent,
   },
   badge24Text: {
     fontSize: 12,
-    fontWeight: '500',
-    color: Colors.text.inverse,
+    fontWeight: '600',
+    color: Colors.textInverse,
   },
   addressRow: {
     flexDirection: 'row',
     alignItems: 'center',
-    marginBottom: 8,
-    gap: 6,
+    marginBottom: 12,
+    gap: 8,
   },
   address: {
-    fontSize: 14,
-    color: Colors.text.secondary,
+    fontSize: 15,
+    color: Colors.textSecondary,
     flex: 1,
-    lineHeight: 20,
+    lineHeight: 22,
   },
   ratingRow: {
     flexDirection: 'row',
     alignItems: 'center',
-    marginBottom: 12,
-    gap: 4,
+    marginBottom: 16,
+    gap: 6,
   },
   rating: {
-    fontSize: 14,
-    color: Colors.text.primary,
-    fontWeight: '500',
+    fontSize: 15,
+    color: Colors.text,
+    fontWeight: '600',
   },
   fuelTypes: {
     flexDirection: 'row',
     flexWrap: 'wrap',
-    gap: 8,
-    marginBottom: 16,
+    gap: 10,
+    marginBottom: 20,
   },
   fuelChip: {
     flexDirection: 'row',
     alignItems: 'center',
-    backgroundColor: Colors.neutral[50],
-    paddingHorizontal: 10,
-    paddingVertical: 6,
-    borderRadius: 12,
-    gap: 6,
+    backgroundColor: Colors.gray50,
+    paddingHorizontal: 12,
+    paddingVertical: 8,
+    borderRadius: 16,
+    gap: 8,
     borderWidth: 1,
-    borderColor: Colors.neutral[200],
+    borderColor: Colors.gray200,
   },
   fuelDot: {
-    width: 6,
-    height: 6,
-    borderRadius: 3,
+    width: 8,
+    height: 8,
+    borderRadius: 4,
   },
   fuelText: {
-    fontSize: 13,
-    color: Colors.text.primary,
+    fontSize: 14,
+    color: Colors.text,
     fontWeight: '600',
   },
   navigateButton: {
-    borderRadius: 12,
-  },
-  navigateButtonInner: {
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'center',
-    paddingVertical: 12,
-    gap: 6,
+    backgroundColor: Colors.primary,
+    paddingVertical: 16,
+    borderRadius: 16,
+    gap: 8,
   },
   navigateText: {
     fontSize: 16,
-    fontWeight: '600',
-    color: Colors.text.inverse,
+    fontWeight: '700',
+    color: Colors.textInverse,
   },
 });

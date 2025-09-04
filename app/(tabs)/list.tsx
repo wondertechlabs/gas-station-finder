@@ -68,8 +68,8 @@ export default function ListTab() {
 
   if (loading) {
     return (
-      <View style={[styles.loadingContainer, { backgroundColor: Colors.background.primary }]}>
-        <ActivityIndicator size="large" color="#2563eb" />
+      <View style={styles.loadingContainer}>
+        <ActivityIndicator size="large" color={Colors.primary} />
         <Text style={styles.loadingText}>Cargando estaciones...</Text>
       </View>
     );
@@ -91,7 +91,7 @@ export default function ListTab() {
           <RefreshControl
             refreshing={refreshing}
             onRefresh={onRefresh}
-            colors={['#2563eb']}
+            colors={[Colors.primary]}
           />
         }
       />
@@ -102,7 +102,7 @@ export default function ListTab() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: Colors.background.primary,
+    backgroundColor: Colors.backgroundSecondary,
   },
   listContainer: {
     paddingTop: 0,
@@ -111,11 +111,12 @@ const styles = StyleSheet.create({
     flex: 1,
     justifyContent: 'center',
     alignItems: 'center',
+    backgroundColor: Colors.backgroundSecondary,
   },
   loadingText: {
     marginTop: 16,
     fontSize: 16,
-    color: Colors.text.secondary,
+    color: Colors.textSecondary,
     fontWeight: '500',
   },
 });

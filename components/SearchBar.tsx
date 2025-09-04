@@ -13,13 +13,13 @@ export function SearchBar({ value, onChangeText, placeholder }: SearchBarProps) 
   return (
     <View style={styles.container}>
       <View style={styles.searchContainer}>
-        <Ionicons name="search" size={20} color={Colors.neutral[400]} style={styles.searchIcon} />
+        <Ionicons name="search" size={20} color={Colors.gray400} style={styles.searchIcon} />
         <TextInput
           style={styles.input}
           value={value}
           onChangeText={onChangeText}
           placeholder={placeholder}
-          placeholderTextColor={Colors.neutral[400]}
+          placeholderTextColor={Colors.gray400}
           autoCapitalize="none"
           autoCorrect={false}
         />
@@ -33,25 +33,17 @@ const styles = StyleSheet.create({
     paddingHorizontal: 16,
     paddingTop: 16,
     paddingBottom: 12,
-    backgroundColor: Colors.background.primary,
+    backgroundColor: Colors.backgroundSecondary,
   },
   searchContainer: {
     flexDirection: 'row',
     alignItems: 'center',
-    backgroundColor: Colors.background.secondary,
-    borderRadius: 16,
+    backgroundColor: Colors.background,
+    borderRadius: 20,
     paddingHorizontal: 16,
-    paddingVertical: 14,
-    shadowColor: Colors.neutral[900],
-    shadowOffset: {
-      width: 0,
-      height: 2,
-    },
-    shadowOpacity: 0.08,
-    shadowRadius: 4,
-    elevation: 4,
+    paddingVertical: 16,
     borderWidth: 1,
-    borderColor: Colors.neutral[100],
+    borderColor: Colors.gray200,
   },
   searchIcon: {
     marginRight: 12,
@@ -59,7 +51,7 @@ const styles = StyleSheet.create({
   input: {
     flex: 1,
     fontSize: 16,
-    color: Colors.text.primary,
+    color: Colors.text,
     fontWeight: '500',
   },
 });

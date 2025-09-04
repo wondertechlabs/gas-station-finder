@@ -1,125 +1,54 @@
 export const Colors = {
-  // Primary palette - Fresh blue gradient
-  primary: {
-    50: '#eff6ff',
-    100: '#dbeafe',
-    200: '#bfdbfe',
-    300: '#93c5fd',
-    400: '#60a5fa',
-    500: '#3b82f6',
-    600: '#2563eb',
-    700: '#1d4ed8',
-    800: '#1e40af',
-    900: '#1e3a8a',
-  },
+  // Primary - Fresh blue
+  primary: '#2563eb',
+  primaryLight: '#3b82f6',
+  primaryDark: '#1d4ed8',
   
-  // Secondary palette - Vibrant teal
-  secondary: {
-    50: '#f0fdfa',
-    100: '#ccfbf1',
-    200: '#99f6e4',
-    300: '#5eead4',
-    400: '#2dd4bf',
-    500: '#14b8a6',
-    600: '#0d9488',
-    700: '#0f766e',
-    800: '#115e59',
-    900: '#134e4a',
-  },
+  // Secondary - Clean teal
+  secondary: '#06b6d4',
+  secondaryLight: '#0891b2',
+  secondaryDark: '#0e7490',
   
-  // Accent palette - Electric purple
-  accent: {
-    50: '#faf5ff',
-    100: '#f3e8ff',
-    200: '#e9d5ff',
-    300: '#d8b4fe',
-    400: '#c084fc',
-    500: '#a855f7',
-    600: '#9333ea',
-    700: '#7c3aed',
-    800: '#6b21a8',
-    900: '#581c87',
-  },
+  // Accent - Vibrant green
+  accent: '#10b981',
+  accentLight: '#34d399',
+  accentDark: '#059669',
   
-  // Success palette - Fresh green
-  success: {
-    50: '#f0fdf4',
-    100: '#dcfce7',
-    200: '#bbf7d0',
-    300: '#86efac',
-    400: '#4ade80',
-    500: '#22c55e',
-    600: '#16a34a',
-    700: '#15803d',
-    800: '#166534',
-    900: '#14532d',
-  },
+  // Status colors
+  success: '#22c55e',
+  warning: '#f59e0b',
+  error: '#ef4444',
   
-  // Warning palette - Vibrant orange
-  warning: {
-    50: '#fff7ed',
-    100: '#ffedd5',
-    200: '#fed7aa',
-    300: '#fdba74',
-    400: '#fb923c',
-    500: '#f97316',
-    600: '#ea580c',
-    700: '#c2410c',
-    800: '#9a3412',
-    900: '#7c2d12',
-  },
+  // Neutral - Clean grays
+  gray50: '#f8fafc',
+  gray100: '#f1f5f9',
+  gray200: '#e2e8f0',
+  gray300: '#cbd5e1',
+  gray400: '#94a3b8',
+  gray500: '#64748b',
+  gray600: '#475569',
+  gray700: '#334155',
+  gray800: '#1e293b',
+  gray900: '#0f172a',
   
-  // Error palette - Modern red
-  error: {
-    50: '#fef2f2',
-    100: '#fee2e2',
-    200: '#fecaca',
-    300: '#fca5a5',
-    400: '#f87171',
-    500: '#ef4444',
-    600: '#dc2626',
-    700: '#b91c1c',
-    800: '#991b1b',
-    900: '#7f1d1d',
-  },
+  // Background
+  background: '#ffffff',
+  backgroundSecondary: '#f8fafc',
   
-  // Neutral palette - Warm grays
-  neutral: {
-    50: '#fafaf9',
-    100: '#f5f5f4',
-    200: '#e7e5e4',
-    300: '#d6d3d1',
-    400: '#a8a29e',
-    500: '#78716c',
-    600: '#57534e',
-    700: '#44403c',
-    800: '#292524',
-    900: '#1c1917',
-  },
-  
-  // Background colors
-  background: {
-    primary: '#fafaf9',
-    secondary: '#ffffff',
-    tertiary: '#f5f5f4',
-  },
-  
-  // Text colors
-  text: {
-    primary: '#1c1917',
-    secondary: '#44403c',
-    tertiary: '#78716c',
-    inverse: '#ffffff',
-  },
+  // Text
+  text: '#0f172a',
+  textSecondary: '#475569',
+  textTertiary: '#94a3b8',
+  textInverse: '#ffffff',
   
   // Brand colors for gas stations
   brands: {
-    shell: '#FFD320',
-    petronic: '#E31E24',
-    texaco: '#E31E24',
-    uno: '#0066CC',
-    puma: '#FF6B00',
-    esso: '#E31E24',
-    default: '#78716c',
+    shell: '#fbbf24',
+    petronic: '#dc2626',
+    texaco: '#dc2626',
+    uno: '#2563eb',
+    puma: '#ea580c',
+    esso: '#dc2626',
+    default: '#64748b',
   },
 };

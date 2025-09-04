@@ -2,7 +2,6 @@ import React from 'react';
 import { View, Text, StyleSheet, Dimensions } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { Ionicons } from '@expo/vector-icons';
-import { LinearGradient } from 'expo-linear-gradient';
 import { Colors } from '@/constants/colors';
 
 const { width, height } = Dimensions.get('window');
@@ -10,17 +9,9 @@ const { width, height } = Dimensions.get('window');
 export default function MapTab() {
   return (
     <SafeAreaView style={styles.container}>
-      <LinearGradient
-        colors={[Colors.primary[50], Colors.secondary[50]]}
-        style={styles.mapPlaceholder}
-      >
+      <View style={styles.mapPlaceholder}>
         <View style={styles.iconContainer}>
-          <LinearGradient
-            colors={[Colors.primary[500], Colors.secondary[500]]}
-            style={styles.iconGradient}
-          >
-            <Ionicons name="map" size={48} color={Colors.text.inverse} />
-          </LinearGradient>
+          <Ionicons name="map" size={64} color={Colors.primary} />
         </View>
         <Text style={styles.placeholderTitle}>Mapa Interactivo</Text>
         <Text style={styles.placeholderText}>
@@ -30,31 +21,28 @@ export default function MapTab() {
         <View style={styles.comingSoonBadge}>
           <Text style={styles.comingSoonText}>Próximamente</Text>
         </View>
-      </LinearGradient>
+      </View>
 
       <View style={styles.infoCard}>
-        <LinearGradient
-          colors={[Colors.accent[500], Colors.primary[600]]}
-          style={styles.titleGradient}
-        >
+        <View style={styles.titleContainer}>
           <Text style={styles.infoTitle}>Características del Mapa</Text>
-        </LinearGradient>
+        </View>
         
         <View style={styles.featureList}>
           <View style={styles.featureItem}>
-            <View style={[styles.featureDot, { backgroundColor: Colors.success[500] }]} />
+            <View style={[styles.featureDot, { backgroundColor: Colors.success }]} />
             <Text style={styles.feature}>Ubicación en tiempo real</Text>
           </View>
           <View style={styles.featureItem}>
-            <View style={[styles.featureDot, { backgroundColor: Colors.secondary[500] }]} />
+            <View style={[styles.featureDot, { backgroundColor: Colors.secondary }]} />
             <Text style={styles.feature}>Estaciones cercanas</Text>
           </View>
           <View style={styles.featureItem}>
-            <View style={[styles.featureDot, { backgroundColor: Colors.warning[500] }]} />
+            <View style={[styles.featureDot, { backgroundColor: Colors.warning }]} />
             <Text style={styles.feature}>Precios actualizados</Text>
           </View>
           <View style={styles.featureItem}>
-            <View style={[styles.featureDot, { backgroundColor: Colors.accent[500] }]} />
+            <View style={[styles.featureDot, { backgroundColor: Colors.accent }]} />
             <Text style={styles.feature}>Navegación directa</Text>
           </View>
         </View>
@@ -66,98 +54,91 @@ export default function MapTab() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: Colors.background.primary,
+    backgroundColor: Colors.backgroundSecondary,
     paddingTop: 0,
   },
   mapPlaceholder: {
     flex: 1,
     justifyContent: 'center',
     alignItems: 'center',
-    padding: 24,
+    padding: 32,
     margin: 16,
     marginTop: 8,
-    borderRadius: 12,
+    borderRadius: 20,
+    backgroundColor: Colors.background,
+    borderWidth: 1,
+    borderColor: Colors.gray200,
   },
   iconContainer: {
-    marginBottom: 16,
-  },
-  iconGradient: {
-    width: 96,
-    height: 96,
-    borderRadius: 48,
-    alignItems: 'center',
-    justifyContent: 'center',
+    marginBottom: 24,
+    padding: 20,
+    backgroundColor: Colors.gray50,
+    borderRadius: 24,
   },
   placeholderTitle: {
-    fontSize: 24,
+    fontSize: 28,
     fontWeight: '700',
-    color: Colors.text.primary,
-    marginBottom: 8,
+    color: Colors.text,
+    marginBottom: 12,
     textAlign: 'center',
   },
   placeholderText: {
     fontSize: 16,
-    color: Colors.text.secondary,
+    color: Colors.textSecondary,
     textAlign: 'center',
     lineHeight: 24,
-    marginBottom: 20,
+    marginBottom: 24,
+    maxWidth: 280,
   },
   comingSoonBadge: {
-    backgroundColor: Colors.accent[100],
-    paddingHorizontal: 16,
-    paddingVertical: 8,
+    backgroundColor: Colors.accent,
+    paddingHorizontal: 20,
+    paddingVertical: 10,
     borderRadius: 20,
-    borderWidth: 1,
-    borderColor: Colors.accent[300],
   },
   comingSoonText: {
     fontSize: 14,
     fontWeight: '600',
-    color: Colors.accent[700],
+    color: Colors.textInverse,
   },
   infoCard: {
-    backgroundColor: Colors.background.secondary,
+    backgroundColor: Colors.background,
     margin: 16,
     marginTop: 0,
-    borderRadius: 12,
-    overflow: 'hidden',
-    shadowColor: Colors.neutral[900],
-    shadowOffset: {
-      width: 0,
-      height: 4,
-    },
-    shadowOpacity: 0.15,
-    shadowRadius: 8,
-    elevation: 8,
+    borderRadius: 20,
+    borderWidth: 1,
+    borderColor: Colors.gray200,
   },
-  titleGradient: {
-    padding: 20,
+  titleContainer: {
+    padding: 24,
     paddingBottom: 16,
+    borderBottomWidth: 1,
+    borderBottomColor: Colors.gray100,
   },
   infoTitle: {
-    fontSize: 18,
+    fontSize: 20,
     fontWeight: '700',
-    color: Colors.text.inverse,
+    color: Colors.text,
     textAlign: 'center',
   },
   featureList: {
-    padding: 20,
-    paddingTop: 16,
+    padding: 24,
+    paddingTop: 20,
     gap: 16,
   },
   featureItem: {
     flexDirection: 'row',
     alignItems: 'center',
-    gap: 12,
+    gap: 16,
   },
   featureDot: {
-    width: 8,
-    height: 8,
-    borderRadius: 4,
+    width: 10,
+    height: 10,
+    borderRadius: 5,
   },
   feature: {
     fontSize: 16,
-    color: Colors.text.primary,
+    color: Colors.text,
     lineHeight: 24,
     fontWeight: '500',
   },

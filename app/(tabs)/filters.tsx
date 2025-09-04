@@ -8,7 +8,6 @@ import {
   TouchableOpacity,
 } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
-import { LinearGradient } from 'expo-linear-gradient';
 import { Colors } from '@/constants/colors';
 
 export default function FiltersTab() {
@@ -28,10 +27,10 @@ export default function FiltersTab() {
   };
 
   const FUEL_TYPES = [
-    { id: 'regular', name: 'Regular (87)', color: Colors.success[500] },
-    { id: 'super', name: 'Super (91)', color: Colors.warning[500] },
-    { id: 'diesel', name: 'Diesel', color: Colors.primary[500] },
-    { id: 'glp', name: 'GLP', color: Colors.accent[500] },
+    { id: 'regular', name: 'Regular (87)', color: Colors.success },
+    { id: 'super', name: 'Super (91)', color: Colors.warning },
+    { id: 'diesel', name: 'Diesel', color: Colors.primary },
+    { id: 'glp', name: 'GLP', color: Colors.accent },
   ];
 
   const GAS_BRANDS = [
@@ -65,15 +64,12 @@ export default function FiltersTab() {
     <SafeAreaView style={styles.container}>
       <ScrollView style={styles.scrollView}>
         <View style={styles.headerSection}>
-          <LinearGradient
-            colors={[Colors.primary[500], Colors.secondary[500]]}
-            style={styles.headerGradient}
-          >
+          <View style={styles.header}>
             <Text style={styles.headerTitle}>Personaliza tu Búsqueda</Text>
             <Text style={styles.headerSubtitle}>
               Encuentra exactamente lo que necesitas
             </Text>
-          </LinearGradient>
+          </View>
         </View>
 
         <View style={styles.section}>
@@ -84,23 +80,18 @@ export default function FiltersTab() {
               return (
                 <TouchableOpacity
                   key={fuel.id}
-                  style={isSelected ? styles.selectedFuelButton : styles.optionButton}
+                  style={[
+                    styles.optionButton,
+                    isSelected && { backgroundColor: fuel.color }
+                  ]}
                   onPress={() => toggleFuelType(fuel.id)}
                 >
-                  {isSelected ? (
-                    <LinearGradient colors={[fuel.color, fuel.color + 'CC']} style={[
-                    styles.optionButton,
-                    styles.gradientButton
+                  <Text style={[
+                    styles.optionText,
+                    isSelected && styles.selectedText
                   ]}>
-                      <Text style={styles.selectedText}>
-                        {fuel.name}
-                      </Text>
-                    </LinearGradient>
-                  ) : (
-                    <Text style={styles.optionText}>
-                      {fuel.name}
-                    </Text>
-                  )}
+                    {fuel.name}
+                  </Text>
                 </TouchableOpacity>
               );
             })}
@@ -141,8 +132,8 @@ export default function FiltersTab() {
             <Switch
               value={filters.is24Hours}
               onValueChange={(value) => updateFilter('is24Hours', value)}
-              trackColor={{ false: Colors.neutral[200], true: Colors.primary[500] }}
-              thumbColor={Colors.background.secondary}
+              trackColor={{ false: Colors.gray200, true: Colors.primary }}
+              thumbColor={Colors.background}
             />
           </View>
 
@@ -151,8 +142,8 @@ export default function FiltersTab() {
             <Switch
               value={filters.hasAmenities}
               onValueChange={(value) => updateFilter('hasAmenities', value)}
-              trackColor={{ false: Colors.neutral[200], true: Colors.primary[500] }}
-              thumbColor={Colors.background.secondary}
+              trackColor={{ false: Colors.gray200, true: Colors.primary }}
+              thumbColor={Colors.background}
             />
           </View>
         </View>
@@ -164,98 +155,84 @@ export default function FiltersTab() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: Colors.background.primary,
+    backgroundColor: Colors.backgroundSecondary,
     paddingTop: 0,
   },
   scrollView: {
     flex: 1,
   },
   headerSection: {
-    marginBottom: 8,
+    marginBottom: 16,
   },
-  headerGradient: {
+  header: {
     padding: 24,
     paddingTop: 32,
     alignItems: 'center',
+    backgroundColor: Colors.background,
+    borderBottomWidth: 1,
+    borderBottomColor: Colors.gray100,
   },
   headerTitle: {
-    fontSize: 24,
+    fontSize: 28,
     fontWeight: '700',
-    color: Colors.text.inverse,
+    color: Colors.text,
     textAlign: 'center',
-    marginBottom: 4,
+    marginBottom: 8,
   },
   headerSubtitle: {
     fontSize: 16,
-    color: Colors.text.inverse,
+    color: Colors.textSecondary,
     textAlign: 'center',
-    opacity: 0.9,
   },
   section: {
-    backgroundColor: Colors.background.secondary,
+    backgroundColor: Colors.background,
     marginHorizontal: 16,
     marginVertical: 8,
-    borderRadius: 16,
-    padding: 16,
-    shadowColor: Colors.neutral[900],
-    shadowOffset: {
-      width: 0,
-      height: 4,
-    },
-    shadowOpacity: 0.08,
-    shadowRadius: 8,
-    elevation: 6,
+    borderRadius: 20,
+    padding: 20,
     borderWidth: 1,
-    borderColor: Colors.neutral[100],
+    borderColor: Colors.gray200,
   },
   sectionTitle: {
     fontSize: 20,
     fontWeight: '700',
-    color: Colors.text.primary,
+    color: Colors.text,
     marginBottom: 16,
   },
   optionsContainer: {
     flexDirection: 'row',
     flexWrap: 'wrap',
-    gap: 10,
+    gap: 12,
   },
   optionButton: {
-    paddingHorizontal: 18,
-    paddingVertical: 10,
-    borderRadius: 24,
+    paddingHorizontal: 20,
+    paddingVertical: 12,
+    borderRadius: 20,
     borderWidth: 1,
-    borderColor: Colors.neutral[200],
-    backgroundColor: Colors.neutral[50],
-  },
-  selectedFuelButton: {
-    borderRadius: 24,
-  },
-  gradientButton: {
-    paddingHorizontal: 18,
-    paddingVertical: 10,
-    borderRadius: 24,
+    borderColor: Colors.gray200,
+    backgroundColor: Colors.gray50,
   },
   brandButton: {
-    paddingHorizontal: 18,
-    paddingVertical: 12,
-    borderRadius: 16,
+    paddingHorizontal: 20,
+    paddingVertical: 14,
+    borderRadius: 20,
     borderWidth: 1,
-    borderColor: Colors.neutral[200],
-    backgroundColor: Colors.neutral[50],
-    minWidth: 90,
+    borderColor: Colors.gray200,
+    backgroundColor: Colors.gray50,
+    minWidth: 100,
     alignItems: 'center',
   },
   selectedBrandButton: {
-    backgroundColor: Colors.primary[500],
-    borderColor: Colors.primary[500],
+    backgroundColor: Colors.primary,
+    borderColor: Colors.primary,
   },
   optionText: {
     fontSize: 15,
-    color: Colors.text.primary,
+    color: Colors.text,
     fontWeight: '600',
   },
   selectedText: {
-    color: Colors.text.inverse,
+    color: Colors.textInverse,
     fontWeight: '700',
   },
   switchContainer: {
@@ -267,7 +244,7 @@ const styles = StyleSheet.create({
   },
   switchLabel: {
     fontSize: 17,
-    color: Colors.text.primary,
+    color: Colors.text,
     fontWeight: '500',
   },
 });
