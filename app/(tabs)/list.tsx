@@ -7,6 +7,7 @@ import {
   ActivityIndicator,
   Text 
 } from 'react-native';
+import { SafeAreaView } from 'react-native-safe-area-context';
 import { GasStationService } from '@/services/gasStationService';
 import { GasStation } from '@/types/gasStation';
 import { GasStationCard } from '@/components/GasStationCard';
@@ -74,7 +75,7 @@ export default function ListTab() {
   }
 
   return (
-    <View style={styles.container}>
+    <SafeAreaView style={styles.container}>
       <View style={styles.header}>
         <Text style={styles.title}>Estaciones de Servicio</Text>
         <Text style={styles.subtitle}>Managua, Nicaragua</Text>
@@ -99,7 +100,7 @@ export default function ListTab() {
           />
         }
       />
-    </View>
+    </SafeAreaView>
   );
 }
 

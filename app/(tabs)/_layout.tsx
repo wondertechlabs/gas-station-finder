@@ -1,5 +1,5 @@
 import { Tabs } from 'expo-router';
-import { MapPin, List, Filter, Settings } from 'lucide-react-native';
+import { Ionicons } from '@expo/vector-icons';
 
 export default function TabLayout() {
   return (
@@ -21,7 +21,7 @@ export default function TabLayout() {
         options={{
           title: 'Mapa',
           tabBarIcon: ({ size, color }) => (
-            <MapPin size={size} color={color} />
+            <Ionicons name="map" size={size} color={color} />
           ),
         }}
       />
@@ -30,7 +30,7 @@ export default function TabLayout() {
         options={{
           title: 'Lista',
           tabBarIcon: ({ size, color }) => (
-            <List size={size} color={color} />
+            <Ionicons name="list" size={size} color={color} />
           ),
         }}
       />
@@ -39,7 +39,7 @@ export default function TabLayout() {
         options={{
           title: 'Filtros',
           tabBarIcon: ({ size, color }) => (
-            <Filter size={size} color={color} />
+            <Ionicons name="filter" size={size} color={color} />
           ),
         }}
       />
@@ -48,7 +48,7 @@ export default function TabLayout() {
         options={{
           title: 'Configuración',
           tabBarIcon: ({ size, color }) => (
-            <Settings size={size} color={color} />
+            <Ionicons name="settings" size={size} color={color} />
           ),
         }}
       />

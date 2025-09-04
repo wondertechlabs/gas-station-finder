@@ -1,12 +1,13 @@
 import React from 'react';
 import { View, Text, StyleSheet, Dimensions } from 'react-native';
-import { MapPin } from 'lucide-react-native';
+import { SafeAreaView } from 'react-native-safe-area-context';
+import { Ionicons } from '@expo/vector-icons';
 
 const { width, height } = Dimensions.get('window');
 
 export default function MapTab() {
   return (
-    <View style={styles.container}>
+    <SafeAreaView style={styles.container}>
       <View style={styles.header}>
         <Text style={styles.title}>Mapa de Estaciones</Text>
         <Text style={styles.subtitle}>Encuentra gasolineras cerca de ti</Text>
@@ -14,7 +15,7 @@ export default function MapTab() {
       
       <View style={styles.mapPlaceholder}>
         <View style={styles.iconContainer}>
-          <MapPin size={48} color="#2563eb" />
+          <Ionicons name="map" size={48} color="#2563eb" />
         </View>
         <Text style={styles.placeholderTitle}>Mapa Interactivo</Text>
         <Text style={styles.placeholderText}>
@@ -31,7 +32,7 @@ export default function MapTab() {
           <Text style={styles.feature}>• Navegación directa</Text>
         </View>
       </View>
-    </View>
+    </SafeAreaView>
   );
 }
 

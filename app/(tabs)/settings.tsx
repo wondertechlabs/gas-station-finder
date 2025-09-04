@@ -7,6 +7,8 @@ import {
   TouchableOpacity,
   Alert,
 } from 'react-native';
+import { SafeAreaView } from 'react-native-safe-area-context';
+import { Ionicons } from '@expo/vector-icons';
 import { MapPin, Globe, Shield, Star, ChevronRight } from 'lucide-react-native';
 
 interface SettingItemProps {
@@ -73,7 +75,7 @@ export default function SettingsTab() {
   };
 
   return (
-    <ScrollView style={styles.container}>
+    <SafeAreaView style={styles.container}>
       <View style={styles.header}>
         <Text style={styles.title}>Configuración</Text>
         <Text style={styles.subtitle}>
@@ -81,51 +83,53 @@ export default function SettingsTab() {
         </Text>
       </View>
 
-      <View style={styles.section}>
-        <Text style={styles.sectionTitle}>General</Text>
-        
-        <SettingItem
-          icon={<MapPin size={22} color="#2563eb" />}
-          title="Ubicación"
-          subtitle="Permisos y precisión"
-          onPress={handleLocationSettings}
-        />
+      <ScrollView style={styles.scrollView}>
+        <View style={styles.section}>
+          <Text style={styles.sectionTitle}>General</Text>
+          
+          <SettingItem
+            icon={<Ionicons name="location" size={22} color="#2563eb" />}
+            title="Ubicación"
+            subtitle="Permisos y precisión"
+            onPress={handleLocationSettings}
+          />
 
-        <SettingItem
-          icon={<Globe size={22} color="#2563eb" />}
-          title="Idioma"
-          subtitle="Español (Nicaragua)"
-          onPress={handleLanguage}
-        />
-      </View>
+          <SettingItem
+            icon={<Ionicons name="globe" size={22} color="#2563eb" />}
+            title="Idioma"
+            subtitle="Español (Nicaragua)"
+            onPress={handleLanguage}
+          />
+        </View>
 
-      <View style={styles.section}>
-        <Text style={styles.sectionTitle}>Aplicación</Text>
+        <View style={styles.section}>
+          <Text style={styles.sectionTitle}>Aplicación</Text>
 
-        <SettingItem
-          icon={<Shield size={22} color="#2563eb" />}
-          title="Privacidad"
-          subtitle="Política de datos"
-          onPress={handlePrivacy}
-        />
+          <SettingItem
+            icon={<Ionicons name="shield-checkmark" size={22} color="#2563eb" />}
+            title="Privacidad"
+            subtitle="Política de datos"
+            onPress={handlePrivacy}
+          />
 
-        <SettingItem
-          icon={<Star size={22} color="#2563eb" />}
-          title="Calificar App"
-          subtitle="Déjanos tu opinión"
-          onPress={handleRateApp}
-        />
-      </View>
+          <SettingItem
+            icon={<Ionicons name="star" size={22} color="#2563eb" />}
+            title="Calificar App"
+            subtitle="Déjanos tu opinión"
+            onPress={handleRateApp}
+          />
+        </View>
 
-      <View style={styles.footer}>
-        <Text style={styles.footerText}>
-          GasFinder Managua v1.0.0
-        </Text>
-        <Text style={styles.footerSubtext}>
-          Hecho con ❤️ para Nicaragua
-        </Text>
-      </View>
-    </ScrollView>
+        <View style={styles.footer}>
+          <Text style={styles.footerText}>
+            GasFinder Managua v1.0.0
+          </Text>
+          <Text style={styles.footerSubtext}>
+            Hecho con ❤️ para Nicaragua
+          </Text>
+        </View>
+      </ScrollView>
+    </SafeAreaView>
   );
 }
 
@@ -133,6 +137,9 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: '#f8fafc',
+  },
+  scrollView: {
+    flex: 1,
   },
   header: {
     padding: 20,

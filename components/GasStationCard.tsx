@@ -1,7 +1,7 @@
 import React from 'react';
 import { View, Text, StyleSheet, TouchableOpacity, Alert } from 'react-native';
 import { GasStation } from '@/types/gasStation';
-import { Fuel, MapPin, Clock, Star, Navigation } from 'lucide-react-native';
+import { Ionicons } from '@expo/vector-icons';
 
 interface GasStationCardProps {
   station: GasStation;
@@ -57,7 +57,7 @@ export function GasStationCard({ station }: GasStationCardProps) {
             styles.statusBadge,
             { backgroundColor: station.isOpen ? '#10b981' : '#ef4444' }
           ]}>
-            <Clock size={12} color="#ffffff" />
+            <Ionicons name="time" size={12} color="#ffffff" />
             <Text style={styles.statusText}>
               {station.isOpen ? 'Abierto' : 'Cerrado'}
             </Text>
@@ -72,13 +72,13 @@ export function GasStationCard({ station }: GasStationCardProps) {
       </View>
 
       <View style={styles.addressRow}>
-        <MapPin size={14} color="#6b7280" />
+        <Ionicons name="location" size={14} color="#6b7280" />
         <Text style={styles.address}>{station.address}</Text>
       </View>
 
       {station.rating && (
         <View style={styles.ratingRow}>
-          <Star size={14} color="#fbbf24" />
+          <Ionicons name="star" size={14} color="#fbbf24" />
           <Text style={styles.rating}>{station.rating.toFixed(1)}</Text>
         </View>
       )}
@@ -86,7 +86,7 @@ export function GasStationCard({ station }: GasStationCardProps) {
       <View style={styles.fuelTypes}>
         {station.fuelTypes.slice(0, 3).map((fuel, index) => (
           <View key={index} style={styles.fuelChip}>
-            <Fuel size={12} color="#6b7280" />
+            <Ionicons name="car" size={12} color="#6b7280" />
             <Text style={styles.fuelText}>
               {fuel.displayName}: C${fuel.price}
             </Text>
@@ -95,7 +95,7 @@ export function GasStationCard({ station }: GasStationCardProps) {
       </View>
 
       <TouchableOpacity style={styles.navigateButton} onPress={handleNavigate}>
-        <Navigation size={16} color="#ffffff" />
+        <Ionicons name="navigate" size={16} color="#ffffff" />
         <Text style={styles.navigateText}>Navegar</Text>
       </TouchableOpacity>
     </View>

@@ -7,6 +7,7 @@ import {
   Switch,
   TouchableOpacity,
 } from 'react-native';
+import { SafeAreaView } from 'react-native-safe-area-context';
 
 export default function FiltersTab() {
   const [filters, setFilters] = useState({
@@ -59,7 +60,7 @@ export default function FiltersTab() {
   };
 
   return (
-    <ScrollView style={styles.container}>
+    <SafeAreaView style={styles.container}>
       <View style={styles.header}>
         <Text style={styles.title}>Filtros de Búsqueda</Text>
         <Text style={styles.subtitle}>
@@ -67,82 +68,84 @@ export default function FiltersTab() {
         </Text>
       </View>
 
-      <View style={styles.section}>
-        <Text style={styles.sectionTitle}>Tipo de Combustible</Text>
-        <View style={styles.optionsContainer}>
-          {FUEL_TYPES.map((fuel) => {
-            const isSelected = filters.fuelTypes.includes(fuel.id);
-            return (
-              <TouchableOpacity
-                key={fuel.id}
-                style={[
-                  styles.optionButton,
-                  isSelected && { backgroundColor: fuel.color, borderColor: fuel.color }
-                ]}
-                onPress={() => toggleFuelType(fuel.id)}
-              >
-                <Text style={[
-                  styles.optionText,
-                  isSelected && styles.selectedText
-                ]}>
-                  {fuel.name}
-                </Text>
-              </TouchableOpacity>
-            );
-          })}
-        </View>
-      </View>
-
-      <View style={styles.section}>
-        <Text style={styles.sectionTitle}>Marcas Preferidas</Text>
-        <View style={styles.optionsContainer}>
-          {GAS_BRANDS.map((brand) => {
-            const isSelected = filters.brands.includes(brand.id);
-            return (
-              <TouchableOpacity
-                key={brand.id}
-                style={[
-                  styles.brandButton,
-                  isSelected && styles.selectedBrandButton
-                ]}
-                onPress={() => toggleBrand(brand.id)}
-              >
-                <Text style={[
-                  styles.optionText,
-                  isSelected && styles.selectedText
-                ]}>
-                  {brand.name}
-                </Text>
-              </TouchableOpacity>
-            );
-          })}
-        </View>
-      </View>
-
-      <View style={styles.section}>
-        <Text style={styles.sectionTitle}>Servicios</Text>
-        
-        <View style={styles.switchContainer}>
-          <Text style={styles.switchLabel}>Solo 24 horas</Text>
-          <Switch
-            value={filters.is24Hours}
-            onValueChange={(value) => updateFilter('is24Hours', value)}
-            trackColor={{ false: '#e2e8f0', true: '#3b82f6' }}
-            thumbColor="#ffffff"
-          />
+      <ScrollView style={styles.scrollView}>
+        <View style={styles.section}>
+          <Text style={styles.sectionTitle}>Tipo de Combustible</Text>
+          <View style={styles.optionsContainer}>
+            {FUEL_TYPES.map((fuel) => {
+              const isSelected = filters.fuelTypes.includes(fuel.id);
+              return (
+                <TouchableOpacity
+                  key={fuel.id}
+                  style={[
+                    styles.optionButton,
+                    isSelected && { backgroundColor: fuel.color, borderColor: fuel.color }
+                  ]}
+                  onPress={() => toggleFuelType(fuel.id)}
+                >
+                  <Text style={[
+                    styles.optionText,
+                    isSelected && styles.selectedText
+                  ]}>
+                    {fuel.name}
+                  </Text>
+                </TouchableOpacity>
+              );
+            })}
+          </View>
         </View>
 
-        <View style={styles.switchContainer}>
-          <Text style={styles.switchLabel}>Con servicios adicionales</Text>
-          <Switch
-            value={filters.hasAmenities}
-            onValueChange={(value) => updateFilter('hasAmenities', value)}
-            trackColor={{ false: '#e2e8f0', true: '#3b82f6' }}
-            thumbColor="#ffffff"
-          />
+        <View style={styles.section}>
+          <Text style={styles.sectionTitle}>Marcas Preferidas</Text>
+          <View style={styles.optionsContainer}>
+            {GAS_BRANDS.map((brand) => {
+              const isSelected = filters.brands.includes(brand.id);
+              return (
+                <TouchableOpacity
+                  key={brand.id}
+                  style={[
+                    styles.brandButton,
+                    isSelected && styles.selectedBrandButton
+                  ]}
+                  onPress={() => toggleBrand(brand.id)}
+                >
+                  <Text style={[
+                    styles.optionText,
+                    isSelected && styles.selectedText
+                  ]}>
+                    {brand.name}
+                  </Text>
+                </TouchableOpacity>
+              );
+            })}
+          </View>
         </View>
-      </View>
-    </ScrollView>
+
+        <View style={styles.section}>
+          <Text style={styles.sectionTitle}>Servicios</Text>
+          
+          <View style={styles.switchContainer}>
+            <Text style={styles.switchLabel}>Solo 24 horas</Text>
+            <Switch
+              value={filters.is24Hours}
+              onValueChange={(value) => updateFilter('is24Hours', value)}
+              trackColor={{ false: '#e2e8f0', true: '#3b82f6' }}
+              thumbColor="#ffffff"
+            />
+          </View>
+
+          <View style={styles.switchContainer}>
+            <Text style={styles.switchLabel}>Con servicios adicionales</Text>
+            <Switch
+              value={filters.hasAmenities}
+              onValueChange={(value) => updateFilter('hasAmenities', value)}
+              trackColor={{ false: '#e2e8f0', true: '#3b82f6' }}
+              thumbColor="#ffffff"
+            />
+          </View>
+        </View>
+      </ScrollView>
+    </SafeAreaView>
   );
 }
 
@@ -150,6 +153,9 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: '#f8fafc',
+  },
+  scrollView: {
+    flex: 1,
   },
   header: {
     padding: 20,
