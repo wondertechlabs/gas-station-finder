@@ -78,15 +78,6 @@ export default function SettingsTab() {
   return (
     <SafeAreaView style={styles.container}>
       <ScrollView style={styles.scrollView}>
-        <View style={styles.headerSection}>
-          <View style={styles.header}>
-            <Text style={styles.headerTitle}>Configuración</Text>
-            <Text style={styles.headerSubtitle}>
-              Personaliza tu experiencia
-            </Text>
-          </View>
-        </View>
-
         <View style={styles.section}>
           <Text style={styles.sectionTitle}>General</Text>
           
@@ -147,29 +138,6 @@ const styles = StyleSheet.create({
   },
   scrollView: {
     flex: 1,
-  },
-  headerSection: {
-    marginBottom: 16,
-  },
-  header: {
-    padding: 24,
-    paddingTop: 32,
-    alignItems: 'center',
-    backgroundColor: Colors.background,
-    borderBottomWidth: 1,
-    borderBottomColor: Colors.gray100,
-  },
-  headerTitle: {
-    fontSize: 28,
-    fontWeight: '700',
-    color: Colors.text,
-    textAlign: 'center',
-    marginBottom: 8,
-  },
-  headerSubtitle: {
-    fontSize: 16,
-    color: Colors.textSecondary,
-    textAlign: 'center',
   },
   section: {
     backgroundColor: Colors.background,
