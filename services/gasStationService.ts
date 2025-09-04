@@ -5,8 +5,8 @@ class GasStationServiceClass {
     return [
       {
         id: '1',
-        name: 'Puma Carretera Masaya',
-        brand: 'Puma',
+        name: 'Shell Carretera Masaya',
+        brand: 'Shell',
         address: 'Carretera Masaya, Km 7.5, Managua',
         coordinates: { latitude: 12.1234, longitude: -86.2456 },
         fuelTypes: [
@@ -22,8 +22,8 @@ class GasStationServiceClass {
       },
       {
         id: '2',
-        name: 'UNO Gas Plaza Inter',
-        brand: 'UNO Gas',
+        name: 'Petronic Plaza Inter',
+        brand: 'Petronic',
         address: 'Plaza Inter, Carretera Sur, Managua',
         coordinates: { latitude: 12.1156, longitude: -86.2398 },
         fuelTypes: [

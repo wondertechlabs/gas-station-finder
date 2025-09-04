@@ -23,6 +23,10 @@ export interface FuelType {
 }
 
 export const NICARAGUA_GAS_BRANDS = [
-  'Puma',
+  'Petronic',
+  'Shell',
+  'Texaco',
   'UNO Gas',
+  'Puma',
+  'Esso',
 ] as const;
