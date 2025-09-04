@@ -1,15 +1,29 @@
 import { Tabs } from 'expo-router';
 import { Ionicons } from '@expo/vector-icons';
 import { StatusBar } from 'expo-status-bar';
+import { TouchableOpacity } from 'react-native';
+import { useRouter } from 'expo-router';
 import { Colors } from '@/constants/colors';
 
 export default function TabLayout() {
+  const router = useRouter();
+
+  const HeaderSettingsButton = () => (
+    <TouchableOpacity
+      onPress={() => router.push('/settings')}
+      style={{ marginRight: 16 }}
+    >
+      <Ionicons name="settings-outline" size={24} color={Colors.text} />
+    </TouchableOpacity>
+  );
+
   return (
     <>
       <StatusBar style="dark" backgroundColor={Colors.background} />
       <Tabs
         screenOptions={{
           headerShown: true,
+          headerRight: () => <HeaderSettingsButton />,
           headerStyle: {
             backgroundColor: Colors.background,
             shadowColor: 'transparent',
