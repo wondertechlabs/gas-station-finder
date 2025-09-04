@@ -2,6 +2,8 @@ import React from 'react';
 import { View, Text, StyleSheet, TouchableOpacity, Alert } from 'react-native';
 import { GasStation } from '@/types/gasStation';
 import { Ionicons } from '@expo/vector-icons';
+import { LinearGradient } from 'expo-linear-gradient';
+import { Colors } from '@/constants/colors';
 
 interface GasStationCardProps {
   station: GasStation;
@@ -28,15 +30,8 @@ export function GasStationCard({ station }: GasStationCardProps) {
   };
 
   const getBrandColor = (brand?: string): string => {
-    const colors: { [key: string]: string } = {
-      'Shell': '#FFD320',
-      'Petronic': '#E31E24',
-      'Texaco': '#E31E24',
-      'UNO Gas': '#0066CC',
-      'Puma': '#FF6B00',
-      'Esso': '#E31E24',
-    };
-    return colors[brand || ''] || '#6b7280';
+    const brandKey = brand?.toLowerCase().replace(' ', '') as keyof typeof Colors.brands;
+    return Colors.brands[brandKey] || Colors.brands.default;
   };
 
   return (
@@ -55,9 +50,9 @@ export function GasStationCard({ station }: GasStationCardProps) {
         <View style={styles.statusRow}>
           <View style={[
             styles.statusBadge,
-            { backgroundColor: station.isOpen ? '#10b981' : '#ef4444' }
+            { backgroundColor: station.isOpen ? Colors.success[500] : Colors.error[500] }
           ]}>
-            <Ionicons name="time" size={12} color="#ffffff" />
+            <Ionicons name="time" size={12} color={Colors.text.inverse} />
             <Text style={styles.statusText}>
               {station.isOpen ? 'Abierto' : 'Cerrado'}
             </Text>
@@ -72,13 +67,13 @@ export function GasStationCard({ station }: GasStationCardProps) {
       </View>
 
       <View style={styles.addressRow}>
-        <Ionicons name="location" size={14} color="#6b7280" />
+        <Ionicons name="location" size={14} color={Colors.neutral[500]} />
         <Text style={styles.address}>{station.address}</Text>
       </View>
 
       {station.rating && (
         <View style={styles.ratingRow}>
-          <Ionicons name="star" size={14} color="#fbbf24" />
+          <Ionicons name="star" size={14} color={Colors.warning[400]} />
           <Text style={styles.rating}>{station.rating.toFixed(1)}</Text>
         </View>
       )}
@@ -86,7 +81,7 @@ export function GasStationCard({ station }: GasStationCardProps) {
       <View style={styles.fuelTypes}>
         {station.fuelTypes.slice(0, 3).map((fuel, index) => (
           <View key={index} style={styles.fuelChip}>
-            <Ionicons name="car" size={12} color="#6b7280" />
+            <View style={[styles.fuelDot, { backgroundColor: getFuelColor(fuel.type) }]} />
             <Text style={styles.fuelText}>
               {fuel.displayName}: C${fuel.price}
             </Text>
@@ -94,28 +89,46 @@ export function GasStationCard({ station }: GasStationCardProps) {
         ))}
       </View>
 
-      <TouchableOpacity style={styles.navigateButton} onPress={handleNavigate}>
-        <Ionicons name="navigate" size={16} color="#ffffff" />
-        <Text style={styles.navigateText}>Navegar</Text>
-      </TouchableOpacity>
+      <LinearGradient
+        colors={[Colors.primary[500], Colors.secondary[600]]}
+        style={styles.navigateButton}
+      >
+        <TouchableOpacity style={styles.navigateButtonInner} onPress={handleNavigate}>
+          <Ionicons name="navigate" size={16} color={Colors.text.inverse} />
+          <Text style={styles.navigateText}>Navegar</Text>
+        </TouchableOpacity>
+      </LinearGradient>
     </View>
   );
 }
 
+const getFuelColor = (type: string): string => {
+  const colors: { [key: string]: string } = {
+    'regular': Colors.success[500],
+    'super': Colors.warning[500],
+    'diesel': Colors.primary[500],
+    'glp': Colors.accent[500],
+  };
+  return colors[type] || Colors.neutral[400];
+};
+
 const styles = StyleSheet.create({
   card: {
-    backgroundColor: '#ffffff',
-    borderRadius: 12,
+    backgroundColor: Colors.background.secondary,
+    borderRadius: 16,
     padding: 16,
     marginBottom: 12,
-    shadowColor: '#000',
+    marginHorizontal: 16,
+    shadowColor: Colors.neutral[900],
     shadowOffset: {
       width: 0,
-      height: 2,
+      height: 4,
     },
-    shadowOpacity: 0.1,
-    shadowRadius: 3.84,
-    elevation: 5,
+    shadowOpacity: 0.12,
+    shadowRadius: 8,
+    elevation: 8,
+    borderWidth: 1,
+    borderColor: Colors.neutral[100],
   },
   header: {
     marginBottom: 12,
@@ -127,20 +140,20 @@ const styles = StyleSheet.create({
   },
   brandIndicator: {
     width: 4,
-    height: 20,
+    height: 24,
     borderRadius: 2,
     marginRight: 12,
   },
   stationName: {
     fontSize: 18,
     fontWeight: '600',
-    color: '#1f2937',
+    color: Colors.text.primary,
     flex: 1,
   },
   distance: {
     fontSize: 14,
-    color: '#6b7280',
-    fontWeight: '500',
+    color: Colors.text.tertiary,
+    fontWeight: '600',
   },
   statusRow: {
     flexDirection: 'row',
@@ -149,7 +162,7 @@ const styles = StyleSheet.create({
   statusBadge: {
     flexDirection: 'row',
     alignItems: 'center',
-    paddingHorizontal: 8,
+    paddingHorizontal: 10,
     paddingVertical: 4,
     borderRadius: 12,
     gap: 4,
@@ -157,18 +170,18 @@ const styles = StyleSheet.create({
   statusText: {
     fontSize: 12,
     fontWeight: '500',
-    color: '#ffffff',
+    color: Colors.text.inverse,
   },
   badge24: {
-    paddingHorizontal: 8,
+    paddingHorizontal: 10,
     paddingVertical: 4,
     borderRadius: 12,
-    backgroundColor: '#8b5cf6',
+    backgroundColor: Colors.accent[500],
   },
   badge24Text: {
     fontSize: 12,
     fontWeight: '500',
-    color: '#ffffff',
+    color: Colors.text.inverse,
   },
   addressRow: {
     flexDirection: 'row',
@@ -178,7 +191,7 @@ const styles = StyleSheet.create({
   },
   address: {
     fontSize: 14,
-    color: '#6b7280',
+    color: Colors.text.secondary,
     flex: 1,
     lineHeight: 20,
   },
@@ -190,7 +203,7 @@ const styles = StyleSheet.create({
   },
   rating: {
     fontSize: 14,
-    color: '#374151',
+    color: Colors.text.primary,
     fontWeight: '500',
   },
   fuelTypes: {
@@ -202,29 +215,37 @@ const styles = StyleSheet.create({
   fuelChip: {
     flexDirection: 'row',
     alignItems: 'center',
-    backgroundColor: '#f1f5f9',
-    paddingHorizontal: 8,
-    paddingVertical: 4,
-    borderRadius: 8,
-    gap: 4,
+    backgroundColor: Colors.neutral[50],
+    paddingHorizontal: 10,
+    paddingVertical: 6,
+    borderRadius: 12,
+    gap: 6,
+    borderWidth: 1,
+    borderColor: Colors.neutral[200],
+  },
+  fuelDot: {
+    width: 6,
+    height: 6,
+    borderRadius: 3,
   },
   fuelText: {
-    fontSize: 12,
-    color: '#475569',
-    fontWeight: '500',
+    fontSize: 13,
+    color: Colors.text.primary,
+    fontWeight: '600',
   },
   navigateButton: {
+    borderRadius: 12,
+  },
+  navigateButtonInner: {
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'center',
-    backgroundColor: '#2563eb',
     paddingVertical: 12,
-    borderRadius: 8,
     gap: 6,
   },
   navigateText: {
     fontSize: 16,
     fontWeight: '600',
-    color: '#ffffff',
+    color: Colors.text.inverse,
   },
 });

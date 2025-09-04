@@ -12,6 +12,7 @@ import { GasStationService } from '@/services/gasStationService';
 import { GasStation } from '@/types/gasStation';
 import { GasStationCard } from '@/components/GasStationCard';
 import { SearchBar } from '@/components/SearchBar';
+import { Colors } from '@/constants/colors';
 
 export default function ListTab() {
   const [gasStations, setGasStations] = useState<GasStation[]>([]);
@@ -67,7 +68,7 @@ export default function ListTab() {
 
   if (loading) {
     return (
-      <View style={styles.loadingContainer}>
+      <View style={[styles.loadingContainer, { backgroundColor: Colors.background.primary }]}>
         <ActivityIndicator size="large" color="#2563eb" />
         <Text style={styles.loadingText}>Cargando estaciones...</Text>
       </View>
@@ -101,7 +102,7 @@ export default function ListTab() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#f8fafc',
+    backgroundColor: Colors.background.primary,
   },
   listContainer: {
     paddingTop: 0,
@@ -110,9 +111,11 @@ const styles = StyleSheet.create({
     flex: 1,
     justifyContent: 'center',
     alignItems: 'center',
-    backgroundColor: '#f8fafc',
   },
   loadingText: {
     marginTop: 16,
+    fontSize: 16,
+    color: Colors.text.secondary,
+    fontWeight: '500',
   },
 });
