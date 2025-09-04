@@ -29,8 +29,14 @@ export function GasStationCard({ station }: GasStationCardProps) {
   };
 
   const getBrandColor = (brand?: string): string => {
-    const brandKey = brand?.toLowerCase().replace(' ', '') as keyof typeof Colors.brands;
-    return Colors.brands[brandKey] || Colors.brands.default;
+    let brandKey: string;
+    if (brand === 'UNO Gas') {
+      brandKey = 'uno';
+    } else {
+      brandKey = brand?.toLowerCase().replace(/\s+/g, '') || 'default';
+    }
+    const typedBrandKey = brandKey as keyof typeof Colors.brands;
+    return Colors.brands[typedBrandKey] || Colors.brands.default;
   };
 
   return (

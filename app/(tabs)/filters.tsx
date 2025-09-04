@@ -9,6 +9,7 @@ import {
 } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { Colors } from '@/constants/colors';
+import { NICARAGUA_GAS_BRANDS } from '@/types/gasStation';
 
 export default function FiltersTab() {
   const [filters, setFilters] = useState({
@@ -33,10 +34,10 @@ export default function FiltersTab() {
     { id: 'glp', name: 'GLP', color: Colors.accent },
   ];
 
-  const GAS_BRANDS = [
-    { id: 'petronic', name: 'Petronic' },
-    { id: 'shell', name: 'Shell' },
-    { id: 'texaco', name: 'Texaco' },
+  const GAS_BRANDS = NICARAGUA_GAS_BRANDS.map(brand => ({
+    id: brand === 'UNO Gas' ? 'uno' : brand.toLowerCase().replace(/\s+/g, ''),
+    name: brand,
+  }));
     { id: 'uno', name: 'UNO Gas' },
     { id: 'puma', name: 'Puma' },
     { id: 'esso', name: 'Esso' },
