@@ -30,7 +30,7 @@ export function SearchBar({ value, onChangeText, placeholder }: SearchBarProps) 
 const styles = StyleSheet.create({
   container: {
     paddingHorizontal: 16,
-    paddingTop: 8,
+    paddingTop: 16,
     paddingBottom: 12,
     backgroundColor: '#f8fafc',
   },
