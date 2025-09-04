@@ -38,10 +38,6 @@ export default function FiltersTab() {
     id: brand === 'UNO Gas' ? 'uno' : brand.toLowerCase().replace(/\s+/g, ''),
     name: brand,
   }));
-    { id: 'uno', name: 'UNO Gas' },
-    { id: 'puma', name: 'Puma' },
-    { id: 'esso', name: 'Esso' },
-  ];
 
   const toggleFuelType = (fuelId: string) => {
     const currentTypes = filters.fuelTypes;
