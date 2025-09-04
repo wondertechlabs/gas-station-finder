@@ -1,7 +1,6 @@
 import { Link, Stack } from 'expo-router';
 import { StyleSheet, Text, View } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
-import { LinearGradient } from 'expo-linear-gradient';
 import { Colors } from '@/constants/colors';
 
 export default function NotFoundScreen() {
@@ -15,14 +14,11 @@ export default function NotFoundScreen() {
           La página que buscas no se encuentra disponible
         </Text>
         
-        <LinearGradient
-          colors={[Colors.primary[500], Colors.secondary[500]]}
-          style={styles.linkGradient}
-        >
+        <View style={styles.linkContainer}>
           <Link href="/" style={styles.link}>
             <Text style={styles.linkText}>Ir al inicio</Text>
           </Link>
-        </LinearGradient>
+        </View>
       </View>
     </SafeAreaView>
   );
@@ -31,7 +27,7 @@ export default function NotFoundScreen() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: Colors.background.primary,
+    backgroundColor: Colors.backgroundSecondary,
   },
   content: {
     flex: 1,
@@ -42,25 +38,26 @@ const styles = StyleSheet.create({
   errorCode: {
     fontSize: 72,
     fontWeight: '900',
-    color: Colors.primary[500],
+    color: Colors.primary,
     marginBottom: 16,
     textAlign: 'center',
   },
   text: {
     fontSize: 24,
     fontWeight: '600',
-    color: Colors.text.primary,
+    color: Colors.text,
     textAlign: 'center',
     marginBottom: 8,
   },
   subtext: {
     fontSize: 16,
-    color: Colors.text.secondary,
+    color: Colors.textSecondary,
     textAlign: 'center',
     marginBottom: 32,
     lineHeight: 24,
   },
-  linkGradient: {
+  linkContainer: {
+    backgroundColor: Colors.primary,
     borderRadius: 12,
     overflow: 'hidden',
   },
@@ -71,7 +68,7 @@ const styles = StyleSheet.create({
   },
   linkText: {
     fontSize: 18,
-    color: Colors.text.inverse,
+    color: Colors.textInverse,
     fontWeight: '600',
   },
 });

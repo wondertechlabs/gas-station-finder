@@ -9,7 +9,6 @@ import {
 } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { Ionicons } from '@expo/vector-icons';
-import { LinearGradient } from 'expo-linear-gradient';
 import { ChevronRight } from 'lucide-react-native';
 import { Colors } from '@/constants/colors';
 
@@ -36,7 +35,7 @@ const SettingItem: React.FC<SettingItemProps> = ({
         {subtitle && <Text style={styles.settingSubtitle}>{subtitle}</Text>}
       </View>
     </View>
-    <ChevronRight size={20} color={Colors.neutral[400]} />
+    <ChevronRight size={20} color={Colors.gray400} />
   </TouchableOpacity>
 );
 
@@ -80,29 +79,26 @@ export default function SettingsTab() {
     <SafeAreaView style={styles.container}>
       <ScrollView style={styles.scrollView}>
         <View style={styles.headerSection}>
-          <LinearGradient
-            colors={[Colors.accent[500], Colors.primary[600]]}
-            style={styles.headerGradient}
-          >
+          <View style={styles.header}>
             <Text style={styles.headerTitle}>Configuración</Text>
             <Text style={styles.headerSubtitle}>
               Personaliza tu experiencia
             </Text>
-          </LinearGradient>
+          </View>
         </View>
 
         <View style={styles.section}>
           <Text style={styles.sectionTitle}>General</Text>
           
           <SettingItem
-            icon={<Ionicons name="location" size={22} color={Colors.primary[600]} />}
+            icon={<Ionicons name="location" size={22} color={Colors.primary} />}
             title="Ubicación"
             subtitle="Permisos y precisión"
             onPress={handleLocationSettings}
           />
 
           <SettingItem
-            icon={<Ionicons name="globe" size={22} color={Colors.secondary[600]} />}
+            icon={<Ionicons name="globe" size={22} color={Colors.secondary} />}
             title="Idioma"
             subtitle="Español (Nicaragua)"
             onPress={handleLanguage}
@@ -113,14 +109,14 @@ export default function SettingsTab() {
           <Text style={styles.sectionTitle}>Aplicación</Text>
 
           <SettingItem
-            icon={<Ionicons name="shield-checkmark" size={22} color={Colors.success[600]} />}
+            icon={<Ionicons name="shield-checkmark" size={22} color={Colors.success} />}
             title="Privacidad"
             subtitle="Política de datos"
             onPress={handlePrivacy}
           />
 
           <SettingItem
-            icon={<Ionicons name="star" size={22} color={Colors.warning[500]} />}
+            icon={<Ionicons name="star" size={22} color={Colors.warning} />}
             title="Calificar App"
             subtitle="Déjanos tu opinión"
             onPress={handleRateApp}
@@ -128,14 +124,11 @@ export default function SettingsTab() {
         </View>
 
         <View style={styles.footer}>
-          <LinearGradient
-            colors={[Colors.neutral[100], Colors.neutral[50]]}
-            style={styles.footerGradient}
-          >
+          <View style={styles.footerContainer}>
             <Text style={styles.footerText}>
               GasFinder Managua v1.0.0
             </Text>
-          </LinearGradient>
+          </View>
           
           <Text style={styles.footerSubtext}>
             Hecho con ❤️ para Nicaragua
@@ -149,7 +142,7 @@ export default function SettingsTab() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: Colors.background.primary,
+    backgroundColor: Colors.backgroundSecondary,
     paddingTop: 0,
   },
   scrollView: {
@@ -158,45 +151,39 @@ const styles = StyleSheet.create({
   headerSection: {
     marginBottom: 16,
   },
-  headerGradient: {
+  header: {
     padding: 24,
     paddingTop: 32,
     alignItems: 'center',
+    backgroundColor: Colors.background,
+    borderBottomWidth: 1,
+    borderBottomColor: Colors.gray100,
   },
   headerTitle: {
     fontSize: 28,
     fontWeight: '700',
-    color: Colors.text.inverse,
+    color: Colors.text,
     textAlign: 'center',
-    marginBottom: 4,
+    marginBottom: 8,
   },
   headerSubtitle: {
     fontSize: 16,
-    color: Colors.text.inverse,
+    color: Colors.textSecondary,
     textAlign: 'center',
-    opacity: 0.9,
   },
   section: {
-    backgroundColor: Colors.background.secondary,
+    backgroundColor: Colors.background,
     marginHorizontal: 16,
     marginVertical: 8,
-    borderRadius: 16,
+    borderRadius: 20,
     overflow: 'hidden',
-    shadowColor: Colors.neutral[900],
-    shadowOffset: {
-      width: 0,
-      height: 4,
-    },
-    shadowOpacity: 0.08,
-    shadowRadius: 8,
-    elevation: 6,
     borderWidth: 1,
-    borderColor: Colors.neutral[100],
+    borderColor: Colors.gray200,
   },
   sectionTitle: {
     fontSize: 18,
     fontWeight: '700',
-    color: Colors.text.primary,
+    color: Colors.text,
     paddingHorizontal: 20,
     paddingTop: 20,
     paddingBottom: 12,
@@ -214,48 +201,51 @@ const styles = StyleSheet.create({
     flex: 1,
   },
   iconContainer: {
-    width: 40,
-    height: 40,
-    borderRadius: 20,
-    backgroundColor: Colors.neutral[50],
+    width: 44,
+    height: 44,
+    borderRadius: 22,
+    backgroundColor: Colors.gray50,
     alignItems: 'center',
     justifyContent: 'center',
     marginRight: 16,
     borderWidth: 1,
-    borderColor: Colors.neutral[200],
+    borderColor: Colors.gray200,
   },
   textContainer: {
     flex: 1,
   },
   settingTitle: {
     fontSize: 16,
-    fontWeight: '500',
-    color: Colors.text.primary,
+    fontWeight: '600',
+    color: Colors.text,
   },
   settingSubtitle: {
     fontSize: 14,
-    color: Colors.text.secondary,
+    color: Colors.textSecondary,
     marginTop: 2,
   },
   footer: {
     alignItems: 'center',
-    paddingVertical: 24,
+    paddingVertical: 32,
     paddingHorizontal: 16,
   },
-  footerGradient: {
-    paddingHorizontal: 20,
+  footerContainer: {
+    backgroundColor: Colors.gray50,
+    paddingHorizontal: 24,
     paddingVertical: 12,
     borderRadius: 20,
-    marginBottom: 8,
+    marginBottom: 12,
+    borderWidth: 1,
+    borderColor: Colors.gray200,
   },
   footerText: {
     fontSize: 15,
-    color: Colors.text.primary,
+    color: Colors.text,
     fontWeight: '600',
   },
   footerSubtext: {
     fontSize: 14,
-    color: Colors.text.tertiary,
+    color: Colors.textTertiary,
     fontWeight: '500',
   },
 });
