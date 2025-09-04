@@ -86,7 +86,6 @@ export default function ListTab() {
         data={filteredStations}
         renderItem={renderGasStation}
         keyExtractor={(item) => item.id}
-        contentContainerStyle={styles.listContainer}
         refreshControl={
           <RefreshControl
             refreshing={refreshing}
@@ -115,7 +114,4 @@ const styles = StyleSheet.create({
   },
   loadingText: {
     marginTop: 16,
-    fontSize: 16,
-    color: '#64748b',
-  },
 });
