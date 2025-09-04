@@ -2,15 +2,7 @@ import React from 'react';
 import { View, Text, StyleSheet, Platform } from 'react-native';
 import { GasStation } from '@/types/gasStation';
 import { NavigationService } from '@/services/navigationService';
-// Conditionally import Marker and Callout only for native platforms
-let Marker: any = null;
-let Callout: any = null;
-if (Platform.OS !== 'web') {
-  const maps = require('react-native-maps');
-  Marker = maps.Marker;
-  Callout = maps.Callout;
-}
-
+import { Marker, Callout } from 'expo-maps';
 import { Fuel, Navigation } from 'lucide-react-native';
 
 interface Props {
@@ -18,11 +10,6 @@ interface Props {
 }
 
 export function GasStationMarker({ station }: Props) {
-  // Return null for web platform
-  if (Platform.OS === 'web' || !Marker || !Callout) {
-    return null;
-  }
-
   const handleNavigate = () => {
     NavigationService.navigateToStation(station);
   };

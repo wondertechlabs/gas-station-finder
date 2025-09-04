@@ -1,18 +1,13 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { View, StyleSheet, Alert, Dimensions, Platform, Text } from 'react-native';
 import * as Location from 'expo-location';
-import { Region } from 'react-native-maps';
 import { GasStationService } from '@/services/gasStationService';
 import { GasStation } from '@/types/gasStation';
 import { GasStationMarker } from '@/components/GasStationMarker';
 import { SearchRadius } from '@/components/SearchRadius';
 import { LocationButton } from '@/components/LocationButton';
 
-// Conditionally import MapView only for native platforms
-let MapView: any = null;
-if (Platform.OS !== 'web') {
-  MapView = require('react-native-maps').default;
-}
+import { ExpoMap } from 'expo-maps';
 
 const { width, height } = Dimensions.get('window');
 const ASPECT_RATIO = width / height;
@@ -27,6 +22,13 @@ const MANAGUA_CENTER = {
   longitudeDelta: LONGITUDE_DELTA,
 };
 
+interface Region {
+  latitude: number;
+  longitude: number;
+  latitudeDelta: number;
+  longitudeDelta: number;
+}
+
 export default function MapTab() {
   const isMounted = useRef(true);
   const [region, setRegion] = useState<Region>(MANAGUA_CENTER);
@@ -37,16 +39,17 @@ export default function MapTab() {
 
   useEffect(() => {
     isMounted.current = true;
-    if (Platform.OS !== 'web') {
-      getCurrentLocation();
-    }
+    getCurrentLocation();
     return () => {
       isMounted.current = false;
     };
   }, []);
 
   useEffect(() => {
-    if (userLocation || Platform.OS === 'web') {
+    if (userLocation) {
+      searchNearbyGasStations();
+    } else {
+      // Load stations for Managua center if no user location
       searchNearbyGasStations();
     }
   }, [userLocation, searchRadius]);
@@ -117,45 +120,12 @@ export default function MapTab() {
     setRegion(newRegion);
   };
 
-  // Web fallback component
-  if (Platform.OS === 'web') {
-    return (
-      <View style={styles.container}>
-        <View style={styles.webFallback}>
-          <Text style={styles.webFallbackTitle}>
-            Mapa de Estaciones de Servicio
-          </Text>
-          <Text style={styles.webFallbackText}>
-            La funcionalidad del mapa está disponible en dispositivos móviles.
-            Para la mejor experiencia, usa la aplicación en tu teléfono.
-          </Text>
-          <Text style={styles.webFallbackSubtext}>
-            Ubicación actual: Managua, Nicaragua
-          </Text>
-        </View>
-        
-        <SearchRadius
-          radius={searchRadius}
-          onRadiusChange={setSearchRadius}
-          loading={loading}
-        />
-
-        <LocationButton
-          onPress={getCurrentLocation}
-          loading={loading}
-        />
-      </View>
-    );
-  }
   return (
     <View style={styles.container}>
-      <MapView
+      <ExpoMap
         style={styles.map}
-        region={region}
-        onRegionChange={onRegionChange}
-        showsUserLocation={true}
-        showsMyLocationButton={false}
-        provider="google"
+        initialRegion={region}
+        showUserLocation={true}
       >
         {gasStations.map((station) => (
           <GasStationMarker
@@ -163,7 +133,7 @@ export default function MapTab() {
             station={station}
           />
         ))}
-      </MapView>
+      </ExpoMap>
 
       <SearchRadius
         radius={searchRadius}
@@ -185,31 +155,5 @@ const styles = StyleSheet.create({
   },
   map: {
     flex: 1,
-  },
-  webFallback: {
-    flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
-    padding: 20,
-    backgroundColor: '#f5f5f5',
-  },
-  webFallbackTitle: {
-    fontSize: 24,
-    fontWeight: 'bold',
-    color: '#333',
-    marginBottom: 16,
-    textAlign: 'center',
-  },
-  webFallbackText: {
-    fontSize: 16,
-    color: '#666',
-    textAlign: 'center',
-    marginBottom: 12,
-    lineHeight: 24,
-  },
-  webFallbackSubtext: {
-    fontSize: 14,
-    color: '#999',
-    textAlign: 'center',
   },
 });
