@@ -2,12 +2,11 @@ import { useState } from 'react';
 import {
   View,
   Text,
-  StyleSheet,
   ScrollView,
   Switch,
   TouchableOpacity,
 } from 'react-native';
-import { Colors } from '~/constants/colors';
+import { SafeAreaView } from 'react-native-safe-area-context';
 import { NICARAGUA_GAS_BRANDS } from '~/types/gasStation';
 
 export default function FiltersTab() {
@@ -27,9 +26,10 @@ export default function FiltersTab() {
   };
 
   const FUEL_TYPES = [
-    { id: 'regular', name: 'Regular (87)', color: Colors.success },
-    { id: 'super', name: 'Super (91)', color: Colors.warning },
-    { id: 'diesel', name: 'Diesel', color: Colors.primary },
+    { id: 'regular', name: 'Regular (87)', color: '#22c55e' },
+    { id: 'super', name: 'Super (91)', color: '#f59e0b' },
+    { id: 'diesel', name: 'Diesel', color: '#2563eb' },
+    { id: 'glp', name: 'GLP', color: '#10b981' },
   ];
 
   const GAS_BRANDS = NICARAGUA_GAS_BRANDS.map(brand => ({
@@ -57,175 +57,81 @@ export default function FiltersTab() {
   };
 
   return (
-    <ScrollView style={styles.scrollView}>
-      <View style={styles.section}>
-        <Text style={styles.sectionTitle}>Tipo de Combustible</Text>
-        <View style={styles.optionsContainer}>
-          {FUEL_TYPES.map((fuel) => {
-            const isSelected = filters.fuelTypes.includes(fuel.id);
-            return (
-              <TouchableOpacity
-                key={fuel.id}
-                style={[
-                  styles.optionButton,
-                  isSelected && { backgroundColor: fuel.color }
-                ]}
-                onPress={() => toggleFuelType(fuel.id)}
-              >
-                <Text style={[
-                  styles.optionText,
-                  isSelected && styles.selectedText
-                ]}>
-                  {fuel.name}
-                </Text>
-              </TouchableOpacity>
-            );
-          })}
-        </View>
-      </View>
-
-      <View style={styles.section}>
-        <Text style={styles.sectionTitle}>Marcas Preferidas</Text>
-        <View style={styles.optionsContainer}>
-          {GAS_BRANDS.map((brand) => {
-            const isSelected = filters.brands.includes(brand.id);
-            return (
-              <TouchableOpacity
-                key={brand.id}
-                style={[
-                  styles.brandButton,
-                  isSelected && styles.selectedBrandButton
-                ]}
-                onPress={() => toggleBrand(brand.id)}
-              >
-                <Text style={[
-                  styles.optionText,
-                  isSelected && styles.selectedText
-                ]}>
-                  {brand.name}
-                </Text>
-              </TouchableOpacity>
-            );
-          })}
-        </View>
-      </View>
-
-      <View style={styles.section}>
-        <Text style={styles.sectionTitle}>Servicios</Text>
-
-        <View style={styles.switchContainer}>
-          <Text style={styles.switchLabel}>Solo 24 horas</Text>
-          <Switch
-            value={filters.is24Hours}
-            onValueChange={(value) => updateFilter('is24Hours', value)}
-            trackColor={{ false: Colors.gray200, true: Colors.primary }}
-            thumbColor={Colors.background}
-          />
+    <SafeAreaView className="flex-1 bg-slate-50 pt-0">
+      <ScrollView className="flex-1">
+        <View className="bg-white mx-4 my-2 rounded-2xl p-5 border border-slate-200">
+          <Text className="text-xl font-bold text-slate-900 mb-4">Tipo de Combustible</Text>
+          <View className="flex-row flex-wrap gap-3">
+            {FUEL_TYPES.map((fuel) => {
+              const isSelected = filters.fuelTypes.includes(fuel.id);
+              return (
+                <TouchableOpacity
+                  key={fuel.id}
+                  className={`px-5 py-3 rounded-2xl border border-slate-200 ${
+                    isSelected ? '' : 'bg-slate-50'
+                  }`}
+                  style={isSelected ? { backgroundColor: fuel.color } : {}}
+                  onPress={() => toggleFuelType(fuel.id)}
+                >
+                  <Text className={`text-sm font-semibold ${
+                    isSelected ? 'text-white font-bold' : 'text-slate-900'
+                  }`}>
+                    {fuel.name}
+                  </Text>
+                </TouchableOpacity>
+              );
+            })}
+          </View>
         </View>
 
-        <View style={styles.switchContainer}>
-          <Text style={styles.switchLabel}>Con servicios adicionales</Text>
-          <Switch
-            value={filters.hasAmenities}
-            onValueChange={(value) => updateFilter('hasAmenities', value)}
-            trackColor={{ false: Colors.gray200, true: Colors.primary }}
-            thumbColor={Colors.background}
-          />
+        <View className="bg-white mx-4 my-2 rounded-2xl p-5 border border-slate-200">
+          <Text className="text-xl font-bold text-slate-900 mb-4">Marcas Preferidas</Text>
+          <View className="flex-row flex-wrap gap-3">
+            {GAS_BRANDS.map((brand) => {
+              const isSelected = filters.brands.includes(brand.id);
+              return (
+                <TouchableOpacity
+                  key={brand.id}
+                  className={`px-5 py-3.5 rounded-2xl border border-slate-200 min-w-[100px] items-center ${
+                    isSelected ? 'bg-blue-600 border-blue-600' : 'bg-slate-50'
+                  }`}
+                  onPress={() => toggleBrand(brand.id)}
+                >
+                  <Text className={`text-sm font-semibold ${
+                    isSelected ? 'text-white font-bold' : 'text-slate-900'
+                  }`}>
+                    {brand.name}
+                  </Text>
+                </TouchableOpacity>
+              );
+            })}
+          </View>
         </View>
-      </View>
-    </ScrollView>
+
+        <View className="bg-white mx-4 my-2 rounded-2xl p-5 border border-slate-200">
+          <Text className="text-xl font-bold text-slate-900 mb-4">Servicios</Text>
+
+          <View className="flex-row justify-between items-center py-4 px-1">
+            <Text className="text-base text-slate-900 font-medium">Solo 24 horas</Text>
+            <Switch
+              value={filters.is24Hours}
+              onValueChange={(value) => updateFilter('is24Hours', value)}
+              trackColor={{ false: '#e2e8f0', true: '#2563eb' }}
+              thumbColor="#ffffff"
+            />
+          </View>
+
+          <View className="flex-row justify-between items-center py-4 px-1">
+            <Text className="text-base text-slate-900 font-medium">Con servicios adicionales</Text>
+            <Switch
+              value={filters.hasAmenities}
+              onValueChange={(value) => updateFilter('hasAmenities', value)}
+              trackColor={{ false: '#e2e8f0', true: '#2563eb' }}
+              thumbColor="#ffffff"
+            />
+          </View>
+        </View>
+      </ScrollView>
+    </SafeAreaView>
   );
 }
-
-const styles = StyleSheet.create({
-
-  scrollView: {
-    flex: 1,
-  },
-  headerSection: {
-    marginBottom: 16,
-  },
-  header: {
-    padding: 24,
-    paddingTop: 32,
-    alignItems: 'center',
-    backgroundColor: Colors.background,
-    borderBottomWidth: 1,
-    borderBottomColor: Colors.gray100,
-  },
-  headerTitle: {
-    fontSize: 28,
-    fontWeight: '700',
-    color: Colors.text,
-    textAlign: 'center',
-    marginBottom: 8,
-  },
-  headerSubtitle: {
-    fontSize: 16,
-    color: Colors.textSecondary,
-    textAlign: 'center',
-  },
-  section: {
-    backgroundColor: Colors.background,
-    marginHorizontal: 16,
-    marginVertical: 8,
-    borderRadius: 20,
-    padding: 20,
-    borderWidth: 1,
-    borderColor: Colors.gray200,
-  },
-  sectionTitle: {
-    fontSize: 20,
-    fontWeight: '700',
-    color: Colors.text,
-    marginBottom: 16,
-  },
-  optionsContainer: {
-    flexDirection: 'row',
-    flexWrap: 'wrap',
-    gap: 12,
-  },
-  optionButton: {
-    paddingHorizontal: 20,
-    paddingVertical: 12,
-    borderRadius: 20,
-    borderWidth: 1,
-    borderColor: Colors.gray200,
-    backgroundColor: Colors.gray50,
-  },
-  brandButton: {
-    paddingHorizontal: 20,
-    paddingVertical: 14,
-    borderRadius: 20,
-    borderWidth: 1,
-    borderColor: Colors.gray200,
-    backgroundColor: Colors.gray50,
-    minWidth: 100,
-    alignItems: 'center',
-  },
-  selectedBrandButton: {
-    backgroundColor: Colors.primary,
-    borderColor: Colors.primary,
-  },
-  optionText: {
-    fontSize: 15,
-    color: Colors.text,
-    fontWeight: '600',
-  },
-  selectedText: {
-    color: Colors.textInverse,
-    fontWeight: '700',
-  },
-  switchContainer: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'center',
-    paddingVertical: 16,
-    paddingHorizontal: 4,
-  },
-  switchLabel: {
-    fontSize: 17,
-    color: Colors.text,
-    fontWeight: '500',
-  },
-});

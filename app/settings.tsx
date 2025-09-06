@@ -2,13 +2,12 @@ import React from 'react';
 import {
   View,
   Text,
-  StyleSheet,
   ScrollView,
   TouchableOpacity,
   Alert,
 } from 'react-native';
+import { SafeAreaView } from 'react-native-safe-area-context';
 import { Ionicons } from '@expo/vector-icons';
-import { Colors } from '~/constants/colors';
 
 interface SettingItemProps {
   icon: React.ReactNode;
@@ -17,23 +16,23 @@ interface SettingItemProps {
   onPress: () => void;
 }
 
-const SettingItem: React.FC<SettingItemProps> = ({
-  icon,
-  title,
-  subtitle,
-  onPress
+const SettingItem: React.FC<SettingItemProps> = ({ 
+  icon, 
+  title, 
+  subtitle, 
+  onPress 
 }) => (
-  <TouchableOpacity style={styles.settingItem} onPress={onPress}>
-    <View style={styles.settingLeft}>
-      <View style={styles.iconContainer}>
+  <TouchableOpacity className="flex-row items-center justify-between px-5 py-4.5" onPress={onPress}>
+    <View className="flex-row items-center flex-1">
+      <View className="w-11 h-11 rounded-full bg-slate-50 items-center justify-center mr-4 border border-slate-200">
         {icon}
       </View>
-      <View style={styles.textContainer}>
-        <Text style={styles.settingTitle}>{title}</Text>
-        {subtitle && <Text style={styles.settingSubtitle}>{subtitle}</Text>}
+      <View className="flex-1">
+        <Text className="text-base font-semibold text-slate-900">{title}</Text>
+        {subtitle && <Text className="text-sm text-slate-600 mt-0.5">{subtitle}</Text>}
       </View>
     </View>
-    <Ionicons name="chevron-forward-outline" size={20} color={Colors.gray400} />
+    <Ionicons name="chevron-forward-outline" size={20} color="#94a3b8" />
   </TouchableOpacity>
 );
 
@@ -74,138 +73,56 @@ export default function SettingsTab() {
   };
 
   return (
-    <ScrollView style={styles.scrollView}>
-      <View style={styles.section}>
-        <Text style={styles.sectionTitle}>General</Text>
+    <SafeAreaView className="flex-1 bg-slate-50 pt-0">
+      <ScrollView className="flex-1">
+        <View className="bg-white mx-4 my-2 rounded-2xl overflow-hidden border border-slate-200">
+          <Text className="text-lg font-bold text-slate-900 px-5 pt-5 pb-3">General</Text>
 
-        <SettingItem
-          icon={<Ionicons name="location" size={22} color={Colors.primary} />}
-          title="Ubicación"
-          subtitle="Permisos y precisión"
-          onPress={handleLocationSettings}
-        />
+          <SettingItem
+            icon={<Ionicons name="location" size={22} color="#2563eb" />}
+            title="Ubicación"
+            subtitle="Permisos y precisión"
+            onPress={handleLocationSettings}
+          />
 
-        <SettingItem
-          icon={<Ionicons name="globe" size={22} color={Colors.secondary} />}
-          title="Idioma"
-          subtitle="Español (Nicaragua)"
-          onPress={handleLanguage}
-        />
-      </View>
-
-      <View style={styles.section}>
-        <Text style={styles.sectionTitle}>Aplicación</Text>
-
-        <SettingItem
-          icon={<Ionicons name="shield-checkmark" size={22} color={Colors.success} />}
-          title="Privacidad"
-          subtitle="Política de datos"
-          onPress={handlePrivacy}
-        />
-
-        <SettingItem
-          icon={<Ionicons name="star" size={22} color={Colors.warning} />}
-          title="Calificar App"
-          subtitle="Déjanos tu opinión"
-          onPress={handleRateApp}
-        />
-      </View>
-
-      <View style={styles.footer}>
-        <View style={styles.footerContainer}>
-          <Text style={styles.footerText}>
-            GasFinder Managua v1.0.0
-          </Text>
+          <SettingItem
+            icon={<Ionicons name="globe" size={22} color="#06b6d4" />}
+            title="Idioma"
+            subtitle="Español (Nicaragua)"
+            onPress={handleLanguage}
+          />
         </View>
 
-        <Text style={styles.footerSubtext}>
-          Hecho con ❤️ para Nicaragua
-        </Text>
-      </View>
-    </ScrollView>
+        <View className="bg-white mx-4 my-2 rounded-2xl overflow-hidden border border-slate-200">
+          <Text className="text-lg font-bold text-slate-900 px-5 pt-5 pb-3">Aplicación</Text>
+
+          <SettingItem
+            icon={<Ionicons name="shield-checkmark" size={22} color="#22c55e" />}
+            title="Privacidad"
+            subtitle="Política de datos"
+            onPress={handlePrivacy}
+          />
+
+          <SettingItem
+            icon={<Ionicons name="star" size={22} color="#f59e0b" />}
+            title="Calificar App"
+            subtitle="Déjanos tu opinión"
+            onPress={handleRateApp}
+          />
+        </View>
+
+        <View className="items-center py-8 px-4">
+          <View className="bg-slate-50 px-6 py-3 rounded-2xl mb-3 border border-slate-200">
+            <Text className="text-sm text-slate-900 font-semibold">
+              GasFinder Managua v1.0.0
+            </Text>
+          </View>
+          
+          <Text className="text-sm text-slate-500 font-medium">
+            Hecho con ❤️ para Nicaragua
+          </Text>
+        </View>
+      </ScrollView>
+    </SafeAreaView>
   );
 }
-
-const styles = StyleSheet.create({
-
-  scrollView: {
-    flex: 1,
-  },
-  section: {
-    backgroundColor: Colors.background,
-    marginHorizontal: 16,
-    marginVertical: 8,
-    borderRadius: 20,
-    overflow: 'hidden',
-    borderWidth: 1,
-    borderColor: Colors.gray200,
-  },
-  sectionTitle: {
-    fontSize: 18,
-    fontWeight: '700',
-    color: Colors.text,
-    paddingHorizontal: 20,
-    paddingTop: 20,
-    paddingBottom: 12,
-  },
-  settingItem: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'space-between',
-    paddingHorizontal: 20,
-    paddingVertical: 18,
-  },
-  settingLeft: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    flex: 1,
-  },
-  iconContainer: {
-    width: 44,
-    height: 44,
-    borderRadius: 22,
-    backgroundColor: Colors.gray50,
-    alignItems: 'center',
-    justifyContent: 'center',
-    marginRight: 16,
-    borderWidth: 1,
-    borderColor: Colors.gray200,
-  },
-  textContainer: {
-    flex: 1,
-  },
-  settingTitle: {
-    fontSize: 16,
-    fontWeight: '600',
-    color: Colors.text,
-  },
-  settingSubtitle: {
-    fontSize: 14,
-    color: Colors.textSecondary,
-    marginTop: 2,
-  },
-  footer: {
-    alignItems: 'center',
-    paddingVertical: 32,
-    paddingHorizontal: 16,
-  },
-  footerContainer: {
-    backgroundColor: Colors.gray50,
-    paddingHorizontal: 24,
-    paddingVertical: 12,
-    borderRadius: 20,
-    marginBottom: 12,
-    borderWidth: 1,
-    borderColor: Colors.gray200,
-  },
-  footerText: {
-    fontSize: 15,
-    color: Colors.text,
-    fontWeight: '600',
-  },
-  footerSubtext: {
-    fontSize: 14,
-    color: Colors.textTertiary,
-    fontWeight: '500',
-  },
-});

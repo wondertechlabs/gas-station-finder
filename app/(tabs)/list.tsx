@@ -1,18 +1,16 @@
 import { useState, useEffect } from 'react';
-import {
-  View,
-  FlatList,
-  StyleSheet,
+import { 
+  View, 
+  FlatList, 
   RefreshControl,
   ActivityIndicator,
-  Text
+  Text 
 } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { GasStationService } from '~/services/gasStationService';
 import { GasStation } from '~/types/gasStation';
 import { GasStationCard } from '~/components/GasStationCard';
 import { SearchBar } from '~/components/SearchBar';
-import { Colors } from '~/constants/colors';
 
 export default function ListTab() {
   const [gasStations, setGasStations] = useState<GasStation[]>([]);
@@ -68,15 +66,15 @@ export default function ListTab() {
 
   if (loading) {
     return (
-      <View style={styles.loadingContainer}>
-        <ActivityIndicator size="large" color={Colors.primary} />
-        <Text style={styles.loadingText}>Cargando estaciones...</Text>
+      <View className="flex-1 justify-center items-center bg-slate-50">
+        <ActivityIndicator size="large" color="#2563eb" />
+        <Text className="mt-4 text-base text-slate-600 font-medium">Cargando estaciones...</Text>
       </View>
     );
   }
 
   return (
-    <View style={styles.container}>
+    <SafeAreaView className="flex-1 bg-slate-50">
       <SearchBar
         value={searchQuery}
         onChangeText={setSearchQuery}
@@ -91,30 +89,10 @@ export default function ListTab() {
           <RefreshControl
             refreshing={refreshing}
             onRefresh={onRefresh}
-            colors={[Colors.primary]}
+            colors={['#2563eb']}
           />
         }
       />
-    </View>
+    </SafeAreaView>
   );
 }
-
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: Colors.backgroundSecondary,
-    paddingTop: 0,
-  },
-  loadingContainer: {
-    flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
-    backgroundColor: Colors.backgroundSecondary,
-  },
-  loadingText: {
-    marginTop: 16,
-    fontSize: 16,
-    color: Colors.textSecondary,
-    fontWeight: '500',
-  },
-});

@@ -1,6 +1,5 @@
-import { View, TextInput, StyleSheet } from 'react-native';
+import { View, TextInput } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
-import { Colors } from '~/constants/colors';
 
 interface SearchBarProps {
   value: string;
@@ -10,15 +9,15 @@ interface SearchBarProps {
 
 export function SearchBar({ value, onChangeText, placeholder }: SearchBarProps) {
   return (
-    <View style={styles.container}>
-      <View style={styles.searchContainer}>
-        <Ionicons name="search" size={20} color={Colors.gray400} style={styles.searchIcon} />
+    <View className="px-4 pt-4 pb-3 bg-slate-50">
+      <View className="flex-row items-center bg-white rounded-2xl px-4 py-4 border border-slate-200">
+        <Ionicons name="search" size={20} color="#94a3b8" className="mr-3" />
         <TextInput
-          style={styles.input}
+          className="flex-1 text-base text-slate-900 font-medium"
           value={value}
           onChangeText={onChangeText}
           placeholder={placeholder}
-          placeholderTextColor={Colors.gray400}
+          placeholderTextColor="#94a3b8"
           autoCapitalize="none"
           autoCorrect={false}
         />
@@ -26,31 +25,3 @@ export function SearchBar({ value, onChangeText, placeholder }: SearchBarProps) 
     </View>
   );
 }
-
-const styles = StyleSheet.create({
-  container: {
-    paddingHorizontal: 16,
-    paddingTop: 16,
-    paddingBottom: 12,
-    backgroundColor: Colors.backgroundSecondary,
-  },
-  searchContainer: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    backgroundColor: Colors.background,
-    borderRadius: 20,
-    paddingHorizontal: 16,
-    paddingVertical: 16,
-    borderWidth: 1,
-    borderColor: Colors.gray200,
-  },
-  searchIcon: {
-    marginRight: 12,
-  },
-  input: {
-    flex: 1,
-    fontSize: 16,
-    color: Colors.text,
-    fontWeight: '500',
-  },
-});
