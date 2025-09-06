@@ -57,25 +57,38 @@ export default function FiltersTab() {
   };
 
   return (
-    <SafeAreaView className="flex-1 bg-slate-50 pt-0">
-      <ScrollView className="flex-1">
-        <View className="bg-white mx-4 my-2 rounded-2xl p-5 border border-slate-200">
-          <Text className="text-xl font-bold text-slate-900 mb-4">Tipo de Combustible</Text>
+    <ScrollView className="flex-1 bg-slate-50" showsVerticalScrollIndicator={false}>
+      <View className="pt-6 pb-8">
+        <View 
+          className="bg-white mx-4 mb-4 rounded-3xl p-6"
+          style={{
+            shadowColor: '#000',
+            shadowOffset: { width: 0, height: 2 },
+            shadowOpacity: 0.05,
+            shadowRadius: 8,
+            elevation: 3,
+          }}
+        >
+          <Text className="text-xl font-bold text-slate-900 mb-2">Tipo de Combustible</Text>
+          <Text className="text-sm text-slate-500 mb-6">Selecciona los tipos que necesitas</Text>
           <View className="flex-row flex-wrap gap-3">
             {FUEL_TYPES.map((fuel) => {
               const isSelected = filters.fuelTypes.includes(fuel.id);
               return (
                 <TouchableOpacity
                   key={fuel.id}
-                  className={`px-5 py-3 rounded-2xl border border-slate-200 ${
-                    isSelected ? '' : 'bg-slate-50'
-                  }`}
-                  style={isSelected ? { backgroundColor: fuel.color } : {}}
+                  className={`px-6 py-4 rounded-2xl border-2 ${isSelected ? 'border-transparent' : 'border-slate-200 bg-slate-50'}`}
+                  style={isSelected ? { 
+                    backgroundColor: fuel.color,
+                    shadowColor: fuel.color,
+                    shadowOffset: { width: 0, height: 2 },
+                    shadowOpacity: 0.2,
+                    shadowRadius: 4,
+                    elevation: 2,
+                  } : {}}
                   onPress={() => toggleFuelType(fuel.id)}
                 >
-                  <Text className={`text-sm font-semibold ${
-                    isSelected ? 'text-white font-bold' : 'text-slate-900'
-                  }`}>
+                  <Text className={`text-sm font-bold ${isSelected ? 'text-white' : 'text-slate-700'}`}>
                     {fuel.name}
                   </Text>
                 </TouchableOpacity>
@@ -84,22 +97,35 @@ export default function FiltersTab() {
           </View>
         </View>
 
-        <View className="bg-white mx-4 my-2 rounded-2xl p-5 border border-slate-200">
-          <Text className="text-xl font-bold text-slate-900 mb-4">Marcas Preferidas</Text>
+        <View 
+          className="bg-white mx-4 mb-4 rounded-3xl p-6"
+          style={{
+            shadowColor: '#000',
+            shadowOffset: { width: 0, height: 2 },
+            shadowOpacity: 0.05,
+            shadowRadius: 8,
+            elevation: 3,
+          }}
+        >
+          <Text className="text-xl font-bold text-slate-900 mb-2">Marcas Preferidas</Text>
+          <Text className="text-sm text-slate-500 mb-6">Filtra por marcas específicas</Text>
           <View className="flex-row flex-wrap gap-3">
             {GAS_BRANDS.map((brand) => {
               const isSelected = filters.brands.includes(brand.id);
               return (
                 <TouchableOpacity
                   key={brand.id}
-                  className={`px-5 py-3.5 rounded-2xl border border-slate-200 min-w-[100px] items-center ${
-                    isSelected ? 'bg-blue-600 border-blue-600' : 'bg-slate-50'
-                  }`}
+                  className={`px-6 py-4 rounded-2xl border-2 min-w-[120px] items-center ${isSelected ? 'border-blue-600 bg-blue-600' : 'border-slate-200 bg-slate-50'}`}
+                  style={isSelected ? {
+                    shadowColor: '#2563eb',
+                    shadowOffset: { width: 0, height: 2 },
+                    shadowOpacity: 0.2,
+                    shadowRadius: 4,
+                    elevation: 2,
+                  } : {}}
                   onPress={() => toggleBrand(brand.id)}
                 >
-                  <Text className={`text-sm font-semibold ${
-                    isSelected ? 'text-white font-bold' : 'text-slate-900'
-                  }`}>
+                  <Text className={`text-sm font-bold ${isSelected ? 'text-white' : 'text-slate-700'}`}>
                     {brand.name}
                   </Text>
                 </TouchableOpacity>
@@ -108,11 +134,24 @@ export default function FiltersTab() {
           </View>
         </View>
 
-        <View className="bg-white mx-4 my-2 rounded-2xl p-5 border border-slate-200">
-          <Text className="text-xl font-bold text-slate-900 mb-4">Servicios</Text>
+        <View 
+          className="bg-white mx-4 mb-6 rounded-3xl p-6"
+          style={{
+            shadowColor: '#000',
+            shadowOffset: { width: 0, height: 2 },
+            shadowOpacity: 0.05,
+            shadowRadius: 8,
+            elevation: 3,
+          }}
+        >
+          <Text className="text-xl font-bold text-slate-900 mb-2">Servicios</Text>
+          <Text className="text-sm text-slate-500 mb-6">Filtros adicionales</Text>
 
-          <View className="flex-row justify-between items-center py-4 px-1">
-            <Text className="text-base text-slate-900 font-medium">Solo 24 horas</Text>
+          <View className="flex-row justify-between items-center py-5 px-2 border-b border-slate-100">
+            <View className="flex-1">
+              <Text className="text-base text-slate-900 font-semibold">Solo 24 horas</Text>
+              <Text className="text-sm text-slate-500 mt-1">Estaciones abiertas todo el día</Text>
+            </View>
             <Switch
               value={filters.is24Hours}
               onValueChange={(value) => updateFilter('is24Hours', value)}
@@ -121,8 +160,11 @@ export default function FiltersTab() {
             />
           </View>
 
-          <View className="flex-row justify-between items-center py-4 px-1">
-            <Text className="text-base text-slate-900 font-medium">Con servicios adicionales</Text>
+          <View className="flex-row justify-between items-center py-5 px-2">
+            <View className="flex-1">
+              <Text className="text-base text-slate-900 font-semibold">Con servicios adicionales</Text>
+              <Text className="text-sm text-slate-500 mt-1">Tienda, lavado, ATM, etc.</Text>
+            </View>
             <Switch
               value={filters.hasAmenities}
               onValueChange={(value) => updateFilter('hasAmenities', value)}
@@ -131,7 +173,7 @@ export default function FiltersTab() {
             />
           </View>
         </View>
-      </ScrollView>
-    </SafeAreaView>
+      </View>
+    </ScrollView>
   );
 }

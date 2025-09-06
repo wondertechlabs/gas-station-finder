@@ -6,7 +6,6 @@ import {
   ActivityIndicator,
   Text 
 } from 'react-native';
-import { SafeAreaView } from 'react-native-safe-area-context';
 import { GasStationService } from '~/services/gasStationService';
 import { GasStation } from '~/types/gasStation';
 import { GasStationCard } from '~/components/GasStationCard';
@@ -74,7 +73,7 @@ export default function ListTab() {
   }
 
   return (
-    <SafeAreaView className="flex-1 bg-slate-50">
+    <View className="flex-1 bg-slate-50">
       <SearchBar
         value={searchQuery}
         onChangeText={setSearchQuery}
@@ -93,6 +92,6 @@ export default function ListTab() {
           />
         }
       />
-    </SafeAreaView>
+    </View>
   );
 }
