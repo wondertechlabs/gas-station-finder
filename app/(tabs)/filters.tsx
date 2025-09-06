@@ -6,7 +6,6 @@ import {
   Switch,
   TouchableOpacity,
 } from 'react-native';
-import { SafeAreaView } from 'react-native-safe-area-context';
 import { NICARAGUA_GAS_BRANDS } from '~/types/gasStation';
 
 export default function FiltersTab() {

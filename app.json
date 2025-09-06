@@ -1,14 +1,18 @@
 {
   "expo": {
-    "name": "Gas Station Finder",
-    "slug": "gas-station-finder",
+    "name": "Gasolineras",
+    "slug": "gas-station-near-me",
     "version": "1.0.0",
     "orientation": "portrait",
     "icon": "./assets/images/icon.png",
-    "scheme": "gas-station-app",
+    "scheme": "gas-station-near-me",
     "userInterfaceStyle": "automatic",
     "ios": {
-      "supportsTablet": true
+      "supportsTablet": true,
+      "bundleIdentifier": "dev.donmanuel.gas-station-near-me",
+      "config": {
+        "usesNonExemptEncryption": false
+      }
     },
     "web": {
       "bundler": "metro",

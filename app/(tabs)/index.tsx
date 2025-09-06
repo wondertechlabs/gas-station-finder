@@ -1,122 +1,166 @@
-import { View, Text, ScrollView } from 'react-native';
-import { SafeAreaView } from 'react-native-safe-area-context';
+import { AppleMaps } from 'expo-maps';
+import { View, Text, TouchableOpacity } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
-
+import { GasStationService } from '~/services/gasStationService';
+import { GasStation } from '~/types/gasStation';
+import { useState, useEffect } from 'react';
 
 export default function MapTab() {
+  const [gasStations, setGasStations] = useState<GasStation[]>([]);
+  const [selectedStation, setSelectedStation] = useState<GasStation | null>(null);
+
+  useEffect(() => {
+    const loadGasStations = async () => {
+      const stations = await GasStationService.findNearby();
+      setGasStations(stations);
+    };
+    loadGasStations();
+  }, []);
+
+  // Managua, Nicaragua coordinates
+  const managuaCenter = {
+    latitude: 12.1364,
+    longitude: -86.2514
+  };
+
+  const markers = gasStations.map((station) => ({
+    id: station.id,
+    coordinates: station.coordinates,
+    title: station.name,
+    subtitle: station.brand || 'Gasolinera',
+    onPress: () => setSelectedStation(station),
+  }));
+
   return (
-    <ScrollView className="flex-1 bg-slate-50" showsVerticalScrollIndicator={false}>
-      <View
-        className="flex-1 justify-center items-center p-8 m-4 rounded-3xl bg-white"
-        style={{
-          shadowColor: '#000',
-          shadowOffset: { width: 0, height: 4 },
-          shadowOpacity: 0.08,
-          shadowRadius: 12,
-          elevation: 4,
+    <View className="flex-1">
+      <AppleMaps.View
+        style={{ flex: 1 }}
+        cameraPosition={{
+          coordinates: managuaCenter,
+          zoom: 13
         }}
-      >
-        <View
-          className="mb-8 p-8 bg-gradient-to-br from-blue-50 to-blue-100 rounded-3xl"
-          style={{
-            shadowColor: '#2563eb',
-            shadowOffset: { width: 0, height: 4 },
-            shadowOpacity: 0.1,
-            shadowRadius: 8,
-            elevation: 3,
-          }}
-        >
-          <Ionicons name="map" size={72} color="#2563eb" />
-        </View>
-        <Text className="text-3xl font-bold text-slate-900 mb-4 text-center">Mapa Interactivo</Text>
-        <Text className="text-base text-slate-600 text-center leading-7 mb-8 max-w-[300px]">
-          El mapa estará disponible próximamente con todas las estaciones de servicio de Managua
-        </Text>
-
-        <View
-          className="bg-gradient-to-r from-emerald-500 to-emerald-600 px-8 py-4 rounded-2xl"
-          style={{
-            shadowColor: '#10b981',
-            shadowOffset: { width: 0, height: 4 },
-            shadowOpacity: 0.3,
-            shadowRadius: 8,
-            elevation: 4,
-          }}
-        >
-          <Text className="text-base font-bold text-white">Próximamente</Text>
-        </View>
-      </View>
-
-      <View
-        className="bg-white m-4 rounded-3xl"
-        style={{
-          shadowColor: '#000',
-          shadowOffset: { width: 0, height: 2 },
-          shadowOpacity: 0.05,
-          shadowRadius: 8,
-          elevation: 3,
+        markers={markers}
+        onMarkerClick={(marker) => {
+          const station = gasStations.find(s => s.id === marker.id);
+          if (station) {
+            setSelectedStation(station);
+          }
         }}
-      >
-        <View className="p-6 pb-4 border-b border-slate-100">
-          <Text className="text-xl font-bold text-slate-900 text-center">Características del Mapa</Text>
-          <Text className="text-sm text-slate-500 text-center mt-2">Funcionalidades que estarán disponibles</Text>
-        </View>
+        onMapClick={() => setSelectedStation(null)}
+      />
 
-        <View className="p-6 pt-6 gap-6">
-          <View className="flex-row items-center gap-5">
-            <View
-              className="w-4 h-4 rounded-full bg-green-500"
-              style={{
-                shadowColor: '#22c55e',
-                shadowOffset: { width: 0, height: 2 },
-                shadowOpacity: 0.3,
-                shadowRadius: 4,
-                elevation: 2,
-              }}
-            />
-            <Text className="text-base text-slate-900 leading-6 font-semibold">Ubicación en tiempo real</Text>
+      {selectedStation && (
+        <View className="absolute bottom-0 left-0 right-0 bg-white rounded-t-3xl shadow-2xl max-h-1/2">
+          {/* Handle Bar */}
+          <View className="w-12 h-1 bg-gray-300 rounded-full self-center mt-3 mb-2" />
+          
+          <View className="px-6 pb-6">
+            {/* Header */}
+            <View className="flex-row justify-between items-start mb-4">
+              <View className="flex-1 mr-4">
+                <Text className="text-xl font-semibold text-gray-900 mb-1">
+                  {selectedStation.name}
+                </Text>
+                <Text className="text-base text-gray-600 font-medium">
+                  {selectedStation.brand}
+                </Text>
+              </View>
+              <View className="flex-row items-center bg-gray-100 px-3 py-2 rounded-full">
+                <View
+                  className={`w-2 h-2 rounded-full mr-2 ${
+                    selectedStation.isOpen ? 'bg-green-500' : 'bg-red-500'
+                  }`}
+                />
+                <Text className="text-sm font-medium text-gray-700">
+                  {selectedStation.isOpen ? 'Abierto' : 'Cerrado'}
+                </Text>
+              </View>
+            </View>
+
+            {/* Address */}
+            <View className="flex-row items-start mb-4">
+              <View className="mt-0.5 mr-2">
+                <Ionicons name="location-outline" size={16} color="#6b7280" />
+              </View>
+              <Text className="text-sm text-gray-600 flex-1 leading-5">
+                {selectedStation.address}
+              </Text>
+            </View>
+
+            {/* Fuel Prices */}
+            <View className="bg-gray-50 rounded-2xl p-4 mb-4">
+              <Text className="text-sm font-semibold text-gray-900 mb-3">Precios de Combustible</Text>
+              <View className="flex-row justify-between">
+                {selectedStation.fuelTypes.map((fuel, index) => (
+                  <View key={index} className="items-center flex-1">
+                    <Text className="text-xs text-gray-500 mb-1 text-center">
+                      {fuel.displayName}
+                    </Text>
+                    <Text className="text-lg font-bold text-gray-900">
+                      C${fuel.price.toFixed(2)}
+                    </Text>
+                  </View>
+                ))}
+              </View>
+            </View>
+
+            {/* Amenities */}
+            <View className="mb-4">
+              <Text className="text-sm font-semibold text-gray-900 mb-2">Servicios</Text>
+              <View className="flex-row flex-wrap">
+                {selectedStation.amenities.map((amenity, index) => (
+                  <View key={index} className="flex-row items-center mr-4 mb-2 bg-green-50 px-3 py-1.5 rounded-full">
+                    <Ionicons name="checkmark-circle" size={14} color="#10b981" />
+                    <Text className="text-xs text-green-700 ml-1 font-medium">
+                      {amenity}
+                    </Text>
+                  </View>
+                ))}
+              </View>
+            </View>
+
+            {/* Footer */}
+            <View className="flex-row justify-between items-center pt-4 border-t border-gray-100">
+              <View className="flex-row items-center">
+                {selectedStation.rating && (
+                  <View className="flex-row items-center mr-4">
+                    <Ionicons name="star" size={16} color="#fbbf24" />
+                    <Text className="text-sm font-semibold text-gray-900 ml-1">
+                      {selectedStation.rating.toFixed(1)}
+                    </Text>
+                  </View>
+                )}
+                {selectedStation.phone && (
+                  <View className="flex-row items-center">
+                    <Ionicons name="call-outline" size={16} color="#6b7280" />
+                    <Text className="text-sm text-gray-600 ml-1">
+                      {selectedStation.phone}
+                    </Text>
+                  </View>
+                )}
+              </View>
+              
+              {/* Action Buttons */}
+              <View className="flex-row space-x-2">
+                <TouchableOpacity className="bg-blue-500 px-4 py-2 rounded-full">
+                  <Text className="text-white text-sm font-medium">Direcciones</Text>
+                </TouchableOpacity>
+                <TouchableOpacity className="bg-gray-100 px-4 py-2 rounded-full">
+                  <Text className="text-gray-700 text-sm font-medium">Llamar</Text>
+                </TouchableOpacity>
+              </View>
+            </View>
           </View>
-          <View className="flex-row items-center gap-5">
-            <View
-              className="w-4 h-4 rounded-full bg-cyan-500"
-              style={{
-                shadowColor: '#06b6d4',
-                shadowOffset: { width: 0, height: 2 },
-                shadowOpacity: 0.3,
-                shadowRadius: 4,
-                elevation: 2,
-              }}
-            />
-            <Text className="text-base text-slate-900 leading-6 font-semibold">Estaciones cercanas</Text>
-          </View>
-          <View className="flex-row items-center gap-5">
-            <View
-              className="w-4 h-4 rounded-full bg-amber-500"
-              style={{
-                shadowColor: '#f59e0b',
-                shadowOffset: { width: 0, height: 2 },
-                shadowOpacity: 0.3,
-                shadowRadius: 4,
-                elevation: 2,
-              }}
-            />
-            <Text className="text-base text-slate-900 leading-6 font-semibold">Precios actualizados</Text>
-          </View>
-          <View className="flex-row items-center gap-5">
-            <View
-              className="w-4 h-4 rounded-full bg-emerald-500"
-              style={{
-                shadowColor: '#10b981',
-                shadowOffset: { width: 0, height: 2 },
-                shadowOpacity: 0.3,
-                shadowRadius: 4,
-                elevation: 2,
-              }}
-            />
-            <Text className="text-base text-slate-900 leading-6 font-semibold">Navegación directa</Text>
-          </View>
+
+          {/* Close Button */}
+          <TouchableOpacity
+            onPress={() => setSelectedStation(null)}
+            className="absolute top-4 right-4 w-8 h-8 bg-gray-100 rounded-full items-center justify-center"
+          >
+            <Ionicons name="close" size={18} color="#6b7280" />
+          </TouchableOpacity>
         </View>
-      </View>
-    </ScrollView>
+      )}
+    </View>
   );
 }
