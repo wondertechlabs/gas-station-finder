@@ -7,7 +7,6 @@ import {
   Switch,
   TouchableOpacity,
 } from 'react-native';
-import { SafeAreaView } from 'react-native-safe-area-context';
 import { Colors } from '~/constants/colors';
 import { NICARAGUA_GAS_BRANDS } from '~/types/gasStation';
 
@@ -31,7 +30,6 @@ export default function FiltersTab() {
     { id: 'regular', name: 'Regular (87)', color: Colors.success },
     { id: 'super', name: 'Super (91)', color: Colors.warning },
     { id: 'diesel', name: 'Diesel', color: Colors.primary },
-    { id: 'glp', name: 'GLP', color: Colors.accent },
   ];
 
   const GAS_BRANDS = NICARAGUA_GAS_BRANDS.map(brand => ({
@@ -59,103 +57,88 @@ export default function FiltersTab() {
   };
 
   return (
-    <SafeAreaView style={styles.container}>
-      <ScrollView style={styles.scrollView}>
-        <View style={styles.headerSection}>
-          <View style={styles.header}>
-            <Text style={styles.headerTitle}>Personaliza tu Búsqueda</Text>
-            <Text style={styles.headerSubtitle}>
-              Encuentra exactamente lo que necesitas
-            </Text>
-          </View>
+    <ScrollView style={styles.scrollView}>
+      <View style={styles.section}>
+        <Text style={styles.sectionTitle}>Tipo de Combustible</Text>
+        <View style={styles.optionsContainer}>
+          {FUEL_TYPES.map((fuel) => {
+            const isSelected = filters.fuelTypes.includes(fuel.id);
+            return (
+              <TouchableOpacity
+                key={fuel.id}
+                style={[
+                  styles.optionButton,
+                  isSelected && { backgroundColor: fuel.color }
+                ]}
+                onPress={() => toggleFuelType(fuel.id)}
+              >
+                <Text style={[
+                  styles.optionText,
+                  isSelected && styles.selectedText
+                ]}>
+                  {fuel.name}
+                </Text>
+              </TouchableOpacity>
+            );
+          })}
+        </View>
+      </View>
+
+      <View style={styles.section}>
+        <Text style={styles.sectionTitle}>Marcas Preferidas</Text>
+        <View style={styles.optionsContainer}>
+          {GAS_BRANDS.map((brand) => {
+            const isSelected = filters.brands.includes(brand.id);
+            return (
+              <TouchableOpacity
+                key={brand.id}
+                style={[
+                  styles.brandButton,
+                  isSelected && styles.selectedBrandButton
+                ]}
+                onPress={() => toggleBrand(brand.id)}
+              >
+                <Text style={[
+                  styles.optionText,
+                  isSelected && styles.selectedText
+                ]}>
+                  {brand.name}
+                </Text>
+              </TouchableOpacity>
+            );
+          })}
+        </View>
+      </View>
+
+      <View style={styles.section}>
+        <Text style={styles.sectionTitle}>Servicios</Text>
+
+        <View style={styles.switchContainer}>
+          <Text style={styles.switchLabel}>Solo 24 horas</Text>
+          <Switch
+            value={filters.is24Hours}
+            onValueChange={(value) => updateFilter('is24Hours', value)}
+            trackColor={{ false: Colors.gray200, true: Colors.primary }}
+            thumbColor={Colors.background}
+          />
         </View>
 
-        <View style={styles.section}>
-          <Text style={styles.sectionTitle}>Tipo de Combustible</Text>
-          <View style={styles.optionsContainer}>
-            {FUEL_TYPES.map((fuel) => {
-              const isSelected = filters.fuelTypes.includes(fuel.id);
-              return (
-                <TouchableOpacity
-                  key={fuel.id}
-                  style={[
-                    styles.optionButton,
-                    isSelected && { backgroundColor: fuel.color }
-                  ]}
-                  onPress={() => toggleFuelType(fuel.id)}
-                >
-                  <Text style={[
-                    styles.optionText,
-                    isSelected && styles.selectedText
-                  ]}>
-                    {fuel.name}
-                  </Text>
-                </TouchableOpacity>
-              );
-            })}
-          </View>
+        <View style={styles.switchContainer}>
+          <Text style={styles.switchLabel}>Con servicios adicionales</Text>
+          <Switch
+            value={filters.hasAmenities}
+            onValueChange={(value) => updateFilter('hasAmenities', value)}
+            trackColor={{ false: Colors.gray200, true: Colors.primary }}
+            thumbColor={Colors.background}
+          />
         </View>
-
-        <View style={styles.section}>
-          <Text style={styles.sectionTitle}>Marcas Preferidas</Text>
-          <View style={styles.optionsContainer}>
-            {GAS_BRANDS.map((brand) => {
-              const isSelected = filters.brands.includes(brand.id);
-              return (
-                <TouchableOpacity
-                  key={brand.id}
-                  style={[
-                    styles.brandButton,
-                    isSelected && styles.selectedBrandButton
-                  ]}
-                  onPress={() => toggleBrand(brand.id)}
-                >
-                  <Text style={[
-                    styles.optionText,
-                    isSelected && styles.selectedText
-                  ]}>
-                    {brand.name}
-                  </Text>
-                </TouchableOpacity>
-              );
-            })}
-          </View>
-        </View>
-
-        <View style={styles.section}>
-          <Text style={styles.sectionTitle}>Servicios</Text>
-          
-          <View style={styles.switchContainer}>
-            <Text style={styles.switchLabel}>Solo 24 horas</Text>
-            <Switch
-              value={filters.is24Hours}
-              onValueChange={(value) => updateFilter('is24Hours', value)}
-              trackColor={{ false: Colors.gray200, true: Colors.primary }}
-              thumbColor={Colors.background}
-            />
-          </View>
-
-          <View style={styles.switchContainer}>
-            <Text style={styles.switchLabel}>Con servicios adicionales</Text>
-            <Switch
-              value={filters.hasAmenities}
-              onValueChange={(value) => updateFilter('hasAmenities', value)}
-              trackColor={{ false: Colors.gray200, true: Colors.primary }}
-              thumbColor={Colors.background}
-            />
-          </View>
-        </View>
-      </ScrollView>
-    </SafeAreaView>
+      </View>
+    </ScrollView>
   );
 }
 
 const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: Colors.backgroundSecondary,
-    paddingTop: 0,
-  },
+
   scrollView: {
     flex: 1,
   },

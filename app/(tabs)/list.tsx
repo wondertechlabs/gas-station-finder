@@ -1,11 +1,11 @@
 import { useState, useEffect } from 'react';
-import { 
-  View, 
-  FlatList, 
-  StyleSheet, 
+import {
+  View,
+  FlatList,
+  StyleSheet,
   RefreshControl,
   ActivityIndicator,
-  Text 
+  Text
 } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { GasStationService } from '~/services/gasStationService';
@@ -58,7 +58,7 @@ export default function ListTab() {
       station.brand?.toLowerCase().includes(searchQuery.toLowerCase()) ||
       station.address.toLowerCase().includes(searchQuery.toLowerCase())
     );
-    
+
     setFilteredStations(filtered);
   };
 
@@ -76,13 +76,13 @@ export default function ListTab() {
   }
 
   return (
-    <SafeAreaView style={styles.container}>
+    <View style={styles.container}>
       <SearchBar
         value={searchQuery}
         onChangeText={setSearchQuery}
         placeholder="Buscar estaciones..."
       />
-      
+
       <FlatList
         data={filteredStations}
         renderItem={renderGasStation}
@@ -95,7 +95,7 @@ export default function ListTab() {
           />
         }
       />
-    </SafeAreaView>
+    </View>
   );
 }
 
@@ -103,8 +103,6 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: Colors.backgroundSecondary,
-  },
-  listContainer: {
     paddingTop: 0,
   },
   loadingContainer: {

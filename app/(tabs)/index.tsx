@@ -1,12 +1,11 @@
-import { View, Text, StyleSheet } from 'react-native';
-import { SafeAreaView } from 'react-native-safe-area-context';
+import { View, Text, StyleSheet, ScrollView } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 import { Colors } from '~/constants/colors';
 
 
 export default function MapTab() {
   return (
-    <SafeAreaView style={styles.container}>
+    <ScrollView style={styles.container}>
       <View style={styles.mapPlaceholder}>
         <View style={styles.iconContainer}>
           <Ionicons name="map" size={64} color={Colors.primary} />
@@ -45,7 +44,7 @@ export default function MapTab() {
           </View>
         </View>
       </View>
-    </SafeAreaView>
+    </ScrollView>
   );
 }
 
