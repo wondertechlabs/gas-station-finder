@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import { useState } from 'react';
 import {
   View,
   Text,
@@ -8,14 +8,14 @@ import {
   TouchableOpacity,
 } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
-import { Colors } from '@/constants/colors';
-import { NICARAGUA_GAS_BRANDS } from '@/types/gasStation';
+import { Colors } from '~/constants/colors';
+import { NICARAGUA_GAS_BRANDS } from '~/types/gasStation';
 
 export default function FiltersTab() {
   const [filters, setFilters] = useState({
     distance: 5,
     fuelTypes: ['regular', 'super', 'diesel'],
-    brands: [],
+    brands: [] as string[],
     is24Hours: false,
     hasAmenities: false,
   });

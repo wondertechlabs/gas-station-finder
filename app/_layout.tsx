@@ -7,7 +7,7 @@ export default function RootLayout() {
     <GestureHandlerRootView style={{ flex: 1 }}>
       <Stack screenOptions={{ headerShown: false }}>
         <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
-        <Stack.Screen name="settings" options={{ headerShown: false, presentation: "formSheet" }} />
+        <Stack.Screen name="settings" options={{ headerShown: true, presentation: "formSheet" }} />
         <Stack.Screen name="+not-found" />
       </Stack>
     </GestureHandlerRootView>

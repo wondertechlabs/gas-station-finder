@@ -1,8 +1,7 @@
-import React from 'react';
 import { View, Text, StyleSheet, TouchableOpacity, Alert } from 'react-native';
-import { GasStation } from '@/types/gasStation';
+import { GasStation } from '~/types/gasStation';
 import { Ionicons } from '@expo/vector-icons';
-import { Colors } from '@/constants/colors';
+import { Colors } from '~/constants/colors';
 
 interface GasStationCardProps {
   station: GasStation;

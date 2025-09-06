@@ -9,8 +9,7 @@ import {
 } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { Ionicons } from '@expo/vector-icons';
-import { ChevronRight } from 'lucide-react-native';
-import { Colors } from '@/constants/colors';
+import { Colors } from '~/constants/colors';
 
 interface SettingItemProps {
   icon: React.ReactNode;
@@ -35,7 +34,7 @@ const SettingItem: React.FC<SettingItemProps> = ({
         {subtitle && <Text style={styles.settingSubtitle}>{subtitle}</Text>}
       </View>
     </View>
-    <ChevronRight size={20} color={Colors.gray400} />
+    <Ionicons name="chevron-forward-outline" size={20} color={Colors.gray400} />
   </TouchableOpacity>
 );
 

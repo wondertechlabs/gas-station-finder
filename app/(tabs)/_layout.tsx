@@ -3,7 +3,7 @@ import { Ionicons } from '@expo/vector-icons';
 import { StatusBar } from 'expo-status-bar';
 import { TouchableOpacity } from 'react-native';
 import { useRouter } from 'expo-router';
-import { Colors } from '@/constants/colors';
+import { Colors } from '~/constants/colors';
 
 export default function TabLayout() {
   const router = useRouter();

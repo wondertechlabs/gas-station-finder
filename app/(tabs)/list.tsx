@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import { useState, useEffect } from 'react';
 import { 
   View, 
   FlatList, 
@@ -8,11 +8,11 @@ import {
   Text 
 } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
-import { GasStationService } from '@/services/gasStationService';
-import { GasStation } from '@/types/gasStation';
-import { GasStationCard } from '@/components/GasStationCard';
-import { SearchBar } from '@/components/SearchBar';
-import { Colors } from '@/constants/colors';
+import { GasStationService } from '~/services/gasStationService';
+import { GasStation } from '~/types/gasStation';
+import { GasStationCard } from '~/components/GasStationCard';
+import { SearchBar } from '~/components/SearchBar';
+import { Colors } from '~/constants/colors';
 
 export default function ListTab() {
   const [gasStations, setGasStations] = useState<GasStation[]>([]);

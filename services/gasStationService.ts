@@ -1,4 +1,4 @@
-import { GasStation, FuelType } from '@/types/gasStation';
+import { GasStation, FuelType } from '~/types/gasStation';
 
 class GasStationServiceClass {
   getMockGasStations(): GasStation[] {
