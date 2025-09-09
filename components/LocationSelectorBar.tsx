@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useCallback } from 'react';
+import { useState, useCallback } from 'react';
 import { 
   View, 
   Text, 
@@ -11,16 +11,7 @@ import {
 import { Ionicons } from '@expo/vector-icons';
 import * as Location from 'expo-location';
 import { useLocationStore } from '~/stores/locationStore';
-
-interface LocationResult {
-  id: string;
-  name: string;
-  address: string;
-  coordinates: {
-    latitude: number;
-    longitude: number;
-  };
-}
+import { LocationResult, NICARAGUA_DEPARTMENTS } from '~/types/location';
 
 export const LocationSelectorBar = () => {
   const [showDropdown, setShowDropdown] = useState(false);
@@ -36,57 +27,8 @@ export const LocationSelectorBar = () => {
     clearSelectedLocation 
   } = useLocationStore();
 
-  // Ciudades populares de Nicaragua
-  const popularCities: LocationResult[] = [
-    {
-      id: 'managua',
-      name: 'Managua',
-      address: 'Managua, Nicaragua',
-      coordinates: { latitude: 12.1364, longitude: -86.2514 }
-    },
-    {
-      id: 'leon',
-      name: 'León',
-      address: 'León, Nicaragua',
-      coordinates: { latitude: 12.4346, longitude: -86.8784 }
-    },
-    {
-      id: 'granada',
-      name: 'Granada',
-      address: 'Granada, Nicaragua',
-      coordinates: { latitude: 11.9345, longitude: -85.9560 }
-    },
-    {
-      id: 'masaya',
-      name: 'Masaya',
-      address: 'Masaya, Nicaragua',
-      coordinates: { latitude: 11.9742, longitude: -86.0958 }
-    },
-    {
-      id: 'matagalpa',
-      name: 'Matagalpa',
-      address: 'Matagalpa, Nicaragua',
-      coordinates: { latitude: 12.9266, longitude: -85.9175 }
-    },
-    {
-      id: 'esteli',
-      name: 'Estelí',
-      address: 'Estelí, Nicaragua',
-      coordinates: { latitude: 13.0929, longitude: -86.3540 }
-    },
-    {
-      id: 'jinotega',
-      name: 'Jinotega',
-      address: 'Jinotega, Nicaragua',
-      coordinates: { latitude: 13.0907, longitude: -85.9994 }
-    },
-    {
-      id: 'chinandega',
-      name: 'Chinandega',
-      address: 'Chinandega, Nicaragua',
-      coordinates: { latitude: 12.6244, longitude: -87.1306 }
-    }
-  ];
+  // Usar la lista centralizada de departamentos de Nicaragua
+  const popularCities = NICARAGUA_DEPARTMENTS;
 
   // Debounced search function
   const debouncedSearch = useCallback(

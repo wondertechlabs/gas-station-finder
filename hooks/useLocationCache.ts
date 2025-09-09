@@ -1,67 +1,6 @@
 import { useState, useCallback } from 'react';
 import * as Location from 'expo-location';
-
-interface LocationResult {
-  id: string;
-  name: string;
-  address: string;
-  coordinates: {
-    latitude: number;
-    longitude: number;
-  };
-}
-
-// Popular cities cache to avoid geocoding API calls
-const POPULAR_CITIES: LocationResult[] = [
-  {
-    id: 'managua',
-    name: 'Managua',
-    address: 'Managua, Nicaragua',
-    coordinates: { latitude: 12.1364, longitude: -86.2514 }
-  },
-  {
-    id: 'leon',
-    name: 'León',
-    address: 'León, Nicaragua',
-    coordinates: { latitude: 12.4346, longitude: -86.8784 }
-  },
-  {
-    id: 'granada',
-    name: 'Granada',
-    address: 'Granada, Nicaragua',
-    coordinates: { latitude: 11.9345, longitude: -85.9560 }
-  },
-  {
-    id: 'masaya',
-    name: 'Masaya',
-    address: 'Masaya, Nicaragua',
-    coordinates: { latitude: 11.9742, longitude: -86.0958 }
-  },
-  {
-    id: 'matagalpa',
-    name: 'Matagalpa',
-    address: 'Matagalpa, Nicaragua',
-    coordinates: { latitude: 12.9266, longitude: -85.9175 }
-  },
-  {
-    id: 'esteli',
-    name: 'Estelí',
-    address: 'Estelí, Nicaragua',
-    coordinates: { latitude: 13.0929, longitude: -86.3540 }
-  },
-  {
-    id: 'jinotega',
-    name: 'Jinotega',
-    address: 'Jinotega, Nicaragua',
-    coordinates: { latitude: 13.0907, longitude: -85.9994 }
-  },
-  {
-    id: 'chinandega',
-    name: 'Chinandega',
-    address: 'Chinandega, Nicaragua',
-    coordinates: { latitude: 12.6244, longitude: -87.1306 }
-  }
-];
+import { LocationResult, NICARAGUA_DEPARTMENTS } from '~/types/location';
 
 export const useLocationCache = () => {
   const [searchResults, setSearchResults] = useState<LocationResult[]>([]);
@@ -76,7 +15,7 @@ export const useLocationCache = () => {
     
     try {
       // First, search in popular cities (no API cost)
-      const filteredCities = POPULAR_CITIES.filter(city =>
+      const filteredCities = NICARAGUA_DEPARTMENTS.filter(city =>
         city.name.toLowerCase().includes(query.toLowerCase()) ||
         city.address.toLowerCase().includes(query.toLowerCase())
       );
@@ -109,7 +48,7 @@ export const useLocationCache = () => {
     } catch (error) {
       console.log('Error searching location:', error);
       // Fallback to popular cities if geocoding fails
-      const filteredCities = POPULAR_CITIES.filter(city =>
+      const filteredCities = NICARAGUA_DEPARTMENTS.filter(city =>
         city.name.toLowerCase().includes(query.toLowerCase()) ||
         city.address.toLowerCase().includes(query.toLowerCase())
       );
@@ -121,7 +60,7 @@ export const useLocationCache = () => {
   }, []);
 
   const getPopularCities = useCallback(() => {
-    return POPULAR_CITIES;
+    return NICARAGUA_DEPARTMENTS;
   }, []);
 
   return {
