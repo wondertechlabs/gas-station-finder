@@ -1,4 +1,3 @@
-import { AppleMaps } from 'expo-maps';
 import { View, Text, TouchableOpacity, Alert } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 import { GasStationService } from '~/services/gasStationService';
@@ -8,8 +7,9 @@ import * as Linking from 'expo-linking';
 import { SearchBar } from '~/components/SearchBar';
 import { FilterModal } from '~/components/FilterModal';
 import { useGasStationFilters } from '~/hooks/useGasStationFilters';
+import MapView, { Marker, PROVIDER_GOOGLE } from 'react-native-maps';
 
-export default function MapTab() {
+export default function GasStationMap() {
   const [gasStations, setGasStations] = useState<GasStation[]>([]);
   const [selectedStation, setSelectedStation] = useState<GasStation | null>(
     null,
@@ -41,20 +41,6 @@ export default function MapTab() {
     loadGasStations();
   }, []);
 
-  // Coordenadas más precisas de Managua, Nicaragua
-  const managuaCenter = {
-    latitude: 12.1364,
-    longitude: -86.2514,
-  };
-
-  const handleMarkerPress = useCallback((station: GasStation) => {
-    setSelectedStation(station);
-  }, []);
-
-  const handleMapPress = useCallback(() => {
-    setSelectedStation(null);
-  }, []);
-
   const handleDirections = useCallback((station: GasStation) => {
     const { latitude, longitude } = station.coordinates;
     const url = `https://maps.apple.com/?daddr=${latitude},${longitude}`;
@@ -70,13 +56,21 @@ export default function MapTab() {
     setShowFilters(true);
   }, []);
 
-  const markers = filteredStations.map((station) => ({
-    id: station.id,
-    coordinates: station.coordinates,
-    title: station.name,
-    subtitle: station.brand || 'Gasolinera',
-    onPress: () => handleMarkerPress(station),
-  }));
+  const handleMarkerPress = useCallback((station: GasStation) => {
+    setSelectedStation(station);
+  }, []);
+
+  const handleMapPress = useCallback(() => {
+    setSelectedStation(null);
+  }, []);
+
+  // Coordenadas de Managua, Nicaragua
+  const managuaRegion = {
+    latitude: 12.1364,
+    longitude: -86.2514,
+    latitudeDelta: 0.1,
+    longitudeDelta: 0.1,
+  };
 
   if (isLoading) {
     return (
@@ -98,22 +92,28 @@ export default function MapTab() {
 
   return (
     <View className="flex-1">
-      <AppleMaps.View
+      <MapView
         style={{ flex: 1 }}
-        cameraPosition={{
-          coordinates: managuaCenter,
-          zoom: 13,
-        }}
-        markers={markers}
-        onMarkerClick={(marker) => {
-          const station = gasStations.find((s) => s.id === marker.id);
-          if (station) {
-            handleMarkerPress(station);
-          }
-        }}
-        onMapClick={handleMapPress}
-      />
+        provider={PROVIDER_GOOGLE}
+        initialRegion={managuaRegion}
+        onPress={handleMapPress}
+        showsUserLocation={true}
+        showsMyLocationButton={true}
+        showsCompass={true}
+        showsScale={true}
+      >
+        {filteredStations.map((station) => (
+          <Marker
+            key={station.id}
+            coordinate={station.coordinates}
+            title={station.name}
+            description={station.brand || 'Gasolinera'}
+            onPress={() => handleMarkerPress(station)}
+          />
+        ))}
+      </MapView>
 
+      {/* Search Bar */}
       <View className="absolute top-12 left-0 right-0">
         <SearchBar
           onSearch={handleSearch}
@@ -133,8 +133,8 @@ export default function MapTab() {
       </View>
 
       {/* Header con información de gasolineras */}
-      <View className="absolute top-32 left-0 right-0">
-        <View className="bg-white rounded-2xl shadow-lg p-4 mx-4">
+      <View className="absolute top-32 left-4 right-4">
+        <View className="bg-white rounded-2xl shadow-lg p-4">
           <View className="flex-row items-center justify-between">
             <View>
               <Text className="text-lg font-bold text-gray-900">
@@ -154,10 +154,14 @@ export default function MapTab() {
         </View>
       </View>
 
+      {/* Detalles de gasolinera seleccionada */}
       {selectedStation && (
         <View className="absolute bottom-0 left-0 right-0 bg-white rounded-t-3xl shadow-2xl max-h-1/2">
+          {/* Handle Bar */}
           <View className="w-12 h-1 bg-gray-300 rounded-full self-center mt-3 mb-2" />
+
           <View className="px-6 pb-6">
+            {/* Header */}
             <View className="flex-row justify-between items-start mb-4">
               <View className="flex-1 mr-4">
                 <Text className="text-xl font-semibold text-gray-900 mb-1">
@@ -179,6 +183,7 @@ export default function MapTab() {
               </View>
             </View>
 
+            {/* Address */}
             <View className="flex-row items-start mb-4">
               <View className="mt-0.5 mr-2">
                 <Ionicons name="location-outline" size={16} color="#6b7280" />
@@ -188,6 +193,7 @@ export default function MapTab() {
               </Text>
             </View>
 
+            {/* Fuel Prices */}
             <View className="bg-gray-50 rounded-2xl p-4 mb-4">
               <Text className="text-sm font-semibold text-gray-900 mb-3">
                 Precios de Combustible

@@ -78,8 +78,8 @@ export default function ListTab() {
   return (
     <View className="flex-1 bg-slate-50">
       <SearchBar
-        value={searchQuery}
-        onChangeText={setSearchQuery}
+        onSearch={setSearchQuery}
+        onFilterPress={() => {}}
         placeholder="Buscar estaciones..."
       />
 

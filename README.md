@@ -4,7 +4,7 @@ Una aplicación móvil desarrollada con React Native y Expo para encontrar gasol
 
 ## 🚀 Características
 
-- **Mapa interactivo** con markers de gasolineras
+- **Lista de gasolineras** con información detallada
 - **Búsqueda en tiempo real** por nombre, marca o dirección
 - **Filtros avanzados** por marca, servicios, estado y calificación
 - **Información detallada** de cada gasolinera
@@ -17,17 +17,17 @@ Una aplicación móvil desarrollada con React Native y Expo para encontrar gasol
 - **React Native** con Expo
 - **TypeScript** para type safety
 - **NativeWind** para estilos
-- **Expo Maps** para mapas
+- **FlatList** para listas optimizadas
 - **Zustand** para estado global
 - **TanStack Query** para manejo de datos
 
 ## 📱 Funcionalidades
 
-### Mapa Principal
-- Vista de mapa centrada en Managua
-- Markers personalizados para cada gasolinera
+### Pantalla Principal
+- Lista de gasolineras con tarjetas informativas
 - Información de estado (abierto/cerrado, 24 horas)
 - Contador de gasolineras disponibles
+- Diseño optimizado para móviles
 
 ### Búsqueda y Filtros
 - Búsqueda por texto en tiempo real
@@ -75,9 +75,8 @@ bun run android
 ```
 ├── app/                    # Pantallas con Expo Router
 │   ├── (tabs)/            # Navegación por tabs
-│   │   ├── index.tsx      # Pantalla principal del mapa
-│   │   ├── list.tsx       # Lista de gasolineras
-│   │   └── filters.tsx    # Pantalla de filtros
+│   │   ├── index.tsx      # Pantalla principal con lista
+│   │   └── list.tsx       # Lista adicional de gasolineras
 ├── components/            # Componentes reutilizables
 │   ├── GasStationCard.tsx # Tarjeta de gasolinera
 │   ├── SearchBar.tsx      # Barra de búsqueda

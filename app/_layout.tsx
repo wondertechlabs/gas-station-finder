@@ -1,9 +1,39 @@
 import 'global.css';
 
-import { Stack } from 'expo-router';
+import { Stack, SplashScreen } from 'expo-router';
 import { GestureHandlerRootView } from 'react-native-gesture-handler';
+import { useEffect } from 'react';
+import { useFonts } from 'expo-font';
+
+export const unstable_settings = {
+  initialRouteName: '(tabs)',
+};
 
 export default function RootLayout() {
+  const [loaded, error] = useFonts({
+    'Avenir-Black': require('../assets/fonts/Avenir-Black.otf'),
+    'Avenir-Light': require('../assets/fonts/Avenir-Light.otf'),
+    'Avenir-Medium': require('../assets/fonts/Avenir-Medium.otf'),
+  });
+
+  useEffect(() => {
+    if (error) throw error;
+  }, [error]);
+
+  useEffect(() => {
+    if (loaded) {
+      SplashScreen.hideAsync();
+    }
+  }, [loaded]);
+
+  if (!loaded) {
+    return null;
+  }
+
+  return <RootLayoutNav />;
+}
+
+function RootLayoutNav() {
   return (
     <GestureHandlerRootView style={{ flex: 1 }}>
       <Stack screenOptions={{ headerShown: false }}>
