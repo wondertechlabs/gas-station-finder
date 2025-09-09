@@ -119,27 +119,9 @@ export const useLocationStore = create<LocationStore>((set, get) => ({
       };
 
       set({ userLocation: coords });
-
-      // Get address from coordinates
-      try {
-        const addressResponse = await Location.reverseGeocodeAsync(coords);
-        if (addressResponse.length > 0) {
-          const address = addressResponse[0];
-          const addressString = [
-            address.street,
-            address.district,
-            address.city,
-            address.region,
-            address.country,
-          ]
-            .filter(Boolean)
-            .join(', ');
-          set({ address: addressString });
-        }
-      } catch (addressError) {
-        console.log('Error getting address:', addressError);
-        set({ address: 'Ubicación actual' });
-      }
+      
+      // Set a simple address without reverse geocoding to save API costs
+      set({ address: 'Ubicación actual' });
     } catch {
       set({ error: 'Error al obtener la ubicación actual' });
     } finally {

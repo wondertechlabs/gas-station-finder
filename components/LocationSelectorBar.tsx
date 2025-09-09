@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import { 
   View, 
   Text, 
@@ -88,6 +88,20 @@ export const LocationSelectorBar = () => {
     }
   ];
 
+  // Debounced search function
+  const debouncedSearch = useCallback(
+    (() => {
+      let timeoutId: NodeJS.Timeout;
+      return (query: string) => {
+        clearTimeout(timeoutId);
+        timeoutId = setTimeout(() => {
+          searchLocation(query);
+        }, 300); // 300ms debounce
+      };
+    })(),
+    []
+  );
+
   const searchLocation = async (query: string) => {
     if (!query.trim()) {
       setSearchResults([]);
@@ -96,28 +110,42 @@ export const LocationSelectorBar = () => {
 
     setIsSearching(true);
     try {
+      // First, search in popular cities (no API cost)
       const filteredCities = popularCities.filter(city =>
         city.name.toLowerCase().includes(query.toLowerCase()) ||
         city.address.toLowerCase().includes(query.toLowerCase())
       );
 
-      if (filteredCities.length === 0) {
-        const geocodeResults = await Location.geocodeAsync(query);
-        const results: LocationResult[] = geocodeResults.map((result, index) => ({
-          id: `geocode_${index}`,
-          name: query,
-          address: `${query}, Nicaragua`,
-          coordinates: {
-            latitude: result.latitude,
-            longitude: result.longitude
-          }
-        }));
-        setSearchResults(results);
-      } else {
+      if (filteredCities.length > 0) {
+        // Use popular cities results (no API cost)
         setSearchResults(filteredCities);
+      } else {
+        // Only use geocoding as last resort for very specific searches
+        // Add minimum query length to reduce unnecessary API calls
+        if (query.length >= 3) {
+          const geocodeResults = await Location.geocodeAsync(query);
+          const results: LocationResult[] = geocodeResults.map((result, index) => ({
+            id: `geocode_${index}`,
+            name: query,
+            address: `${query}, Nicaragua`,
+            coordinates: {
+              latitude: result.latitude,
+              longitude: result.longitude
+            }
+          }));
+          setSearchResults(results);
+        } else {
+          setSearchResults([]);
+        }
       }
     } catch (error) {
       console.log('Error searching location:', error);
+      // Fallback to popular cities if geocoding fails
+      const filteredCities = popularCities.filter(city =>
+        city.name.toLowerCase().includes(query.toLowerCase()) ||
+        city.address.toLowerCase().includes(query.toLowerCase())
+      );
+      setSearchResults(filteredCities);
     } finally {
       setIsSearching(false);
     }
@@ -211,7 +239,7 @@ export const LocationSelectorBar = () => {
                 value={searchQuery}
                 onChangeText={(text: string) => {
                   setSearchQuery(text);
-                  searchLocation(text);
+                  debouncedSearch(text);
                 }}
                 autoFocus
               />

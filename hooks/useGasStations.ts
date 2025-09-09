@@ -7,9 +7,14 @@ import { MAP_CONFIG, QUERY_CONFIG } from '~/config/constants';
 
 const GAS_STATION_QUERY_KEYS = {
   all: ['gasStations'] as const,
-  nearby: (lat: number, lng: number) =>
-    [...GAS_STATION_QUERY_KEYS.all, 'nearby', lat, lng] as const,
+  nearby: (lat: number, lng: number, radius: number) =>
+    [...GAS_STATION_QUERY_KEYS.all, 'nearby', lat, lng, radius] as const,
 } as const;
+
+// Helper function to round coordinates for better caching
+const roundCoordinate = (coord: number, precision: number = 3) => {
+  return Math.round(coord * Math.pow(10, precision)) / Math.pow(10, precision);
+};
 
 export const useGasStations = () => {
   const { userLocation, selectedLocation } = useLocationStore();
@@ -18,16 +23,23 @@ export const useGasStations = () => {
   // Usar ubicación seleccionada si existe, sino usar ubicación GPS
   const currentLocation = selectedLocation || userLocation;
 
+  // Round coordinates to improve cache hit rate (reduce API calls for nearby locations)
+  const roundedLocation = currentLocation ? {
+    latitude: roundCoordinate(currentLocation.latitude),
+    longitude: roundCoordinate(currentLocation.longitude),
+  } : null;
+
   const {
     data: gasStations = [],
     isLoading,
     error,
     refetch,
   } = useQuery({
-    queryKey: currentLocation
+    queryKey: roundedLocation
       ? GAS_STATION_QUERY_KEYS.nearby(
-          currentLocation.latitude,
-          currentLocation.longitude,
+          roundedLocation.latitude,
+          roundedLocation.longitude,
+          MAP_CONFIG.DEFAULT_RADIUS,
         )
       : GAS_STATION_QUERY_KEYS.all,
     queryFn: async () => {
@@ -45,6 +57,8 @@ export const useGasStations = () => {
     gcTime: QUERY_CONFIG.GC_TIME,
     retry: QUERY_CONFIG.RETRY_ATTEMPTS,
     retryDelay: QUERY_CONFIG.RETRY_DELAY,
+    // Add network mode to prevent unnecessary requests when offline
+    networkMode: 'online',
   });
 
   const filteredStations = useMemo(() => {

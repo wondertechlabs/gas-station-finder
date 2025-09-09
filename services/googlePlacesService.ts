@@ -58,14 +58,25 @@ export class GooglePlacesService {
       const url = `${this.BASE_URL}/nearbysearch/json?location=${latitude},${longitude}&radius=${radius}&type=gas_station&key=${this.API_KEY}`;
 
       const response = await fetch(url);
+      
+      if (!response.ok) {
+        throw new Error(`HTTP error: ${response.status}`);
+      }
+      
       const data: GooglePlacesResponse = await response.json();
 
+      if (data.status === 'ZERO_RESULTS') {
+        // Return empty array instead of throwing error for no results
+        return [];
+      }
+      
       if (data.status !== 'OK') {
         throw new Error(`Google Places API error: ${data.status}`);
       }
 
       return this.transformGooglePlacesToGasStations(data.results);
-    } catch {
+    } catch (error) {
+      console.error('Google Places API error:', error);
       throw new Error('Error fetching gas stations from Google Places');
     }
   }

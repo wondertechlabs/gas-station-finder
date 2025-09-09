@@ -9,11 +9,11 @@ export const MAP_CONFIG = {
 } as const;
 
 export const QUERY_CONFIG = {
-  STALE_TIME: 5 * 60 * 1000, // 5 minutes
-  GC_TIME: 10 * 60 * 1000, // 10 minutes
-  RETRY_ATTEMPTS: 3,
+  STALE_TIME: 30 * 60 * 1000, // 30 minutes - Gas stations don't change frequently
+  GC_TIME: 2 * 60 * 60 * 1000, // 2 hours - Keep in cache longer
+  RETRY_ATTEMPTS: 2, // Reduce retry attempts
   RETRY_DELAY: (attemptIndex: number) =>
-    Math.min(1000 * 2 ** attemptIndex, 30000),
+    Math.min(1000 * 2 ** attemptIndex, 10000), // Max 10 seconds
 } as const;
 
 export const COLORS = {
