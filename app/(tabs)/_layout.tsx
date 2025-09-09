@@ -47,15 +47,6 @@ export default function TabLayout() {
           ),
         }}
       />
-      <Tabs.Screen
-        name="filters"
-        options={{
-          title: 'Filtros',
-          tabBarIcon: ({ size, color }) => (
-            <Ionicons name="filter" size={size} color={color} />
-          ),
-        }}
-      />
     </Tabs>
   );
 }

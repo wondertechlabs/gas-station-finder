@@ -7,7 +7,6 @@ import { useState, useEffect, useCallback } from 'react';
 import * as Linking from 'expo-linking';
 import { SearchBar } from '~/components/SearchBar';
 import { FilterModal } from '~/components/FilterModal';
-import { GasStationStats } from '~/components/GasStationStats';
 import { useGasStationFilters } from '~/hooks/useGasStationFilters';
 
 export default function MapTab() {
@@ -115,7 +114,6 @@ export default function MapTab() {
         onMapClick={handleMapPress}
       />
 
-      {/* Search Bar */}
       <View className="absolute top-12 left-0 right-0">
         <SearchBar
           onSearch={handleSearch}
@@ -154,18 +152,12 @@ export default function MapTab() {
             </View>
           </View>
         </View>
-
-        {/* Estadísticas */}
-        <GasStationStats gasStations={filteredStations} />
       </View>
 
       {selectedStation && (
         <View className="absolute bottom-0 left-0 right-0 bg-white rounded-t-3xl shadow-2xl max-h-1/2">
-          {/* Handle Bar */}
           <View className="w-12 h-1 bg-gray-300 rounded-full self-center mt-3 mb-2" />
-
           <View className="px-6 pb-6">
-            {/* Header */}
             <View className="flex-row justify-between items-start mb-4">
               <View className="flex-1 mr-4">
                 <Text className="text-xl font-semibold text-gray-900 mb-1">
@@ -187,7 +179,6 @@ export default function MapTab() {
               </View>
             </View>
 
-            {/* Address */}
             <View className="flex-row items-start mb-4">
               <View className="mt-0.5 mr-2">
                 <Ionicons name="location-outline" size={16} color="#6b7280" />
@@ -197,7 +188,6 @@ export default function MapTab() {
               </Text>
             </View>
 
-            {/* Fuel Prices */}
             <View className="bg-gray-50 rounded-2xl p-4 mb-4">
               <Text className="text-sm font-semibold text-gray-900 mb-3">
                 Precios de Combustible
