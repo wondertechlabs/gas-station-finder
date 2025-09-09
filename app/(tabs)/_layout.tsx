@@ -26,7 +26,8 @@ export default function TabLayout() {
         tabBarLabelStyle: {
           fontSize: 12,
         },
-      }}>
+      }}
+    >
       <Tabs.Screen
         name="index"
         options={{

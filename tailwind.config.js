@@ -7,17 +7,11 @@ module.exports = {
     extend: {
       colors: {},
 
-      spacing: {
+      spacing: {},
 
-      },
+      borderRadius: {},
 
-      borderRadius: {
-
-      },
-
-      fontSize: {
-
-      },
+      fontSize: {},
 
       fontWeight: {
         thin: '100',
@@ -31,19 +25,11 @@ module.exports = {
         black: '900',
       },
 
-      boxShadow: {
+      boxShadow: {},
 
-      },
+      animation: {},
 
-      animation: {
-
-      },
-
-      keyframes: {
-
-      },
-
-
+      keyframes: {},
     },
   },
   plugins: [],

@@ -1,6 +1,5 @@
-import { TouchableOpacity, View } from "react-native";
-import { Ionicons } from "@expo/vector-icons";
-import { Text } from "react-native";
+import { TouchableOpacity, View, Text } from 'react-native';
+import { Ionicons } from '@expo/vector-icons';
 
 interface SettingItemProps {
   icon: React.ReactNode;
@@ -13,10 +12,10 @@ export const SettingItem: React.FC<SettingItemProps> = ({
   icon,
   title,
   subtitle,
-  onPress
+  onPress,
 }) => (
-  <TouchableOpacity 
-    className="flex-row items-center justify-between px-6 py-6 active:bg-slate-50/50" 
+  <TouchableOpacity
+    className="flex-row items-center justify-between px-6 py-6 active:bg-slate-50/50"
     onPress={onPress}
     style={{
       shadowColor: 'transparent',
@@ -24,7 +23,7 @@ export const SettingItem: React.FC<SettingItemProps> = ({
     }}
   >
     <View className="flex-row items-center flex-1">
-      <View 
+      <View
         className="w-14 h-14 rounded-3xl items-center justify-center mr-6"
         style={{
           backgroundColor: '#f8fafc',
@@ -38,8 +37,14 @@ export const SettingItem: React.FC<SettingItemProps> = ({
         {icon}
       </View>
       <View className="flex-1">
-        <Text className="text-lg font-bold text-slate-900 leading-6">{title}</Text>
-        {subtitle && <Text className="text-sm text-slate-500 mt-1.5 leading-5 font-medium">{subtitle}</Text>}
+        <Text className="text-lg font-bold text-slate-900 leading-6">
+          {title}
+        </Text>
+        {subtitle && (
+          <Text className="text-sm text-slate-500 mt-1.5 leading-5 font-medium">
+            {subtitle}
+          </Text>
+        )}
       </View>
     </View>
     <View className="ml-3">

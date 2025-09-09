@@ -1,4 +1,4 @@
-import { GasStation, FuelType } from '~/types/gasStation';
+import { GasStation } from '~/types/gasStation';
 
 class GasStationServiceClass {
   getMockGasStations(): GasStation[] {
@@ -10,9 +10,9 @@ class GasStationServiceClass {
         address: 'Carretera Masaya, Km 7.5, Managua',
         coordinates: { latitude: 12.1234, longitude: -86.2456 },
         fuelTypes: [
-          { type: 'regular', price: 35.50, displayName: 'Regular (87)' },
-          { type: 'super', price: 37.80, displayName: 'Súper (91)' },
-          { type: 'diesel', price: 33.20, displayName: 'Diesel' },
+          { type: 'regular', price: 35.5, displayName: 'Regular (87)' },
+          { type: 'super', price: 37.8, displayName: 'Súper (91)' },
+          { type: 'diesel', price: 33.2, displayName: 'Diesel' },
         ],
         amenities: ['Tienda', 'Servicios', 'ATM'],
         isOpen: true,
@@ -27,9 +27,9 @@ class GasStationServiceClass {
         address: 'Plaza Inter, Carretera Sur, Managua',
         coordinates: { latitude: 12.1156, longitude: -86.2398 },
         fuelTypes: [
-          { type: 'regular', price: 35.30, displayName: 'Regular (87)' },
-          { type: 'super', price: 37.60, displayName: 'Súper (91)' },
-          { type: 'diesel', price: 33.00, displayName: 'Diesel' },
+          { type: 'regular', price: 35.3, displayName: 'Regular (87)' },
+          { type: 'super', price: 37.6, displayName: 'Súper (91)' },
+          { type: 'diesel', price: 33.0, displayName: 'Diesel' },
         ],
         amenities: ['Tienda', 'Lavado'],
         isOpen: true,
@@ -44,9 +44,9 @@ class GasStationServiceClass {
         address: 'Carretera Norte, Km 5, Managua',
         coordinates: { latitude: 12.1456, longitude: -86.2534 },
         fuelTypes: [
-          { type: 'regular', price: 35.70, displayName: 'Regular (87)' },
-          { type: 'super', price: 38.00, displayName: 'Súper (91)' },
-          { type: 'diesel', price: 33.40, displayName: 'Diesel' },
+          { type: 'regular', price: 35.7, displayName: 'Regular (87)' },
+          { type: 'super', price: 38.0, displayName: 'Súper (91)' },
+          { type: 'diesel', price: 33.4, displayName: 'Diesel' },
         ],
         amenities: ['Tienda', 'Servicios'],
         isOpen: false,
@@ -61,9 +61,9 @@ class GasStationServiceClass {
         address: 'Frente a Metrocentro, Managua',
         coordinates: { latitude: 12.1364, longitude: -86.2514 },
         fuelTypes: [
-          { type: 'regular', price: 35.40, displayName: 'Regular (87)' },
-          { type: 'super', price: 37.70, displayName: 'Súper (91)' },
-          { type: 'diesel', price: 33.10, displayName: 'Diesel' },
+          { type: 'regular', price: 35.4, displayName: 'Regular (87)' },
+          { type: 'super', price: 37.7, displayName: 'Súper (91)' },
+          { type: 'diesel', price: 33.1, displayName: 'Diesel' },
         ],
         amenities: ['Tienda', 'Servicios', 'ATM', 'Lavado'],
         isOpen: true,
@@ -78,9 +78,9 @@ class GasStationServiceClass {
         address: 'Carretera Norte, Km 3, Managua',
         coordinates: { latitude: 12.1523, longitude: -86.2489 },
         fuelTypes: [
-          { type: 'regular', price: 35.60, displayName: 'Regular (87)' },
-          { type: 'super', price: 37.90, displayName: 'Súper (91)' },
-          { type: 'diesel', price: 33.30, displayName: 'Diesel' },
+          { type: 'regular', price: 35.6, displayName: 'Regular (87)' },
+          { type: 'super', price: 37.9, displayName: 'Súper (91)' },
+          { type: 'diesel', price: 33.3, displayName: 'Diesel' },
         ],
         amenities: ['Tienda', 'Servicios'],
         isOpen: true,
@@ -139,12 +139,80 @@ class GasStationServiceClass {
         rating: 4.4,
         phone: '+505 2277-8899',
       },
+      {
+        id: '9',
+        name: 'Petronic Mercado Oriental',
+        brand: 'Petronic',
+        address: 'Mercado Oriental, Managua',
+        coordinates: { latitude: 12.1089, longitude: -86.2678 },
+        fuelTypes: [
+          { type: 'regular', price: 35.25, displayName: 'Regular (87)' },
+          { type: 'super', price: 37.55, displayName: 'Súper (91)' },
+          { type: 'diesel', price: 32.95, displayName: 'Diesel' },
+        ],
+        amenities: ['Tienda', 'Servicios'],
+        isOpen: true,
+        is24Hours: false,
+        rating: 3.7,
+        phone: '+505 2244-1122',
+      },
+      {
+        id: '10',
+        name: 'UNO Gas Zona Rosa',
+        brand: 'UNO Gas',
+        address: 'Zona Rosa, Managua',
+        coordinates: { latitude: 12.1345, longitude: -86.289 },
+        fuelTypes: [
+          { type: 'regular', price: 35.65, displayName: 'Regular (87)' },
+          { type: 'super', price: 37.95, displayName: 'Súper (91)' },
+          { type: 'diesel', price: 33.35, displayName: 'Diesel' },
+        ],
+        amenities: ['Tienda', 'Servicios', 'ATM', 'Lavado'],
+        isOpen: true,
+        is24Hours: true,
+        rating: 4.1,
+        phone: '+505 2255-3344',
+      },
+      {
+        id: '11',
+        name: 'Puma Carretera Sur',
+        brand: 'Puma',
+        address: 'Carretera Sur, Km 8, Managua',
+        coordinates: { latitude: 12.0987, longitude: -86.2234 },
+        fuelTypes: [
+          { type: 'regular', price: 35.4, displayName: 'Regular (87)' },
+          { type: 'super', price: 37.7, displayName: 'Súper (91)' },
+          { type: 'diesel', price: 33.1, displayName: 'Diesel' },
+        ],
+        amenities: ['Tienda', 'Servicios'],
+        isOpen: true,
+        is24Hours: false,
+        rating: 3.9,
+        phone: '+505 2266-7788',
+      },
+      {
+        id: '12',
+        name: 'Texaco Las Colinas',
+        brand: 'Texaco',
+        address: 'Las Colinas, Managua',
+        coordinates: { latitude: 12.1456, longitude: -86.2756 },
+        fuelTypes: [
+          { type: 'regular', price: 35.45, displayName: 'Regular (87)' },
+          { type: 'super', price: 37.75, displayName: 'Súper (91)' },
+          { type: 'diesel', price: 33.15, displayName: 'Diesel' },
+        ],
+        amenities: ['Tienda', 'Servicios', 'ATM'],
+        isOpen: true,
+        is24Hours: true,
+        rating: 4.0,
+        phone: '+505 2277-5566',
+      },
     ];
   }
 
   async findNearby(): Promise<GasStation[]> {
     // Simulate API delay
-    await new Promise(resolve => setTimeout(resolve, 1000));
+    await new Promise((resolve) => setTimeout(resolve, 1000));
     return this.getMockGasStations();
   }
 }

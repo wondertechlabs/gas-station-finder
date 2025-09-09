@@ -1,10 +1,10 @@
 import { useState, useEffect } from 'react';
-import { 
-  View, 
-  FlatList, 
+import {
+  View,
+  FlatList,
   RefreshControl,
   ActivityIndicator,
-  Text 
+  Text,
 } from 'react-native';
 import { GasStationService } from '~/services/gasStationService';
 import { GasStation } from '~/types/gasStation';
@@ -50,10 +50,11 @@ export default function ListTab() {
       return;
     }
 
-    const filtered = gasStations.filter(station =>
-      station.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
-      station.brand?.toLowerCase().includes(searchQuery.toLowerCase()) ||
-      station.address.toLowerCase().includes(searchQuery.toLowerCase())
+    const filtered = gasStations.filter(
+      (station) =>
+        station.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
+        station.brand?.toLowerCase().includes(searchQuery.toLowerCase()) ||
+        station.address.toLowerCase().includes(searchQuery.toLowerCase()),
     );
 
     setFilteredStations(filtered);
@@ -67,7 +68,9 @@ export default function ListTab() {
     return (
       <View className="flex-1 justify-center items-center bg-slate-50">
         <ActivityIndicator size="large" color="#2563eb" />
-        <Text className="mt-4 text-base text-slate-600 font-medium">Cargando estaciones...</Text>
+        <Text className="mt-4 text-base text-slate-600 font-medium">
+          Cargando estaciones...
+        </Text>
       </View>
     );
   }

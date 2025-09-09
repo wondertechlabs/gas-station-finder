@@ -22,15 +22,17 @@
         "googleMapsApiKey": "YOUR_GOOGLE_MAPS_API_KEY"
       }
     },
-    "plugins": [
-      "expo-router",
-      "expo-font",
-      "expo-web-browser",
-      "expo-maps"
-    ],
+    "plugins": ["expo-router", "expo-font", "expo-web-browser", "expo-maps"],
     "experiments": {
       "typedRoutes": true,
       "tsconfigPaths": true
-    }
+    },
+    "extra": {
+      "router": {},
+      "eas": {
+        "projectId": "3e60f601-fd0a-451c-9dd6-ab95cf0919a8"
+      }
+    },
+    "owner": "donmanuel"
   }
 }

@@ -1,45 +1,55 @@
+import React, { useState } from 'react';
 import { View, TextInput, TouchableOpacity } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 
 interface SearchBarProps {
-  value: string;
-  onChangeText: (text: string) => void;
-  placeholder: string;
+  onSearch: (query: string) => void;
+  onFilterPress: () => void;
+  placeholder?: string;
 }
 
-export function SearchBar({ value, onChangeText, placeholder }: SearchBarProps) {
+export const SearchBar: React.FC<SearchBarProps> = ({
+  onSearch,
+  onFilterPress,
+  placeholder = 'Buscar gasolineras...',
+}) => {
+  const [query, setQuery] = useState('');
+
+  const handleSearch = (text: string) => {
+    setQuery(text);
+    onSearch(text);
+  };
+
+  const clearSearch = () => {
+    setQuery('');
+    onSearch('');
+  };
+
   return (
-    <View className="px-4 pt-4 pb-3 bg-slate-50">
-      <View 
-        className="flex-row items-center bg-white rounded-2xl px-5 py-4 border border-slate-200/50"
-        style={{
-          shadowColor: '#000',
-          shadowOffset: { width: 0, height: 2 },
-          shadowOpacity: 0.04,
-          shadowRadius: 8,
-          elevation: 2,
-        }}
-      >
-        <Ionicons name="search" size={22} color="#94a3b8" className="mr-4" />
+    <View className="flex-row items-center bg-white rounded-2xl shadow-sm border border-gray-200 px-4 py-3 mx-4 mb-4">
+      <View className="flex-row items-center flex-1">
+        <Ionicons name="search" size={20} color="#6b7280" />
         <TextInput
-          className="flex-1 text-base text-slate-900 font-medium"
-          value={value}
-          onChangeText={onChangeText}
+          className="flex-1 ml-3 text-gray-900 text-base"
           placeholder={placeholder}
-          placeholderTextColor="#94a3b8"
-          autoCapitalize="none"
-          autoCorrect={false}
-          style={{ lineHeight: 20 }}
+          placeholderTextColor="#9ca3af"
+          value={query}
+          onChangeText={handleSearch}
+          returnKeyType="search"
         />
-        {value.length > 0 && (
-          <TouchableOpacity 
-            onPress={() => onChangeText('')}
-            className="ml-2 p-1"
-          >
-            <Ionicons name="close-circle" size={20} color="#cbd5e1" />
+        {query.length > 0 && (
+          <TouchableOpacity onPress={clearSearch} className="ml-2">
+            <Ionicons name="close-circle" size={20} color="#9ca3af" />
           </TouchableOpacity>
         )}
       </View>
+
+      <TouchableOpacity
+        onPress={onFilterPress}
+        className="ml-3 p-2 bg-gray-100 rounded-full"
+      >
+        <Ionicons name="options" size={20} color="#6b7280" />
+      </TouchableOpacity>
     </View>
   );
-}
+};
