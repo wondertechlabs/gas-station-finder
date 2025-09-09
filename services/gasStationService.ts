@@ -1,4 +1,5 @@
 import { GasStation } from '~/types/gasStation';
+import { GooglePlacesService } from './googlePlacesService';
 
 class GasStationServiceClass {
   getMockGasStations(): GasStation[] {
@@ -210,10 +211,33 @@ class GasStationServiceClass {
     ];
   }
 
-  async findNearby(): Promise<GasStation[]> {
-    // Simulate API delay
-    await new Promise((resolve) => setTimeout(resolve, 1000));
-    return this.getMockGasStations();
+  async findNearby(
+    latitude: number = 12.1364,
+    longitude: number = -86.2514,
+    radius: number = 10000,
+  ): Promise<GasStation[]> {
+    try {
+      // Intentar obtener datos reales de Google Places
+      const realGasStations = await GooglePlacesService.findGasStations(
+        latitude,
+        longitude,
+        radius,
+      );
+
+      if (realGasStations.length > 0) {
+        return realGasStations;
+      }
+
+      // Si no hay datos reales, usar datos mock
+      console.log('Using mock data as fallback');
+      await new Promise((resolve) => setTimeout(resolve, 1000));
+      return this.getMockGasStations();
+    } catch (error) {
+      console.error('Error fetching gas stations:', error);
+      // En caso de error, usar datos mock
+      await new Promise((resolve) => setTimeout(resolve, 1000));
+      return this.getMockGasStations();
+    }
   }
 }
 

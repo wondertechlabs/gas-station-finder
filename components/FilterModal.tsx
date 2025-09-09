@@ -17,7 +17,16 @@ export interface FilterOptions {
   minRating: number;
 }
 
-const BRANDS = ['Shell', 'Petronic', 'UNO Gas', 'Puma', 'Texaco', 'Esso'];
+const BRANDS = [
+  'Puma Energy',
+  'DNP Petronic',
+  'UNO',
+  'Shell',
+  'Texaco',
+  'Esso',
+  'Independiente',
+  'Local',
+];
 const AMENITIES = ['Tienda', 'Servicios', 'ATM', 'Lavado'];
 
 export const FilterModal: React.FC<FilterModalProps> = ({

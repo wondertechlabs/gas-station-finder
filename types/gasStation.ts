@@ -14,6 +14,7 @@ export interface GasStation {
   is24Hours: boolean;
   rating?: number;
   phone?: string;
+  lastUpdated?: string;
 }
 
 export interface FuelType {
@@ -22,4 +23,13 @@ export interface FuelType {
   displayName: string;
 }
 
-export const NICARAGUA_GAS_BRANDS = ['Petronic', 'UNO Gas', 'Puma'] as const;
+export const NICARAGUA_GAS_BRANDS = [
+  'Puma Energy',
+  'DNP Petronic',
+  'UNO',
+  'Shell',
+  'Texaco',
+  'Esso',
+  'Independiente',
+  'Local',
+] as const;

@@ -1,9 +1,11 @@
 import { View, Text, TouchableOpacity, Alert } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 import { GasStationService } from '~/services/gasStationService';
+import { GooglePlacesService } from '~/services/googlePlacesService';
 import { GasStation } from '~/types/gasStation';
 import { useState, useEffect, useCallback } from 'react';
 import * as Linking from 'expo-linking';
+import * as Location from 'expo-location';
 import { SearchBar } from '~/components/SearchBar';
 import { FilterModal } from '~/components/FilterModal';
 import { useGasStationFilters } from '~/hooks/useGasStationFilters';
@@ -16,6 +18,10 @@ export default function GasStationMap() {
   );
   const [isLoading, setIsLoading] = useState(true);
   const [showFilters, setShowFilters] = useState(false);
+  const [userLocation, setUserLocation] = useState<{
+    latitude: number;
+    longitude: number;
+  } | null>(null);
 
   const {
     filteredStations,
@@ -29,7 +35,41 @@ export default function GasStationMap() {
     const loadGasStations = async () => {
       try {
         setIsLoading(true);
-        const stations = await GasStationService.findNearby();
+
+        // Probar API Key
+        const apiKeyValid = await GooglePlacesService.testApiKey();
+        console.log('API Key válida:', apiKeyValid);
+
+        const { status } = await Location.requestForegroundPermissionsAsync();
+        if (status !== 'granted') {
+          Alert.alert(
+            'Permisos de Ubicación',
+            'Necesitamos acceso a tu ubicación para mostrar las gasolineras cercanas.',
+          );
+        }
+
+        let location = userLocation;
+        if (!location) {
+          try {
+            const currentLocation = await Location.getCurrentPositionAsync({
+              accuracy: Location.Accuracy.Balanced,
+            });
+            location = {
+              latitude: currentLocation.coords.latitude,
+              longitude: currentLocation.coords.longitude,
+            };
+            setUserLocation(location);
+          } catch (locationError) {
+            console.log('Error getting location, using Managua default');
+            location = { latitude: 12.1364, longitude: -86.2514 };
+          }
+        }
+
+        const stations = await GasStationService.findNearby(
+          location.latitude,
+          location.longitude,
+          10000,
+        );
         setGasStations(stations);
       } catch (error) {
         console.error('Error loading gas stations:', error);
@@ -64,10 +104,13 @@ export default function GasStationMap() {
     setSelectedStation(null);
   }, []);
 
-  // Coordenadas de Managua, Nicaragua
-  const managuaRegion = {
+  const mapRegion = userLocation || {
     latitude: 12.1364,
     longitude: -86.2514,
+  };
+
+  const region = {
+    ...mapRegion,
     latitudeDelta: 0.1,
     longitudeDelta: 0.1,
   };
@@ -95,7 +138,7 @@ export default function GasStationMap() {
       <MapView
         style={{ flex: 1 }}
         provider={PROVIDER_GOOGLE}
-        initialRegion={managuaRegion}
+        initialRegion={region}
         onPress={handleMapPress}
         showsUserLocation={true}
         showsMyLocationButton={true}
