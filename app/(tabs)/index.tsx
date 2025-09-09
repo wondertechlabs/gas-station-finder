@@ -1,5 +1,6 @@
 import { useCallback } from 'react';
 import { View } from 'react-native';
+import { StatusBar } from "expo-status-bar";
 import MapView, { PROVIDER_GOOGLE } from 'react-native-maps';
 import { GasStation } from '~/types/gasStation';
 import { useGasStationStore } from '~/stores/gasStationStore';
@@ -68,6 +69,7 @@ export default function GasStationMap() {
 
   return (
     <View className="flex-1">
+      <StatusBar style="dark" />
       <MapView
         provider={PROVIDER_GOOGLE}
         style={{ flex: 1 }}

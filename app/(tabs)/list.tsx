@@ -6,6 +6,7 @@ import { LoadingScreen } from '~/components/LoadingScreen';
 import { ErrorScreen } from '~/components/ErrorScreen';
 import { EmptyState } from '~/components/EmptyState';
 import { LoadingOverlay } from '~/components/LoadingOverlay';
+import { StatusBar } from "expo-status-bar";
 
 export default function ListTab() {
   const { isLoading: locationLoading, error: locationError } = useLocation();
@@ -53,6 +54,7 @@ export default function ListTab() {
 
   return (
     <View className="flex-1 bg-slate-50">
+      <StatusBar style="dark" />
       <LoadingOverlay visible={isLoading} message="Cargando gasolineras..." />
 
       <FlatList

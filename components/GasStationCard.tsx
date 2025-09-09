@@ -1,8 +1,7 @@
-import React, { useState } from 'react';
-import { View, Text, TouchableOpacity } from 'react-native';
+import React from 'react';
+import { View, Text, TouchableOpacity, Alert } from 'react-native';
 import { GasStation } from '~/types/gasStation';
 import { Ionicons } from '@expo/vector-icons';
-import { NavigationOptions } from './NavigationOptions';
 import { useGasStationActions } from '~/hooks/useGasStationActions';
 
 interface GasStationCardProps {
@@ -10,11 +9,28 @@ interface GasStationCardProps {
 }
 
 export function GasStationCard({ station }: GasStationCardProps) {
-  const [showNavigationOptions, setShowNavigationOptions] = useState(false);
   const { handleNavigate } = useGasStationActions();
 
   const handleNavigatePress = () => {
-    setShowNavigationOptions(true);
+    console.log('Navigate button pressed in card');
+    Alert.alert(
+      'Elegir App de Navegación',
+      `¿Cómo quieres navegar a ${station.name}?`,
+      [
+        {
+          text: 'Google Maps',
+          onPress: () => handleNavigate(station, 'google'),
+        },
+        {
+          text: 'Waze',
+          onPress: () => handleNavigate(station, 'waze'),
+        },
+        {
+          text: 'Cancelar',
+          style: 'cancel',
+        },
+      ]
+    );
   };
 
   const formatDistance = (distance?: number): string => {
@@ -114,13 +130,6 @@ export function GasStationCard({ station }: GasStationCardProps) {
         <Ionicons name="navigate" size={18} color="white" />
         <Text className="text-base font-bold text-white">Navegar</Text>
       </TouchableOpacity>
-
-      <NavigationOptions
-        visible={showNavigationOptions}
-        station={station}
-        onClose={() => setShowNavigationOptions(false)}
-        onNavigate={handleNavigate}
-      />
     </View>
   );
 }

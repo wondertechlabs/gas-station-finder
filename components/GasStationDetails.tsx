@@ -1,8 +1,7 @@
-import React, { useState } from 'react';
-import { View, Text, TouchableOpacity } from 'react-native';
+import React from 'react';
+import { View, Text, TouchableOpacity, Alert } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 import { GasStation } from '~/types/gasStation';
-import { NavigationOptions } from './NavigationOptions';
 
 interface GasStationDetailsProps {
   station: GasStation;
@@ -13,10 +12,26 @@ interface GasStationDetailsProps {
 
 export const GasStationDetails = React.memo<GasStationDetailsProps>(
   ({ station, onClose, onNavigate, onCall }) => {
-    const [showNavigationOptions, setShowNavigationOptions] = useState(false);
-
     const handleNavigatePress = () => {
-      setShowNavigationOptions(true);
+      console.log('Navigate button pressed');
+      Alert.alert(
+        'Elegir App de Navegación',
+        `¿Cómo quieres navegar a ${station.name}?`,
+        [
+          {
+            text: 'Google Maps',
+            onPress: () => onNavigate(station, 'google'),
+          },
+          {
+            text: 'Waze',
+            onPress: () => onNavigate(station, 'waze'),
+          },
+          {
+            text: 'Cancelar',
+            style: 'cancel',
+          },
+        ]
+      );
     };
 
     return (
@@ -80,13 +95,6 @@ export const GasStationDetails = React.memo<GasStationDetailsProps>(
             </View>
           </View>
         </View>
-
-        <NavigationOptions
-          visible={showNavigationOptions}
-          station={station}
-          onClose={() => setShowNavigationOptions(false)}
-          onNavigate={onNavigate}
-        />
       </>
     );
   },

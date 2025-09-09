@@ -42,18 +42,18 @@ function RootLayoutNav() {
       persistOptions={{ persister: asyncStoragePersister }}
     >
       <GestureHandlerRootView style={{ flex: 1 }}>
-        <Stack screenOptions={{ headerShown: false }}>
-          <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
-          <Stack.Screen
-            name="settings"
-            options={{
-              title: 'Configuración',
-              headerShown: true,
-              presentation: 'formSheet',
-            }}
-          />
-          <Stack.Screen name="+not-found" />
-        </Stack>
+          <Stack screenOptions={{ headerShown: false }}>
+            <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
+            <Stack.Screen
+              name="settings"
+              options={{
+                title: 'Configuración',
+                headerShown: true,
+                presentation: 'formSheet',
+              }}
+            />
+            <Stack.Screen name="+not-found" />
+          </Stack>
       </GestureHandlerRootView>
     </PersistQueryClientProvider>
   );
