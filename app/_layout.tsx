@@ -53,6 +53,7 @@ function RootLayoutNav() {
               }}
             />
             <Stack.Screen name="+not-found" />
+            <Stack.Screen name="gas-station-details" options={{ headerShown: false }} />
           </Stack>
       </GestureHandlerRootView>
     </PersistQueryClientProvider>
