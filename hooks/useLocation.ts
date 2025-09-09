@@ -4,6 +4,7 @@ import { useLocationStore } from '~/stores/locationStore';
 export const useLocation = () => {
   const {
     userLocation,
+    address,
     isLoading,
     error,
     hasPermission,
@@ -19,6 +20,7 @@ export const useLocation = () => {
 
   return {
     userLocation,
+    address,
     isLoading,
     error,
     hasPermission,

@@ -1,15 +1,40 @@
-import React from 'react';
-import { Alert, ScrollView, View, Text } from 'react-native';
+import React, { useState } from 'react';
+import { Alert, ScrollView, View, Text, TouchableOpacity, ActivityIndicator } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 import { SettingItem } from '~/components/SettingItem';
+import { useLocationStore } from '~/stores/locationStore';
 
 export default function SettingsTab() {
+  const { 
+    userLocation, 
+    address, 
+    isLoading, 
+    error, 
+    hasPermission, 
+    getCurrentLocation, 
+    clearError 
+  } = useLocationStore();
+
   const handleLocationSettings = () => {
-    Alert.alert(
-      'Configuración de Ubicación',
-      'Administra los permisos de ubicación para la aplicación',
-      [{ text: 'OK' }],
-    );
+    if (!hasPermission) {
+      Alert.alert(
+        'Permisos de Ubicación',
+        'La aplicación necesita acceso a tu ubicación para mostrar las gasolineras más cercanas.',
+        [
+          { text: 'Cancelar', style: 'cancel' },
+          { text: 'Permitir', onPress: getCurrentLocation },
+        ],
+      );
+    } else {
+      Alert.alert(
+        'Actualizar Ubicación',
+        '¿Quieres actualizar tu ubicación actual?',
+        [
+          { text: 'Cancelar', style: 'cancel' },
+          { text: 'Actualizar', onPress: getCurrentLocation },
+        ],
+      );
+    }
   };
 
   const handleLanguage = () => {
@@ -65,12 +90,49 @@ export default function SettingsTab() {
           </Text>
         </View>
 
-        <SettingItem
-          icon={<Ionicons name="location" size={28} color="#2563eb" />}
-          title="Ubicación"
-          subtitle="Permisos y precisión"
-          onPress={handleLocationSettings}
-        />
+        <View className="px-6 py-4 border-b border-gray-100">
+          <TouchableOpacity
+            onPress={handleLocationSettings}
+            className="flex-row items-center"
+            disabled={isLoading}
+          >
+            <View className="w-12 h-12 bg-blue-100 rounded-xl items-center justify-center mr-4">
+              {isLoading ? (
+                <ActivityIndicator size="small" color="#2563eb" />
+              ) : (
+                <Ionicons name="location" size={24} color="#2563eb" />
+              )}
+            </View>
+            <View className="flex-1">
+              <Text className="text-lg font-semibold text-gray-900 mb-1">
+                Ubicación Actual
+              </Text>
+              {error ? (
+                <Text className="text-sm text-red-600 mb-1">
+                  {error}
+                </Text>
+              ) : address ? (
+                <Text className="text-sm text-gray-600 mb-1" numberOfLines={2}>
+                  {address}
+                </Text>
+              ) : hasPermission ? (
+                <Text className="text-sm text-gray-500 mb-1">
+                  Ubicación no disponible
+                </Text>
+              ) : (
+                <Text className="text-sm text-orange-600 mb-1">
+                  Permisos de ubicación requeridos
+                </Text>
+              )}
+              {userLocation && (
+                <Text className="text-xs text-gray-500">
+                  {userLocation.latitude.toFixed(4)}, {userLocation.longitude.toFixed(4)}
+                </Text>
+              )}
+            </View>
+            <Ionicons name="chevron-forward" size={20} color="#9ca3af" />
+          </TouchableOpacity>
+        </View>
 
         <SettingItem
           icon={<Ionicons name="globe" size={28} color="#06b6d4" />}
