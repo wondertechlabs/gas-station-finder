@@ -17,7 +17,7 @@ export const QUERY_CONFIG = {
 } as const;
 
 export const COLORS = {
-  PRIMARY: '#22C55E',
+  PRIMARY: '#142968',
   ERROR: '#ef4444',
   WARNING: '#fbbf24',
   GRAY: {

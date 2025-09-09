@@ -58,7 +58,7 @@ export const GasStationDetails = React.memo<GasStationDetailsProps>(
                 <Ionicons
                   name={station.isOpen ? 'checkmark-circle' : 'close-circle'}
                   size={16}
-                  color={station.isOpen ? '#22C55E' : '#ef4444'}
+                  color={station.isOpen ? '#142968' : '#ef4444'}
                 />
                 <Text className="ml-1 text-sm text-gray-600">
                   {station.isOpen ? 'Abierto' : 'Cerrado'}
@@ -77,7 +77,7 @@ export const GasStationDetails = React.memo<GasStationDetailsProps>(
             <View className="flex-row space-x-3">
               <TouchableOpacity
                 onPress={handleNavigatePress}
-                className="flex-1 bg-green-500 py-3 rounded-lg flex-row items-center justify-center"
+                className="flex-1 bg-primary-500 py-3 rounded-lg flex-row items-center justify-center"
               >
                 <Ionicons name="navigate" size={16} color="white" />
                 <Text className="text-white font-semibold ml-2">Navegar</Text>

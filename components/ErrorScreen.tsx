@@ -19,7 +19,7 @@ export const ErrorScreen = React.memo<ErrorScreenProps>(
       <Text className="text-gray-600 text-center mb-6">{message}</Text>
       {onRetry && (
         <TouchableOpacity
-          className="bg-green-500 px-6 py-3 rounded-lg"
+          className="bg-primary-500 px-6 py-3 rounded-lg"
           onPress={onRetry}
         >
           <Text className="text-white font-semibold">Reintentar</Text>

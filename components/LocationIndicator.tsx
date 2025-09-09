@@ -16,19 +16,19 @@ export const LocationIndicator = ({ onPress }: LocationIndicatorProps) => {
   return (
     <TouchableOpacity
       onPress={onPress}
-      className="flex-row items-center bg-blue-50 px-3 py-2 rounded-full border border-blue-200"
+      className="flex-row items-center bg-primary-50 px-3 py-2 rounded-full border border-primary-200"
       disabled={!onPress}
     >
       <Ionicons 
         name={selectedLocation ? "location" : "location-outline"} 
         size={16} 
-        color="#2563eb" 
+        color="#142968" 
       />
-      <Text className="text-sm font-medium text-blue-700 ml-2" numberOfLines={1}>
+      <Text className="text-sm font-medium text-primary-700 ml-2" numberOfLines={1}>
         {locationName}
       </Text>
       {onPress && (
-        <Ionicons name="chevron-down" size={14} color="#2563eb" className="ml-1" />
+        <Ionicons name="chevron-down" size={14} color="#142968" className="ml-1" />
       )}
     </TouchableOpacity>
   );

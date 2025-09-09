@@ -201,7 +201,7 @@ export const LocationSelector = ({
               autoFocus
             />
             {isSearching && (
-              <ActivityIndicator size="small" color="#3b82f6" />
+              <ActivityIndicator size="small" color="#142968" />
             )}
           </View>
         </View>
@@ -213,9 +213,9 @@ export const LocationSelector = ({
               <Text className="text-sm font-semibold text-gray-700 mb-3">Ubicación Actual</Text>
               <TouchableOpacity
                 onPress={handleUseCurrentLocation}
-                className="flex-row items-center p-4 bg-blue-50 rounded-2xl border border-blue-200"
+                className="flex-row items-center p-4 bg-primary-50 rounded-2xl border border-primary-200"
               >
-                <View className="w-10 h-10 bg-blue-500 rounded-xl items-center justify-center mr-4">
+                <View className="w-10 h-10 bg-primary-500 rounded-xl items-center justify-center mr-4">
                   <Ionicons name="location" size={20} color="white" />
                 </View>
                 <View className="flex-1">
@@ -275,7 +275,7 @@ export const LocationSelector = ({
                   onPress={() => handleSelectLocation(city)}
                   className="flex-row items-center p-4 bg-gray-50 rounded-2xl mb-3 border border-gray-200"
                 >
-                  <View className="w-10 h-10 bg-green-500 rounded-xl items-center justify-center mr-4">
+                  <View className="w-10 h-10 bg-primary-500 rounded-xl items-center justify-center mr-4">
                     <Ionicons name="location" size={20} color="white" />
                   </View>
                   <View className="flex-1">

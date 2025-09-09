@@ -188,7 +188,7 @@ export const LocationSelectorBar = () => {
             <Ionicons 
               name={selectedLocation ? "location" : "location-outline"} 
               size={16} 
-              color="#2563eb" 
+              color="#142968" 
             />
             <View className="ml-2 flex-1">
               <Text className="text-sm font-medium text-gray-900" numberOfLines={1}>
@@ -244,7 +244,7 @@ export const LocationSelectorBar = () => {
                 autoFocus
               />
               {isSearching && (
-                <ActivityIndicator size="small" color="#3b82f6" />
+                <ActivityIndicator size="small" color="#142968" />
               )}
             </View>
           </View>
@@ -256,9 +256,9 @@ export const LocationSelectorBar = () => {
                 <Text className="text-sm font-semibold text-gray-700 mb-2">Ubicación Actual</Text>
                 <TouchableOpacity
                   onPress={handleUseCurrentLocation}
-                  className="flex-row items-center p-3 bg-blue-50 rounded-xl border border-blue-200"
+                  className="flex-row items-center p-3 bg-primary-50 rounded-xl border border-primary-200"
                 >
-                  <View className="w-8 h-8 bg-blue-500 rounded-lg items-center justify-center mr-3">
+                  <View className="w-8 h-8 bg-primary-500 rounded-lg items-center justify-center mr-3">
                     <Ionicons name="location" size={16} color="white" />
                   </View>
                   <View className="flex-1">
@@ -318,7 +318,7 @@ export const LocationSelectorBar = () => {
                     onPress={() => handleSelectLocation(city)}
                     className="flex-row items-center p-3 bg-gray-50 rounded-xl mb-2 border border-gray-200"
                   >
-                    <View className="w-8 h-8 bg-green-500 rounded-lg items-center justify-center mr-3">
+                    <View className="w-8 h-8 bg-primary-500 rounded-lg items-center justify-center mr-3">
                       <Ionicons name="location" size={16} color="white" />
                     </View>
                     <View className="flex-1">
