@@ -124,7 +124,7 @@ export const LocationSelectorBar = () => {
       <View className="absolute top-20 left-4 right-4 z-10">
         <TouchableOpacity
           onPress={() => setShowDropdown(true)}
-          className="flex-row items-center justify-between bg-white/90 backdrop-blur-sm rounded-xl px-3 py-2 border border-white/20 shadow-lg"
+          className="flex-row items-center justify-between bg-white/90 backdrop-blur-sm rounded-xl px-4 py-3 border border-white/20 shadow-lg"
         >
           <View className="flex-row items-center flex-1">
             <Ionicons 
@@ -164,16 +164,16 @@ export const LocationSelectorBar = () => {
       >
         <View className="flex-1 bg-white">
           {/* Header */}
-          <View className="flex-row items-center justify-between px-4 py-3 border-b border-gray-200">
+          <View className="flex-row items-center justify-between px-6 py-4 border-b border-gray-200">
             <Text className="text-lg font-bold text-gray-900">Ubicación</Text>
-            <TouchableOpacity onPress={() => setShowDropdown(false)} className="p-1">
+            <TouchableOpacity onPress={() => setShowDropdown(false)} className="p-2">
               <Ionicons name="close" size={20} color="#6b7280" />
             </TouchableOpacity>
           </View>
 
           {/* Search Input */}
-          <View className="px-4 py-3">
-            <View className="flex-row items-center bg-gray-100 rounded-xl px-3 py-2">
+          <View className="px-6 py-4">
+            <View className="flex-row items-center bg-gray-100 rounded-xl px-4 py-3">
               <Ionicons name="search" size={16} color="#9ca3af" />
               <TextInput
                 className="flex-1 ml-2 text-gray-900 text-sm"
@@ -191,14 +191,14 @@ export const LocationSelectorBar = () => {
             </View>
           </View>
 
-          <ScrollView className="flex-1 px-4">
+          <ScrollView className="flex-1 px-6" showsVerticalScrollIndicator={false}>
             {/* Current Location */}
             {userLocation && (
-              <View className="mb-4">
-                <Text className="text-sm font-semibold text-gray-700 mb-2">Ubicación Actual</Text>
+              <View className="mb-6">
+                <Text className="text-sm font-semibold text-gray-700 mb-3">Ubicación Actual</Text>
                 <TouchableOpacity
                   onPress={handleUseCurrentLocation}
-                  className="flex-row items-center p-3 bg-primary-50 rounded-xl border border-primary-200"
+                  className="flex-row items-center p-4 bg-primary-50 rounded-xl border border-primary-200"
                 >
                   <View className="w-8 h-8 bg-primary-500 rounded-lg items-center justify-center mr-3">
                     <Ionicons name="location" size={16} color="white" />
@@ -218,8 +218,8 @@ export const LocationSelectorBar = () => {
 
             {/* Search Results or Popular Cities */}
             {searchQuery ? (
-              <View className="mb-4">
-                <Text className="text-sm font-semibold text-gray-700 mb-2">
+              <View className="mb-6">
+                <Text className="text-sm font-semibold text-gray-700 mb-3">
                   Resultados de búsqueda
                 </Text>
                 {searchResults.length > 0 ? (
@@ -227,7 +227,7 @@ export const LocationSelectorBar = () => {
                     <TouchableOpacity
                       key={location.id}
                       onPress={() => handleSelectLocation(location)}
-                      className="flex-row items-center p-3 bg-gray-50 rounded-xl mb-2 border border-gray-200"
+                      className="flex-row items-center p-4 bg-gray-50 rounded-xl mb-3 border border-gray-200"
                     >
                       <View className="w-8 h-8 bg-gray-400 rounded-lg items-center justify-center mr-3">
                         <Ionicons name="location-outline" size={16} color="white" />
@@ -250,15 +250,15 @@ export const LocationSelectorBar = () => {
                 ) : null}
               </View>
             ) : (
-              <View className="mb-4">
-                <Text className="text-sm font-semibold text-gray-700 mb-2">
+              <View className="mb-6">
+                <Text className="text-sm font-semibold text-gray-700 mb-3">
                   Ciudades populares
                 </Text>
                 {popularCities.map((city) => (
                   <TouchableOpacity
                     key={city.id}
                     onPress={() => handleSelectLocation(city)}
-                    className="flex-row items-center p-3 bg-gray-50 rounded-xl mb-2 border border-gray-200"
+                    className="flex-row items-center p-4 bg-gray-50 rounded-xl mb-3 border border-gray-200"
                   >
                     <View className="w-8 h-8 bg-primary-500 rounded-lg items-center justify-center mr-3">
                       <Ionicons name="location" size={16} color="white" />

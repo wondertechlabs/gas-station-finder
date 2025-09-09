@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import { useState, useEffect } from 'react';
 import { 
   View, 
   Text, 
@@ -6,9 +6,7 @@ import {
   Modal, 
   TextInput, 
   ScrollView, 
-  ActivityIndicator,
-  Alert 
-} from 'react-native';
+  ActivityIndicator} from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 import * as Location from 'expo-location';
 import { LocationResult, NICARAGUA_DEPARTMENTS } from '~/types/location';
@@ -32,9 +30,7 @@ export const LocationSelector = ({
   const [searchQuery, setSearchQuery] = useState('');
   const [searchResults, setSearchResults] = useState<LocationResult[]>([]);
   const [isSearching, setIsSearching] = useState(false);
-  const [recentLocations, setRecentLocations] = useState<LocationResult[]>([]);
 
-  // Usar la lista centralizada de departamentos de Nicaragua
   const popularCities = NICARAGUA_DEPARTMENTS;
 
   const searchLocation = async (query: string) => {
@@ -45,7 +41,6 @@ export const LocationSelector = ({
 
     setIsSearching(true);
     try {
-      // First, search in popular cities (no API cost)
       const filteredCities = popularCities.filter(city =>
         city.name.toLowerCase().includes(query.toLowerCase()) ||
         city.address.toLowerCase().includes(query.toLowerCase())
