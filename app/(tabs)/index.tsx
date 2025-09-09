@@ -1,81 +1,44 @@
-import { View, Text, TouchableOpacity, Alert } from 'react-native';
+import React, { useCallback } from 'react';
+import { View, Text, TouchableOpacity, ActivityIndicator } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
-import { GasStationService } from '~/services/gasStationService';
-import { GooglePlacesService } from '~/services/googlePlacesService';
 import { GasStation } from '~/types/gasStation';
-import { useState, useEffect, useCallback } from 'react';
 import * as Linking from 'expo-linking';
-import * as Location from 'expo-location';
-import { useGasStationFilters } from '~/hooks/useGasStationFilters';
 import MapView, { Marker, PROVIDER_GOOGLE } from 'react-native-maps';
+import { useGasStationStore } from '~/stores/gasStationStore';
+import { useGasStations } from '~/hooks/useGasStations';
+import { useLocation } from '~/hooks/useLocation';
+
+const MANAGUA_COORDINATES = {
+  latitude: 12.1364,
+  longitude: -86.2514,
+  latitudeDelta: 0.0922,
+  longitudeDelta: 0.0421,
+};
 
 export default function GasStationMap() {
-  const [gasStations, setGasStations] = useState<GasStation[]>([]);
-  const [selectedStation, setSelectedStation] = useState<GasStation | null>(
-    null,
+  const { selectedStation, setSelectedStation, clearSelection } =
+    useGasStationStore();
+  const {
+    userLocation,
+    isLoading: locationLoading,
+    error: locationError,
+  } = useLocation();
+  const { filteredStations, isLoading, error } = useGasStations();
+
+  const handleMarkerPress = useCallback(
+    (station: GasStation) => {
+      setSelectedStation(station);
+    },
+    [setSelectedStation],
   );
-  const [isLoading, setIsLoading] = useState(true);
-  const [userLocation, setUserLocation] = useState<{
-    latitude: number;
-    longitude: number;
-  } | null>(null);
 
-  const { filteredStations, handleSearch, hasActiveFilters } =
-    useGasStationFilters(gasStations);
+  const handleMapPress = useCallback(() => {
+    clearSelection();
+  }, [clearSelection]);
 
-  useEffect(() => {
-    const loadGasStations = async () => {
-      try {
-        setIsLoading(true);
-
-        // Probar API Key
-        const apiKeyValid = await GooglePlacesService.testApiKey();
-        console.log('API Key válida:', apiKeyValid);
-
-        const { status } = await Location.requestForegroundPermissionsAsync();
-        if (status !== 'granted') {
-          Alert.alert(
-            'Permisos de Ubicación',
-            'Necesitamos acceso a tu ubicación para mostrar las gasolineras cercanas.',
-          );
-        }
-
-        let location = userLocation;
-        if (!location) {
-          try {
-            const currentLocation = await Location.getCurrentPositionAsync({
-              accuracy: Location.Accuracy.Balanced,
-            });
-            location = {
-              latitude: currentLocation.coords.latitude,
-              longitude: currentLocation.coords.longitude,
-            };
-            setUserLocation(location);
-          } catch (locationError) {
-            console.log('Error getting location, using Managua default');
-            location = { latitude: 12.1364, longitude: -86.2514 };
-          }
-        }
-
-        const stations = await GasStationService.findNearby(
-          location.latitude,
-          location.longitude,
-          10000,
-        );
-        setGasStations(stations);
-      } catch (error) {
-        console.error('Error loading gas stations:', error);
-        Alert.alert('Error', 'No se pudieron cargar las gasolineras');
-      } finally {
-        setIsLoading(false);
-      }
-    };
-    loadGasStations();
-  }, []);
-
-  const handleDirections = useCallback((station: GasStation) => {
+  const handleNavigate = useCallback((station: GasStation) => {
     const { latitude, longitude } = station.coordinates;
-    const url = `https://maps.apple.com/?daddr=${latitude},${longitude}`;
+    const url = `https://www.google.com/maps/dir/?api=1&destination=${latitude},${longitude}`;
     Linking.openURL(url);
   }, []);
 
@@ -84,39 +47,56 @@ export default function GasStationMap() {
     Linking.openURL(url);
   }, []);
 
-  const handleMarkerPress = useCallback((station: GasStation) => {
-    setSelectedStation(station);
-  }, []);
+  const mapRegion = userLocation
+    ? {
+        latitude: userLocation.latitude,
+        longitude: userLocation.longitude,
+        latitudeDelta: 0.0922,
+        longitudeDelta: 0.0421,
+      }
+    : MANAGUA_COORDINATES;
 
-  const handleMapPress = useCallback(() => {
-    setSelectedStation(null);
-  }, []);
-
-  const mapRegion = userLocation || {
-    latitude: 12.1364,
-    longitude: -86.2514,
-  };
-
-  const region = {
-    ...mapRegion,
-    latitudeDelta: 0.1,
-    longitudeDelta: 0.1,
-  };
-
-  if (isLoading) {
+  if (locationLoading) {
     return (
-      <View className="flex-1 bg-gray-50 items-center justify-center">
-        <View className="items-center">
-          <View className="w-16 h-16 bg-green-100 rounded-full items-center justify-center mb-4">
-            <Ionicons name="car" size={32} color="#10b981" />
-          </View>
-          <Text className="text-lg font-semibold text-gray-900 mb-2">
-            Cargando Gasolineras
-          </Text>
-          <Text className="text-sm text-gray-600 text-center">
-            Buscando las mejores opciones en Managua...
-          </Text>
-        </View>
+      <View className="flex-1 justify-center items-center bg-gray-50">
+        <ActivityIndicator size="large" color="#22C55E" />
+        <Text className="mt-4 text-gray-600">Obteniendo ubicación...</Text>
+      </View>
+    );
+  }
+
+  if (locationError) {
+    return (
+      <View className="flex-1 justify-center items-center bg-gray-50 px-6">
+        <Ionicons name="location-outline" size={64} color="#ef4444" />
+        <Text className="text-xl font-semibold text-gray-900 text-center mb-2 mt-4">
+          Error de Ubicación
+        </Text>
+        <Text className="text-gray-600 text-center mb-6">{locationError}</Text>
+        <TouchableOpacity
+          className="bg-green-500 px-6 py-3 rounded-lg"
+          onPress={() => window.location.reload()}
+        >
+          <Text className="text-white font-semibold">Reintentar</Text>
+        </TouchableOpacity>
+      </View>
+    );
+  }
+
+  if (error) {
+    return (
+      <View className="flex-1 justify-center items-center bg-gray-50 px-6">
+        <Ionicons name="alert-circle-outline" size={64} color="#ef4444" />
+        <Text className="text-xl font-semibold text-gray-900 text-center mb-2 mt-4">
+          Error al Cargar Gasolineras
+        </Text>
+        <Text className="text-gray-600 text-center mb-6">{error.message}</Text>
+        <TouchableOpacity
+          className="bg-green-500 px-6 py-3 rounded-lg"
+          onPress={() => window.location.reload()}
+        >
+          <Text className="text-white font-semibold">Reintentar</Text>
+        </TouchableOpacity>
       </View>
     );
   }
@@ -124,176 +104,96 @@ export default function GasStationMap() {
   return (
     <View className="flex-1">
       <MapView
-        style={{ flex: 1 }}
         provider={PROVIDER_GOOGLE}
-        initialRegion={region}
+        style={{ flex: 1 }}
+        region={mapRegion}
         onPress={handleMapPress}
-        showsUserLocation={true}
-        showsMyLocationButton={true}
-        showsCompass={true}
-        showsScale={true}
+        showsUserLocation
+        showsMyLocationButton
       >
         {filteredStations.map((station) => (
           <Marker
             key={station.id}
             coordinate={station.coordinates}
             title={station.name}
-            description={station.brand || 'Gasolinera'}
+            description={station.brand}
             onPress={() => handleMarkerPress(station)}
           />
         ))}
       </MapView>
 
-      {/* Header con información de gasolineras */}
-      <View className="absolute top-32 left-4 right-4">
-        <View className="bg-white rounded-2xl shadow-lg p-4">
-          <View className="flex-row items-center justify-between">
-            <View>
-              <Text className="text-lg font-bold text-gray-900">
-                Gasolineras en Managua
-              </Text>
-              <Text className="text-sm text-gray-600">
-                {filteredStations.length} de {gasStations.length} estaciones
-              </Text>
-            </View>
+      {isLoading && (
+        <View className="absolute top-16 left-4 right-4">
+          <View className="bg-white rounded-lg p-4 shadow-lg flex-row items-center">
+            <ActivityIndicator size="small" color="#22C55E" />
+            <Text className="ml-3 text-gray-700">Cargando gasolineras...</Text>
           </View>
         </View>
-      </View>
+      )}
 
-      {/* Detalles de gasolinera seleccionada */}
       {selectedStation && (
-        <View className="absolute bottom-0 left-0 right-0 bg-white rounded-t-3xl shadow-2xl max-h-1/2">
-          {/* Handle Bar */}
-          <View className="w-12 h-1 bg-gray-300 rounded-full self-center mt-3 mb-2" />
-
-          <View className="px-6 pb-6">
-            {/* Header */}
-            <View className="flex-row justify-between items-start mb-4">
-              <View className="flex-1 mr-4">
-                <Text className="text-xl font-semibold text-gray-900 mb-1">
+        <View className="absolute bottom-4 left-4 right-4">
+          <View className="bg-white rounded-xl shadow-lg p-4">
+            <View className="flex-row justify-between items-start mb-3">
+              <View className="flex-1">
+                <Text className="text-lg font-semibold text-gray-900">
                   {selectedStation.name}
                 </Text>
-                <Text className="text-base text-gray-600 font-medium">
+                <Text className="text-sm text-gray-600 mb-1">
                   {selectedStation.brand}
                 </Text>
+                <Text className="text-sm text-gray-500">
+                  {selectedStation.address}
+                </Text>
               </View>
-              <View className="flex-row items-center bg-gray-100 px-3 py-2 rounded-full">
-                <View
-                  className={`w-2 h-2 rounded-full mr-2 ${
-                    selectedStation.isOpen ? 'bg-green-500' : 'bg-red-500'
-                  }`}
+              <TouchableOpacity onPress={clearSelection} className="p-1">
+                <Ionicons name="close" size={18} color="#6b7280" />
+              </TouchableOpacity>
+            </View>
+
+            <View className="flex-row items-center mb-3">
+              <View className="flex-row items-center mr-4">
+                <Ionicons
+                  name={
+                    selectedStation.isOpen ? 'checkmark-circle' : 'close-circle'
+                  }
+                  size={16}
+                  color={selectedStation.isOpen ? '#22C55E' : '#ef4444'}
                 />
-                <Text className="text-sm font-medium text-gray-700">
+                <Text className="ml-1 text-sm text-gray-600">
                   {selectedStation.isOpen ? 'Abierto' : 'Cerrado'}
                 </Text>
               </View>
-            </View>
-
-            {/* Address */}
-            <View className="flex-row items-start mb-4">
-              <View className="mt-0.5 mr-2">
-                <Ionicons name="location-outline" size={16} color="#6b7280" />
-              </View>
-              <Text className="text-sm text-gray-600 flex-1 leading-5">
-                {selectedStation.address}
-              </Text>
-            </View>
-
-            {/* Fuel Prices */}
-            <View className="bg-gray-50 rounded-2xl p-4 mb-4">
-              <Text className="text-sm font-semibold text-gray-900 mb-3">
-                Precios de Combustible
-              </Text>
-              <View className="flex-row justify-between">
-                {selectedStation.fuelTypes.map((fuel, index) => (
-                  <View key={index} className="items-center flex-1">
-                    <Text className="text-xs text-gray-500 mb-1 text-center">
-                      {fuel.displayName}
-                    </Text>
-                    <Text className="text-lg font-bold text-gray-900">
-                      C${fuel.price.toFixed(2)}
-                    </Text>
-                  </View>
-                ))}
-              </View>
-            </View>
-
-            {/* Amenities */}
-            <View className="mb-4">
-              <Text className="text-sm font-semibold text-gray-900 mb-2">
-                Servicios
-              </Text>
-              <View className="flex-row flex-wrap">
-                {selectedStation.amenities.map((amenity, index) => (
-                  <View
-                    key={index}
-                    className="flex-row items-center mr-4 mb-2 bg-green-50 px-3 py-1.5 rounded-full"
-                  >
-                    <Ionicons
-                      name="checkmark-circle"
-                      size={14}
-                      color="#10b981"
-                    />
-                    <Text className="text-xs text-green-700 ml-1 font-medium">
-                      {amenity}
-                    </Text>
-                  </View>
-                ))}
-              </View>
-            </View>
-
-            {/* Footer */}
-            <View className="flex-row justify-between items-center pt-4 border-t border-gray-100">
-              <View className="flex-row items-center">
-                {selectedStation.rating && (
-                  <View className="flex-row items-center mr-4">
-                    <Ionicons name="star" size={16} color="#fbbf24" />
-                    <Text className="text-sm font-semibold text-gray-900 ml-1">
-                      {selectedStation.rating.toFixed(1)}
-                    </Text>
-                  </View>
-                )}
-                {selectedStation.phone && (
-                  <View className="flex-row items-center">
-                    <Ionicons name="call-outline" size={16} color="#6b7280" />
-                    <Text className="text-sm text-gray-600 ml-1">
-                      {selectedStation.phone}
-                    </Text>
-                  </View>
-                )}
-              </View>
-
-              {/* Action Buttons */}
-              <View className="flex-row space-x-2">
-                <TouchableOpacity
-                  className="bg-blue-500 px-4 py-2 rounded-full"
-                  onPress={() => handleDirections(selectedStation)}
-                >
-                  <Text className="text-white text-sm font-medium">
-                    Direcciones
+              {selectedStation.rating && (
+                <View className="flex-row items-center">
+                  <Ionicons name="star" size={16} color="#fbbf24" />
+                  <Text className="ml-1 text-sm text-gray-600">
+                    {selectedStation.rating.toFixed(1)}
                   </Text>
+                </View>
+              )}
+            </View>
+
+            <View className="flex-row space-x-3">
+              <TouchableOpacity
+                onPress={() => handleNavigate(selectedStation)}
+                className="flex-1 bg-green-500 py-3 rounded-lg flex-row items-center justify-center"
+              >
+                <Ionicons name="navigate" size={16} color="white" />
+                <Text className="text-white font-semibold ml-2">Navegar</Text>
+              </TouchableOpacity>
+
+              {selectedStation.phone && (
+                <TouchableOpacity
+                  onPress={() => handleCall(selectedStation.phone!)}
+                  className="flex-1 bg-blue-500 py-3 rounded-lg flex-row items-center justify-center"
+                >
+                  <Ionicons name="call" size={16} color="white" />
+                  <Text className="text-white font-semibold ml-2">Llamar</Text>
                 </TouchableOpacity>
-                {selectedStation.phone && (
-                  <TouchableOpacity
-                    className="bg-gray-100 px-4 py-2 rounded-full"
-                    onPress={() => handleCall(selectedStation.phone!)}
-                  >
-                    <Text className="text-gray-700 text-sm font-medium">
-                      Llamar
-                    </Text>
-                  </TouchableOpacity>
-                )}
-              </View>
+              )}
             </View>
           </View>
-
-          {/* Close Button */}
-          <TouchableOpacity
-            onPress={() => setSelectedStation(null)}
-            className="absolute top-4 right-4 w-8 h-8 bg-gray-100 rounded-full items-center justify-center"
-          >
-            <Ionicons name="close" size={18} color="#6b7280" />
-          </TouchableOpacity>
         </View>
       )}
     </View>

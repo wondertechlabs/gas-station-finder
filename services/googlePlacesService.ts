@@ -32,7 +32,6 @@ export class GooglePlacesService {
 
   static async testApiKey(): Promise<boolean> {
     if (!this.API_KEY) {
-      console.log('No API Key found');
       return false;
     }
 
@@ -40,11 +39,8 @@ export class GooglePlacesService {
       const testUrl = `${this.BASE_URL}/nearbysearch/json?location=12.1364,-86.2514&radius=1000&type=gas_station&key=${this.API_KEY}`;
       const response = await fetch(testUrl);
       const data = await response.json();
-
-      console.log('API Test Response:', data.status);
       return data.status === 'OK';
-    } catch (error) {
-      console.error('API Test Error:', error);
+    } catch {
       return false;
     }
   }
@@ -55,11 +51,7 @@ export class GooglePlacesService {
     radius: number = 5000,
   ): Promise<GasStation[]> {
     if (!this.API_KEY) {
-      console.warn('Google Maps API Key not found');
-      console.log(
-        'Para usar datos reales, configura EXPO_PUBLIC_GOOGLE_MAPS_API_KEY en tu archivo .env',
-      );
-      return [];
+      throw new Error('Google Maps API Key not configured');
     }
 
     try {
@@ -69,26 +61,12 @@ export class GooglePlacesService {
       const data: GooglePlacesResponse = await response.json();
 
       if (data.status !== 'OK') {
-        console.error('Google Places API error:', data.status);
-        if (data.status === 'REQUEST_DENIED') {
-          console.error('API Key inválida o no configurada correctamente');
-          console.log('API Key encontrada:', this.API_KEY ? 'Sí' : 'No');
-          console.log(
-            'Primeros 10 caracteres:',
-            this.API_KEY?.substring(0, 10),
-          );
-          console.log('Verifica que:');
-          console.log('1. Places API esté habilitada en Google Cloud Console');
-          console.log('2. La API Key tenga permisos para Places API');
-          console.log('3. No haya restricciones de IP o dominio');
-        }
-        return [];
+        throw new Error(`Google Places API error: ${data.status}`);
       }
 
       return this.transformGooglePlacesToGasStations(data.results);
-    } catch (error) {
-      console.error('Error fetching gas stations from Google Places:', error);
-      return [];
+    } catch {
+      throw new Error('Error fetching gas stations from Google Places');
     }
   }
 
@@ -104,8 +82,7 @@ export class GooglePlacesService {
       const data = await response.json();
 
       return data.result;
-    } catch (error) {
-      console.error('Error fetching place details:', error);
+    } catch {
       return null;
     }
   }

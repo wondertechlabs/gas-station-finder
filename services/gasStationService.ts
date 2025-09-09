@@ -8,21 +8,13 @@ class GasStationServiceClass {
     radius: number = 10000,
   ): Promise<GasStation[]> {
     try {
-      const realGasStations = await GooglePlacesService.findGasStations(
+      return await GooglePlacesService.findGasStations(
         latitude,
         longitude,
         radius,
       );
-
-      if (realGasStations.length > 0) {
-        return realGasStations;
-      }
-
-      console.log('No se encontraron gasolineras reales de Google Places');
-      return [];
-    } catch (error) {
-      console.error('Error fetching gas stations:', error);
-      return [];
+    } catch {
+      throw new Error('No se pudieron cargar las gasolineras');
     }
   }
 }

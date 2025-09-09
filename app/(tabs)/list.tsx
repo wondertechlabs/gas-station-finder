@@ -1,137 +1,157 @@
-import { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import {
   View,
-  FlatList,
-  RefreshControl,
-  ActivityIndicator,
   Text,
+  TextInput,
+  FlatList,
+  ActivityIndicator,
+  TouchableOpacity,
 } from 'react-native';
-import * as Location from 'expo-location';
-import { GasStationService } from '~/services/gasStationService';
-import { GasStation } from '~/types/gasStation';
+import { Ionicons } from '@expo/vector-icons';
 import { GasStationCard } from '~/components/GasStationCard';
+import { useGasStations } from '~/hooks/useGasStations';
+import { useLocation } from '~/hooks/useLocation';
 
 export default function ListTab() {
-  const [gasStations, setGasStations] = useState<GasStation[]>([]);
-  const [filteredStations, setFilteredStations] = useState<GasStation[]>([]);
-  const [loading, setLoading] = useState(true);
-  const [refreshing, setRefreshing] = useState(false);
   const [searchQuery, setSearchQuery] = useState('');
+  const { isLoading: locationLoading, error: locationError } = useLocation();
+  const { filteredStations, isLoading, error } = useGasStations();
 
-  useEffect(() => {
-    loadGasStations();
-  }, []);
-
-  useEffect(() => {
-    filterStations();
-  }, [searchQuery, gasStations]);
-
-  const loadGasStations = async () => {
-    try {
-      setLoading(true);
-
-      const { status } = await Location.requestForegroundPermissionsAsync();
-      if (status !== 'granted') {
-        console.log('Location permission denied');
-      }
-
-      let location = { latitude: 12.1364, longitude: -86.2514 };
-      try {
-        const currentLocation = await Location.getCurrentPositionAsync({
-          accuracy: Location.Accuracy.Balanced,
-        });
-        location = {
-          latitude: currentLocation.coords.latitude,
-          longitude: currentLocation.coords.longitude,
-        };
-      } catch (locationError) {
-        console.log('Using Managua default location');
-      }
-
-      const stations = await GasStationService.findNearby(
-        location.latitude,
-        location.longitude,
-        10000,
-      );
-
-      if (stations.length === 0) {
-        console.log('No se encontraron gasolineras reales, verificando API...');
-        return;
-      }
-
-      setGasStations(stations);
-    } catch (error) {
-      console.error('Error loading gas stations:', error);
-    } finally {
-      setLoading(false);
-    }
+  const handleSearch = (query: string) => {
+    setSearchQuery(query);
   };
 
-  const onRefresh = async () => {
-    setRefreshing(true);
-    await loadGasStations();
-    setRefreshing(false);
-  };
-
-  const filterStations = () => {
-    if (!searchQuery.trim()) {
-      setFilteredStations(gasStations);
-      return;
-    }
-
-    const filtered = gasStations.filter(
-      (station) =>
-        station.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
-        station.brand?.toLowerCase().includes(searchQuery.toLowerCase()) ||
-        station.address.toLowerCase().includes(searchQuery.toLowerCase()),
-    );
-
-    setFilteredStations(filtered);
-  };
-
-  const renderGasStation = ({ item }: { item: GasStation }) => (
-    <GasStationCard station={item} />
+  const filteredBySearch = filteredStations.filter(
+    (station) =>
+      station.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
+      station.brand?.toLowerCase().includes(searchQuery.toLowerCase()) ||
+      station.address.toLowerCase().includes(searchQuery.toLowerCase()),
   );
 
-  if (loading) {
+  if (locationLoading) {
     return (
-      <View className="flex-1 justify-center items-center bg-slate-50">
-        <ActivityIndicator size="large" color="#2563eb" />
-        <Text className="mt-4 text-base text-slate-600 font-medium">
-          Cargando estaciones...
+      <View className="flex-1 justify-center items-center bg-gray-50">
+        <ActivityIndicator size="large" color="#22C55E" />
+        <Text className="mt-4 text-gray-600">Obteniendo ubicación...</Text>
+      </View>
+    );
+  }
+
+  if (locationError) {
+    return (
+      <View className="flex-1 justify-center items-center bg-gray-50 px-6">
+        <Ionicons name="location-outline" size={64} color="#ef4444" />
+        <Text className="text-xl font-semibold text-gray-900 text-center mb-2 mt-4">
+          Error de Ubicación
         </Text>
+        <Text className="text-gray-600 text-center mb-6">{locationError}</Text>
+        <TouchableOpacity
+          className="bg-green-500 px-6 py-3 rounded-lg"
+          onPress={() => window.location.reload()}
+        >
+          <Text className="text-white font-semibold">Reintentar</Text>
+        </TouchableOpacity>
+      </View>
+    );
+  }
+
+  if (error) {
+    return (
+      <View className="flex-1 justify-center items-center bg-gray-50 px-6">
+        <Ionicons name="alert-circle-outline" size={64} color="#ef4444" />
+        <Text className="text-xl font-semibold text-gray-900 text-center mb-2 mt-4">
+          Error al Cargar Gasolineras
+        </Text>
+        <Text className="text-gray-600 text-center mb-6">{error.message}</Text>
+        <TouchableOpacity
+          className="bg-green-500 px-6 py-3 rounded-lg"
+          onPress={() => window.location.reload()}
+        >
+          <Text className="text-white font-semibold">Reintentar</Text>
+        </TouchableOpacity>
+      </View>
+    );
+  }
+
+  if (filteredBySearch.length === 0) {
+    return (
+      <View className="flex-1 bg-slate-50">
+        <View className="px-4 pt-16 pb-4">
+          <View className="flex-row items-center bg-white rounded-2xl shadow-sm border border-gray-200 px-4 py-3">
+            <Ionicons name="search" size={20} color="#6b7280" />
+            <TextInput
+              className="flex-1 ml-3 text-gray-900 text-base"
+              placeholder="Buscar gasolineras en Managua..."
+              placeholderTextColor="#9ca3af"
+              value={searchQuery}
+              onChangeText={handleSearch}
+              returnKeyType="search"
+            />
+            {searchQuery.length > 0 && (
+              <TouchableOpacity
+                onPress={() => handleSearch('')}
+                className="ml-2"
+              >
+                <Ionicons name="close-circle" size={20} color="#9ca3af" />
+              </TouchableOpacity>
+            )}
+          </View>
+        </View>
+
+        <View className="flex-1 justify-center items-center px-6">
+          <Ionicons name="search-outline" size={64} color="#9ca3af" />
+          <Text className="text-lg font-semibold text-gray-900 text-center mb-2 mt-4">
+            {searchQuery
+              ? 'No se encontraron resultados'
+              : 'No hay gasolineras disponibles'}
+          </Text>
+          <Text className="text-gray-600 text-center">
+            {searchQuery
+              ? 'Intenta con otros términos de búsqueda'
+              : 'Verifica tu conexión a internet y la configuración de la API'}
+          </Text>
+        </View>
       </View>
     );
   }
 
   return (
     <View className="flex-1 bg-slate-50">
-      {gasStations.length === 0 ? (
-        <View className="flex-1 justify-center items-center px-6">
-          <Text className="text-lg font-semibold text-gray-900 text-center mb-2">
-            No se encontraron gasolineras
-          </Text>
-          <Text className="text-sm text-gray-600 text-center mb-4">
-            Verifica tu conexión a internet y la configuración de la API Key
-          </Text>
-          <Text className="text-xs text-gray-500 text-center">
-            Asegúrate de que Places API esté habilitada en Google Cloud Console
-          </Text>
+      <View className="px-4 pt-16 pb-4">
+        <View className="flex-row items-center bg-white rounded-2xl shadow-sm border border-gray-200 px-4 py-3">
+          <Ionicons name="search" size={20} color="#6b7280" />
+          <TextInput
+            className="flex-1 ml-3 text-gray-900 text-base"
+            placeholder="Buscar gasolineras en Managua..."
+            placeholderTextColor="#9ca3af"
+            value={searchQuery}
+            onChangeText={handleSearch}
+            returnKeyType="search"
+          />
+          {searchQuery.length > 0 && (
+            <TouchableOpacity onPress={() => handleSearch('')} className="ml-2">
+              <Ionicons name="close-circle" size={20} color="#9ca3af" />
+            </TouchableOpacity>
+          )}
         </View>
-      ) : (
-        <FlatList
-          data={filteredStations}
-          renderItem={renderGasStation}
-          keyExtractor={(item) => item.id}
-          refreshControl={
-            <RefreshControl
-              refreshing={refreshing}
-              onRefresh={onRefresh}
-              colors={['#2563eb']}
-            />
-          }
-        />
+      </View>
+
+      {isLoading && (
+        <View className="px-4 mb-4">
+          <View className="bg-white rounded-lg p-4 shadow-sm flex-row items-center">
+            <ActivityIndicator size="small" color="#22C55E" />
+            <Text className="ml-3 text-gray-700">Cargando gasolineras...</Text>
+          </View>
+        </View>
       )}
+
+      <FlatList
+        data={filteredBySearch}
+        keyExtractor={(item) => item.id}
+        renderItem={({ item }) => <GasStationCard station={item} />}
+        contentContainerStyle={{ paddingHorizontal: 16, paddingBottom: 16 }}
+        showsVerticalScrollIndicator={false}
+      />
     </View>
   );
 }
