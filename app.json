@@ -7,7 +7,6 @@
     "icon": "./assets/images/icon.png",
     "scheme": "gas-station-near-me",
     "userInterfaceStyle": "automatic",
-    "jsEngine": "hermes",
     "ios": {
       "supportsTablet": true,
       "bundleIdentifier": "dev.donmanuel.gas-station-near-me",
@@ -15,27 +14,10 @@
         "NSLocationWhenInUseUsageDescription": "Con el acceso a tu ubicación, podremos mostrar las gasolineras cercanas a ti.",
         "NSLocationAlwaysUsageDescription": "Con el acceso a tu ubicación, podremos mostrar las gasolineras cercanas a ti.",
         "ITSAppUsesNonExemptEncryption": false
-      },
-      "config": {
-        "googleMapsApiKey": "process.env.EXPO_PUBLIC_GOOGLE_MAPS_API_KEY"
-      },
-      "jsEngine": "jsc"
-    },
-    "android": {
-      "package": "dev.donmanuel.gas_station_near_me",
-      "config": {
-        "googleMaps": {
-          "apiKey": "process.env.EXPO_PUBLIC_GOOGLE_MAPS_API_KEY"
-        }
       }
     },
     "web": {
-      "bundler": "metro",
-      "output": "single",
-      "favicon": "./assets/images/favicon.png",
-      "config": {
-        "googleMapsApiKey": "process.env.EXPO_PUBLIC_GOOGLE_MAPS_API_KEY"
-      }
+      "bundler": "metro"
     },
     "plugins": [
       "expo-router",
