@@ -1,10 +1,13 @@
-import React from 'react';
+import { useState } from 'react';
 import { Alert, ScrollView, View, Text, TouchableOpacity, ActivityIndicator } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 import { SettingItem } from '~/components/SettingItem';
+import { LocationSelector } from '~/components/LocationSelector';
+import { LocationResult } from '~/types/location';
 import { useLocationStore } from '~/stores/locationStore';
 
 export default function SettingsTab() {
+  const [showLocationSelector, setShowLocationSelector] = useState(false);
   
   const { 
     userLocation, 
@@ -13,23 +16,16 @@ export default function SettingsTab() {
     isLoading, 
     error, 
     hasPermission, 
-    getCurrentLocation, 
     clearSelectedLocation,
-    clearError 
   } = useLocationStore();
 
   const handleLocationSettings = () => {
-    Alert.alert(
-      'Configuración de Ubicación',
-      'Para cambiar la ubicación, toca el indicador de ubicación en el mapa principal.',
-      [{ text: 'OK' }]
-    );
+    setShowLocationSelector(true);
   };
 
-  const handleLanguage = () => {
-    Alert.alert('Idioma', 'La aplicación está configurada en Español', [
-      { text: 'OK' },
-    ]);
+  const handleLocationSelect = (location: LocationResult) => {
+    // This will be handled by the LocationSelector component
+    setShowLocationSelector(false);
   };
 
   const handlePrivacy = () => {
@@ -147,12 +143,6 @@ export default function SettingsTab() {
           </TouchableOpacity>
         </View>
 
-        <SettingItem
-          icon={<Ionicons name="globe" size={28} color="#06b6d4" />}
-          title="Idioma"
-          subtitle="Español (Nicaragua)"
-          onPress={handleLanguage}
-        />
       </View>
 
       <View
@@ -207,10 +197,10 @@ export default function SettingsTab() {
           }}
         >
           <Text className="text-lg text-slate-800 font-bold text-center mb-1">
-            GasFinder Managua v1.0.0
+            Gas Station Finder Managua v1.0.0
           </Text>
           <Text className="text-sm text-slate-600 text-center">
-            Aplicación de estaciones de servicio
+            Aplicación de gasolineras en Nicaragua
           </Text>
         </View>
 
@@ -218,6 +208,13 @@ export default function SettingsTab() {
           Hecho con ❤️ para Nicaragua
         </Text>
       </View>
+
+      <LocationSelector
+        visible={showLocationSelector}
+        onClose={() => setShowLocationSelector(false)}
+        onSelectLocation={handleLocationSelect}
+        currentLocation={selectedLocation || userLocation}
+      />
     </ScrollView>
   );
 }

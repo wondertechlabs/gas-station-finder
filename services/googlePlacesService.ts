@@ -1,4 +1,4 @@
-import { GasStation } from '~/types/gasStation';
+import { GasStation, FuelType } from '~/types/gasStation';
 
 interface GooglePlaceResult {
   place_id: string;
@@ -23,6 +23,19 @@ interface GooglePlaceResult {
 interface GooglePlacesResponse {
   results: GooglePlaceResult[];
   status: string;
+}
+
+interface GooglePlaceDetails {
+  name: string;
+  formatted_address: string;
+  formatted_phone_number?: string;
+  opening_hours?: {
+    open_now: boolean;
+    weekday_text?: string[];
+  };
+  rating?: number;
+  user_ratings_total?: number;
+  types: string[];
 }
 
 export class GooglePlacesService {
@@ -81,7 +94,7 @@ export class GooglePlacesService {
     }
   }
 
-  static async getPlaceDetails(placeId: string): Promise<any> {
+  static async getPlaceDetails(placeId: string): Promise<GooglePlaceDetails | null> {
     if (!this.API_KEY) {
       return null;
     }
@@ -161,7 +174,7 @@ export class GooglePlacesService {
     return nicaraguaBrands[Math.floor(Math.random() * nicaraguaBrands.length)];
   }
 
-  private static generateFuelPrices(brand: string): any[] {
+  private static generateFuelPrices(brand: string): FuelType[] {
     const basePrices = {
       regular: 35.5,
       super: 37.2,
