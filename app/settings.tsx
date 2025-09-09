@@ -1,40 +1,29 @@
-import React, { useState } from 'react';
+import React from 'react';
 import { Alert, ScrollView, View, Text, TouchableOpacity, ActivityIndicator } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 import { SettingItem } from '~/components/SettingItem';
 import { useLocationStore } from '~/stores/locationStore';
 
 export default function SettingsTab() {
+  
   const { 
     userLocation, 
+    selectedLocation,
     address, 
     isLoading, 
     error, 
     hasPermission, 
     getCurrentLocation, 
+    clearSelectedLocation,
     clearError 
   } = useLocationStore();
 
   const handleLocationSettings = () => {
-    if (!hasPermission) {
-      Alert.alert(
-        'Permisos de Ubicación',
-        'La aplicación necesita acceso a tu ubicación para mostrar las gasolineras más cercanas.',
-        [
-          { text: 'Cancelar', style: 'cancel' },
-          { text: 'Permitir', onPress: getCurrentLocation },
-        ],
-      );
-    } else {
-      Alert.alert(
-        'Actualizar Ubicación',
-        '¿Quieres actualizar tu ubicación actual?',
-        [
-          { text: 'Cancelar', style: 'cancel' },
-          { text: 'Actualizar', onPress: getCurrentLocation },
-        ],
-      );
-    }
+    Alert.alert(
+      'Configuración de Ubicación',
+      'Para cambiar la ubicación, toca el indicador de ubicación en el mapa principal.',
+      [{ text: 'OK' }]
+    );
   };
 
   const handleLanguage = () => {
@@ -105,9 +94,18 @@ export default function SettingsTab() {
             </View>
             <View className="flex-1">
               <Text className="text-lg font-semibold text-gray-900 mb-1">
-                Ubicación Actual
+                {selectedLocation ? 'Ubicación Seleccionada' : 'Ubicación Actual'}
               </Text>
-              {error ? (
+              {selectedLocation ? (
+                <>
+                  <Text className="text-sm text-gray-600 mb-1" numberOfLines={2}>
+                    {selectedLocation.name}
+                  </Text>
+                  <Text className="text-xs text-gray-500">
+                    {selectedLocation.address}
+                  </Text>
+                </>
+              ) : error ? (
                 <Text className="text-sm text-red-600 mb-1">
                   {error}
                 </Text>
@@ -124,13 +122,28 @@ export default function SettingsTab() {
                   Permisos de ubicación requeridos
                 </Text>
               )}
-              {userLocation && (
+              {userLocation && !selectedLocation && (
                 <Text className="text-xs text-gray-500">
                   {userLocation.latitude.toFixed(4)}, {userLocation.longitude.toFixed(4)}
                 </Text>
               )}
+              {selectedLocation && (
+                <Text className="text-xs text-gray-500">
+                  {selectedLocation.latitude.toFixed(4)}, {selectedLocation.longitude.toFixed(4)}
+                </Text>
+              )}
             </View>
-            <Ionicons name="chevron-forward" size={20} color="#9ca3af" />
+            <View className="flex-row items-center">
+              {selectedLocation && (
+                <TouchableOpacity
+                  onPress={clearSelectedLocation}
+                  className="mr-3 p-2 bg-red-50 rounded-full"
+                >
+                  <Ionicons name="close" size={16} color="#dc2626" />
+                </TouchableOpacity>
+              )}
+              <Ionicons name="chevron-forward" size={20} color="#9ca3af" />
+            </View>
           </TouchableOpacity>
         </View>
 

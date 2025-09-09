@@ -4,11 +4,16 @@ import { useLocationStore } from '~/stores/locationStore';
 export const useLocation = () => {
   const {
     userLocation,
+    selectedLocation,
     address,
     isLoading,
     error,
     hasPermission,
+    showLocationModal,
     getCurrentLocation,
+    setSelectedLocation,
+    clearSelectedLocation,
+    setShowLocationModal,
     clearError,
   } = useLocationStore();
 
@@ -20,11 +25,16 @@ export const useLocation = () => {
 
   return {
     userLocation,
+    selectedLocation,
     address,
     isLoading,
     error,
     hasPermission,
+    showLocationModal,
     getCurrentLocation,
+    setSelectedLocation,
+    clearSelectedLocation,
+    setShowLocationModal,
     clearError,
   };
 };

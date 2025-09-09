@@ -12,8 +12,11 @@ const GAS_STATION_QUERY_KEYS = {
 } as const;
 
 export const useGasStations = () => {
-  const { userLocation } = useLocationStore();
+  const { userLocation, selectedLocation } = useLocationStore();
   const { searchQuery } = useGasStationStore();
+
+  // Usar ubicación seleccionada si existe, sino usar ubicación GPS
+  const currentLocation = selectedLocation || userLocation;
 
   const {
     data: gasStations = [],
@@ -21,23 +24,23 @@ export const useGasStations = () => {
     error,
     refetch,
   } = useQuery({
-    queryKey: userLocation
+    queryKey: currentLocation
       ? GAS_STATION_QUERY_KEYS.nearby(
-          userLocation.latitude,
-          userLocation.longitude,
+          currentLocation.latitude,
+          currentLocation.longitude,
         )
       : GAS_STATION_QUERY_KEYS.all,
     queryFn: async () => {
-      if (!userLocation) {
+      if (!currentLocation) {
         throw new Error('Ubicación no disponible');
       }
       return GasStationService.findNearby(
-        userLocation.latitude,
-        userLocation.longitude,
+        currentLocation.latitude,
+        currentLocation.longitude,
         MAP_CONFIG.DEFAULT_RADIUS,
       );
     },
-    enabled: !!userLocation,
+    enabled: !!currentLocation,
     staleTime: QUERY_CONFIG.STALE_TIME,
     gcTime: QUERY_CONFIG.GC_TIME,
     retry: QUERY_CONFIG.RETRY_ATTEMPTS,

@@ -1,5 +1,6 @@
 import { useMemo } from 'react';
 import { MAP_CONFIG } from '~/config/constants';
+import { useLocationStore } from '~/stores/locationStore';
 
 interface Location {
   latitude: number;
@@ -7,16 +8,21 @@ interface Location {
 }
 
 export const useMapRegion = (userLocation: Location | null) => {
+  const { selectedLocation } = useLocationStore();
+  
+  // Usar ubicación seleccionada si existe, sino usar ubicación GPS
+  const currentLocation = selectedLocation || userLocation;
+
   return useMemo(() => {
-    if (!userLocation) {
+    if (!currentLocation) {
       return MAP_CONFIG.MANAGUA_COORDINATES;
     }
 
     return {
-      latitude: userLocation.latitude,
-      longitude: userLocation.longitude,
+      latitude: currentLocation.latitude,
+      longitude: currentLocation.longitude,
       latitudeDelta: MAP_CONFIG.MANAGUA_COORDINATES.latitudeDelta,
       longitudeDelta: MAP_CONFIG.MANAGUA_COORDINATES.longitudeDelta,
     };
-  }, [userLocation]);
+  }, [currentLocation]);
 };

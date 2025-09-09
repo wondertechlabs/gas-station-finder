@@ -6,16 +6,30 @@ interface LocationState {
     latitude: number;
     longitude: number;
   } | null;
+  selectedLocation: {
+    latitude: number;
+    longitude: number;
+    name: string;
+    address: string;
+  } | null;
   address: string | null;
   isLoading: boolean;
   error: string | null;
   hasPermission: boolean;
+  showLocationModal: boolean;
 }
 
 interface LocationActions {
   setUserLocation: (
     location: { latitude: number; longitude: number } | null,
   ) => void;
+  setSelectedLocation: (location: {
+    latitude: number;
+    longitude: number;
+    name: string;
+    address: string;
+  } | null) => void;
+  clearSelectedLocation: () => void;
   setAddress: (address: string | null) => void;
   setLoading: (loading: boolean) => void;
   setError: (error: string | null) => void;
@@ -23,19 +37,30 @@ interface LocationActions {
   requestLocationPermission: () => Promise<boolean>;
   getCurrentLocation: () => Promise<void>;
   clearError: () => void;
+  setShowLocationModal: (show: boolean) => void;
 }
 
 type LocationStore = LocationState & LocationActions;
 
 export const useLocationStore = create<LocationStore>((set, get) => ({
   userLocation: null,
+  selectedLocation: null,
   address: null,
   isLoading: false,
   error: null,
   hasPermission: false,
+  showLocationModal: false,
 
   setUserLocation: (location) => {
     set({ userLocation: location });
+  },
+
+  setSelectedLocation: (location) => {
+    set({ selectedLocation: location });
+  },
+
+  clearSelectedLocation: () => {
+    set({ selectedLocation: null });
   },
 
   setAddress: (address) => {
@@ -56,6 +81,10 @@ export const useLocationStore = create<LocationStore>((set, get) => ({
 
   clearError: () => {
     set({ error: null });
+  },
+
+  setShowLocationModal: (show) => {
+    set({ showLocationModal: show });
   },
 
   requestLocationPermission: async () => {

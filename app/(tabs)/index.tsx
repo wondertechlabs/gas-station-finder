@@ -13,6 +13,7 @@ import { ErrorScreen } from '~/components/ErrorScreen';
 import { LoadingOverlay } from '~/components/LoadingOverlay';
 import { GasStationMarker } from '~/components/GasStationMarker';
 import { GasStationDetails } from '~/components/GasStationDetails';
+import { LocationSelectorBar } from '~/components/LocationSelectorBar';
 
 export default function GasStationMap() {
   const { selectedStation, setSelectedStation, clearSelection } =
@@ -70,6 +71,9 @@ export default function GasStationMap() {
   return (
     <View className="flex-1">
       <StatusBar style="dark" />
+      
+      <LocationSelectorBar />
+      
       <MapView
         provider={PROVIDER_GOOGLE}
         style={{ flex: 1 }}
