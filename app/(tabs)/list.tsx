@@ -1,8 +1,6 @@
-import React, { useState } from 'react';
 import {
   View,
   Text,
-  TextInput,
   FlatList,
   ActivityIndicator,
   TouchableOpacity,
@@ -13,20 +11,8 @@ import { useGasStations } from '~/hooks/useGasStations';
 import { useLocation } from '~/hooks/useLocation';
 
 export default function ListTab() {
-  const [searchQuery, setSearchQuery] = useState('');
   const { isLoading: locationLoading, error: locationError } = useLocation();
-  const { filteredStations, isLoading, error } = useGasStations();
-
-  const handleSearch = (query: string) => {
-    setSearchQuery(query);
-  };
-
-  const filteredBySearch = filteredStations.filter(
-    (station) =>
-      station.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
-      station.brand?.toLowerCase().includes(searchQuery.toLowerCase()) ||
-      station.address.toLowerCase().includes(searchQuery.toLowerCase()),
-  );
+  const { gasStations, isLoading, error } = useGasStations();
 
   if (locationLoading) {
     return (
@@ -73,42 +59,16 @@ export default function ListTab() {
     );
   }
 
-  if (filteredBySearch.length === 0) {
+  if (gasStations.length === 0) {
     return (
       <View className="flex-1 bg-slate-50">
-        <View className="px-4 pt-16 pb-4">
-          <View className="flex-row items-center bg-white rounded-2xl shadow-sm border border-gray-200 px-4 py-3">
-            <Ionicons name="search" size={20} color="#6b7280" />
-            <TextInput
-              className="flex-1 ml-3 text-gray-900 text-base"
-              placeholder="Buscar gasolineras en Managua..."
-              placeholderTextColor="#9ca3af"
-              value={searchQuery}
-              onChangeText={handleSearch}
-              returnKeyType="search"
-            />
-            {searchQuery.length > 0 && (
-              <TouchableOpacity
-                onPress={() => handleSearch('')}
-                className="ml-2"
-              >
-                <Ionicons name="close-circle" size={20} color="#9ca3af" />
-              </TouchableOpacity>
-            )}
-          </View>
-        </View>
-
         <View className="flex-1 justify-center items-center px-6">
           <Ionicons name="search-outline" size={64} color="#9ca3af" />
           <Text className="text-lg font-semibold text-gray-900 text-center mb-2 mt-4">
-            {searchQuery
-              ? 'No se encontraron resultados'
-              : 'No hay gasolineras disponibles'}
+            No hay gasolineras disponibles
           </Text>
           <Text className="text-gray-600 text-center">
-            {searchQuery
-              ? 'Intenta con otros términos de búsqueda'
-              : 'Verifica tu conexión a internet y la configuración de la API'}
+            Verifica tu conexión a internet y la configuración de la API
           </Text>
         </View>
       </View>
@@ -117,27 +77,8 @@ export default function ListTab() {
 
   return (
     <View className="flex-1 bg-slate-50">
-      <View className="px-4 pt-16 pb-4">
-        <View className="flex-row items-center bg-white rounded-2xl shadow-sm border border-gray-200 px-4 py-3">
-          <Ionicons name="search" size={20} color="#6b7280" />
-          <TextInput
-            className="flex-1 ml-3 text-gray-900 text-base"
-            placeholder="Buscar gasolineras en Managua..."
-            placeholderTextColor="#9ca3af"
-            value={searchQuery}
-            onChangeText={handleSearch}
-            returnKeyType="search"
-          />
-          {searchQuery.length > 0 && (
-            <TouchableOpacity onPress={() => handleSearch('')} className="ml-2">
-              <Ionicons name="close-circle" size={20} color="#9ca3af" />
-            </TouchableOpacity>
-          )}
-        </View>
-      </View>
-
       {isLoading && (
-        <View className="px-4 mb-4">
+        <View className="px-4 pt-13 pb-4">
           <View className="bg-white rounded-lg p-4 shadow-sm flex-row items-center">
             <ActivityIndicator size="small" color="#22C55E" />
             <Text className="ml-3 text-gray-700">Cargando gasolineras...</Text>
@@ -146,10 +87,13 @@ export default function ListTab() {
       )}
 
       <FlatList
-        data={filteredBySearch}
+        data={gasStations}
         keyExtractor={(item) => item.id}
         renderItem={({ item }) => <GasStationCard station={item} />}
-        contentContainerStyle={{ paddingHorizontal: 16, paddingBottom: 16 }}
+        contentContainerStyle={{
+          paddingTop: 12,
+          paddingBottom: 12,
+        }}
         showsVerticalScrollIndicator={false}
       />
     </View>
