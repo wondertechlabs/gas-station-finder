@@ -4,29 +4,8 @@ import { Stack, SplashScreen } from 'expo-router';
 import { GestureHandlerRootView } from 'react-native-gesture-handler';
 import { useEffect } from 'react';
 import { useFonts } from 'expo-font';
-import { QueryClient } from '@tanstack/react-query';
 import { PersistQueryClientProvider } from '@tanstack/react-query-persist-client';
-import { createAsyncStoragePersister } from '@tanstack/query-async-storage-persister';
-import AsyncStorage from '@react-native-async-storage/async-storage';
-
-const queryClient = new QueryClient({
-  defaultOptions: {
-    queries: {
-      staleTime: 5 * 60 * 1000, // 5 minutes
-      gcTime: 10 * 60 * 1000, // 10 minutes
-      retry: 3,
-      networkMode: 'online',
-    },
-    mutations: {
-      retry: 1,
-    },
-  },
-});
-
-const asyncStoragePersister = createAsyncStoragePersister({
-  storage: AsyncStorage,
-  key: 'GAS_STATION_QUERY_CACHE',
-});
+import { queryClient, asyncStoragePersister } from '~/api/useQueryClient';
 
 export const unstable_settings = {
   initialRouteName: '(tabs)',

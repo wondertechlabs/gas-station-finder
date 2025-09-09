@@ -3,6 +3,13 @@ import { useMemo } from 'react';
 import { GasStationService } from '~/services/gasStationService';
 import { useGasStationStore } from '~/stores/gasStationStore';
 import { useLocationStore } from '~/stores/locationStore';
+import { MAP_CONFIG, QUERY_CONFIG } from '~/config/constants';
+
+const GAS_STATION_QUERY_KEYS = {
+  all: ['gasStations'] as const,
+  nearby: (lat: number, lng: number) =>
+    [...GAS_STATION_QUERY_KEYS.all, 'nearby', lat, lng] as const,
+} as const;
 
 export const useGasStations = () => {
   const { userLocation } = useLocationStore();
@@ -14,7 +21,12 @@ export const useGasStations = () => {
     error,
     refetch,
   } = useQuery({
-    queryKey: ['gasStations', userLocation?.latitude, userLocation?.longitude],
+    queryKey: userLocation
+      ? GAS_STATION_QUERY_KEYS.nearby(
+          userLocation.latitude,
+          userLocation.longitude,
+        )
+      : GAS_STATION_QUERY_KEYS.all,
     queryFn: async () => {
       if (!userLocation) {
         throw new Error('Ubicación no disponible');
@@ -22,12 +34,14 @@ export const useGasStations = () => {
       return GasStationService.findNearby(
         userLocation.latitude,
         userLocation.longitude,
-        10000,
+        MAP_CONFIG.DEFAULT_RADIUS,
       );
     },
     enabled: !!userLocation,
-    staleTime: 5 * 60 * 1000, // 5 minutes
-    gcTime: 10 * 60 * 1000, // 10 minutes
+    staleTime: QUERY_CONFIG.STALE_TIME,
+    gcTime: QUERY_CONFIG.GC_TIME,
+    retry: QUERY_CONFIG.RETRY_ATTEMPTS,
+    retryDelay: QUERY_CONFIG.RETRY_DELAY,
   });
 
   const filteredStations = useMemo(() => {
@@ -35,11 +49,12 @@ export const useGasStations = () => {
       return gasStations;
     }
 
+    const query = searchQuery.toLowerCase();
     return gasStations.filter(
       (station) =>
-        station.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
-        station.brand?.toLowerCase().includes(searchQuery.toLowerCase()) ||
-        station.address.toLowerCase().includes(searchQuery.toLowerCase()),
+        station.name.toLowerCase().includes(query) ||
+        station.brand?.toLowerCase().includes(query) ||
+        station.address.toLowerCase().includes(query),
     );
   }, [gasStations, searchQuery]);
 
