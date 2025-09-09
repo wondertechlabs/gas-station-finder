@@ -55,11 +55,11 @@ export class GooglePlacesService {
     radius: number = 5000,
   ): Promise<GasStation[]> {
     if (!this.API_KEY) {
-      console.warn('Google Maps API Key not found, using mock data');
+      console.warn('Google Maps API Key not found');
       console.log(
         'Para usar datos reales, configura EXPO_PUBLIC_GOOGLE_MAPS_API_KEY en tu archivo .env',
       );
-      return this.getMockData();
+      return [];
     }
 
     try {
@@ -82,13 +82,13 @@ export class GooglePlacesService {
           console.log('2. La API Key tenga permisos para Places API');
           console.log('3. No haya restricciones de IP o dominio');
         }
-        return this.getMockData();
+        return [];
       }
 
       return this.transformGooglePlacesToGasStations(data.results);
     } catch (error) {
       console.error('Error fetching gas stations from Google Places:', error);
-      return this.getMockData();
+      return [];
     }
   }
 
@@ -243,29 +243,5 @@ export class GooglePlacesService {
     const areaCode = areaCodes[Math.floor(Math.random() * areaCodes.length)];
     const number = Math.floor(Math.random() * 90000000) + 10000000;
     return `+${areaCode} ${number}`;
-  }
-
-  private static getMockData(): GasStation[] {
-    return [
-      {
-        id: 'mock-1',
-        name: 'Shell Centroamérica',
-        brand: 'Shell',
-        address: 'Carretera Norte, Managua, Nicaragua',
-        coordinates: { latitude: 12.1364, longitude: -86.2514 },
-        rating: 4.2,
-        isOpen: true,
-        is24Hours: false,
-        phone: '+505 2222-0000',
-        fuelTypes: [
-          { type: 'regular', displayName: 'Regular', price: 35.5 },
-          { type: 'super', displayName: 'Super', price: 37.2 },
-          { type: 'diesel', displayName: 'Diesel', price: 33.8 },
-        ],
-        amenities: ['Tienda', 'Cajero Automático', 'Lavado de Auto'],
-        distance: 0.5,
-        lastUpdated: new Date().toISOString(),
-      },
-    ];
   }
 }

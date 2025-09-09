@@ -6,8 +6,6 @@ import { GasStation } from '~/types/gasStation';
 import { useState, useEffect, useCallback } from 'react';
 import * as Linking from 'expo-linking';
 import * as Location from 'expo-location';
-import { SearchBar } from '~/components/SearchBar';
-import { FilterModal } from '~/components/FilterModal';
 import { useGasStationFilters } from '~/hooks/useGasStationFilters';
 import MapView, { Marker, PROVIDER_GOOGLE } from 'react-native-maps';
 
@@ -17,19 +15,13 @@ export default function GasStationMap() {
     null,
   );
   const [isLoading, setIsLoading] = useState(true);
-  const [showFilters, setShowFilters] = useState(false);
   const [userLocation, setUserLocation] = useState<{
     latitude: number;
     longitude: number;
   } | null>(null);
 
-  const {
-    filteredStations,
-    filters,
-    handleSearch,
-    handleApplyFilters,
-    hasActiveFilters,
-  } = useGasStationFilters(gasStations);
+  const { filteredStations, handleSearch, hasActiveFilters } =
+    useGasStationFilters(gasStations);
 
   useEffect(() => {
     const loadGasStations = async () => {
@@ -92,10 +84,6 @@ export default function GasStationMap() {
     Linking.openURL(url);
   }, []);
 
-  const handleFilterPress = useCallback(() => {
-    setShowFilters(true);
-  }, []);
-
   const handleMarkerPress = useCallback((station: GasStation) => {
     setSelectedStation(station);
   }, []);
@@ -156,25 +144,6 @@ export default function GasStationMap() {
         ))}
       </MapView>
 
-      {/* Search Bar */}
-      <View className="absolute top-12 left-0 right-0">
-        <SearchBar
-          onSearch={handleSearch}
-          onFilterPress={handleFilterPress}
-          placeholder="Buscar gasolineras en Managua..."
-        />
-        {hasActiveFilters && (
-          <View className="mx-4 mb-2">
-            <View className="bg-blue-50 border border-blue-200 rounded-xl px-4 py-2">
-              <Text className="text-sm text-blue-700 text-center">
-                Filtros activos - {filteredStations.length} gasolineras
-                encontradas
-              </Text>
-            </View>
-          </View>
-        )}
-      </View>
-
       {/* Header con información de gasolineras */}
       <View className="absolute top-32 left-4 right-4">
         <View className="bg-white rounded-2xl shadow-lg p-4">
@@ -185,12 +154,6 @@ export default function GasStationMap() {
               </Text>
               <Text className="text-sm text-gray-600">
                 {filteredStations.length} de {gasStations.length} estaciones
-              </Text>
-            </View>
-            <View className="flex-row items-center bg-green-50 px-3 py-2 rounded-full">
-              <Ionicons name="location" size={16} color="#10b981" />
-              <Text className="text-sm font-medium text-green-700 ml-1">
-                Managua, Nicaragua
               </Text>
             </View>
           </View>
@@ -333,14 +296,6 @@ export default function GasStationMap() {
           </TouchableOpacity>
         </View>
       )}
-
-      {/* Filter Modal */}
-      <FilterModal
-        visible={showFilters}
-        onClose={() => setShowFilters(false)}
-        onApplyFilters={handleApplyFilters}
-        currentFilters={filters}
-      />
     </View>
   );
 }

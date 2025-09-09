@@ -6,10 +6,10 @@ import {
   ActivityIndicator,
   Text,
 } from 'react-native';
+import * as Location from 'expo-location';
 import { GasStationService } from '~/services/gasStationService';
 import { GasStation } from '~/types/gasStation';
 import { GasStationCard } from '~/components/GasStationCard';
-import { SearchBar } from '~/components/SearchBar';
 
 export default function ListTab() {
   const [gasStations, setGasStations] = useState<GasStation[]>([]);
@@ -29,7 +29,36 @@ export default function ListTab() {
   const loadGasStations = async () => {
     try {
       setLoading(true);
-      const stations = await GasStationService.findNearby();
+
+      const { status } = await Location.requestForegroundPermissionsAsync();
+      if (status !== 'granted') {
+        console.log('Location permission denied');
+      }
+
+      let location = { latitude: 12.1364, longitude: -86.2514 };
+      try {
+        const currentLocation = await Location.getCurrentPositionAsync({
+          accuracy: Location.Accuracy.Balanced,
+        });
+        location = {
+          latitude: currentLocation.coords.latitude,
+          longitude: currentLocation.coords.longitude,
+        };
+      } catch (locationError) {
+        console.log('Using Managua default location');
+      }
+
+      const stations = await GasStationService.findNearby(
+        location.latitude,
+        location.longitude,
+        10000,
+      );
+
+      if (stations.length === 0) {
+        console.log('No se encontraron gasolineras reales, verificando API...');
+        return;
+      }
+
       setGasStations(stations);
     } catch (error) {
       console.error('Error loading gas stations:', error);
@@ -77,24 +106,32 @@ export default function ListTab() {
 
   return (
     <View className="flex-1 bg-slate-50">
-      <SearchBar
-        onSearch={setSearchQuery}
-        onFilterPress={() => {}}
-        placeholder="Buscar estaciones..."
-      />
-
-      <FlatList
-        data={filteredStations}
-        renderItem={renderGasStation}
-        keyExtractor={(item) => item.id}
-        refreshControl={
-          <RefreshControl
-            refreshing={refreshing}
-            onRefresh={onRefresh}
-            colors={['#2563eb']}
-          />
-        }
-      />
+      {gasStations.length === 0 ? (
+        <View className="flex-1 justify-center items-center px-6">
+          <Text className="text-lg font-semibold text-gray-900 text-center mb-2">
+            No se encontraron gasolineras
+          </Text>
+          <Text className="text-sm text-gray-600 text-center mb-4">
+            Verifica tu conexión a internet y la configuración de la API Key
+          </Text>
+          <Text className="text-xs text-gray-500 text-center">
+            Asegúrate de que Places API esté habilitada en Google Cloud Console
+          </Text>
+        </View>
+      ) : (
+        <FlatList
+          data={filteredStations}
+          renderItem={renderGasStation}
+          keyExtractor={(item) => item.id}
+          refreshControl={
+            <RefreshControl
+              refreshing={refreshing}
+              onRefresh={onRefresh}
+              colors={['#2563eb']}
+            />
+          }
+        />
+      )}
     </View>
   );
 }

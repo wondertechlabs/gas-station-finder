@@ -22,14 +22,3 @@ export interface FuelType {
   price: number;
   displayName: string;
 }
-
-export const NICARAGUA_GAS_BRANDS = [
-  'Puma Energy',
-  'DNP Petronic',
-  'UNO',
-  'Shell',
-  'Texaco',
-  'Esso',
-  'Independiente',
-  'Local',
-] as const;
