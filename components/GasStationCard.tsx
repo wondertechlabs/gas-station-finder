@@ -124,7 +124,7 @@ export function GasStationCard({ station }: GasStationCardProps) {
       </View>
 
       <TouchableOpacity
-        className="flex-row items-center justify-center bg-blue-600 py-4 rounded-2xl gap-2"
+        className="flex-row items-center justify-center bg-primary-500 py-4 rounded-2xl gap-2"
         onPress={handleNavigatePress}
       >
         <Ionicons name="navigate" size={18} color="white" />
