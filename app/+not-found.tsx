@@ -1,10 +1,11 @@
 import { Link, Stack } from 'expo-router';
 import { Text, View } from 'react-native';
-import { SafeAreaView } from 'react-native-safe-area-context';
+import { StatusBar } from "expo-status-bar";
 
 export default function NotFoundScreen() {
   return (
-    <SafeAreaView className="flex-1 bg-slate-50">
+    <View className="flex-1 justify-center items-center">
+      <StatusBar style="dark" />
       <Stack.Screen options={{ title: 'Oops!' }} />
       <View className="flex-1 justify-center items-center">
         <Text className="text-4xl font-bold text-slate-900">404</Text>
@@ -21,6 +22,6 @@ export default function NotFoundScreen() {
           </Link>
         </View>
       </View>
-    </SafeAreaView>
+    </View>
   );
 }

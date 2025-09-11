@@ -4,7 +4,6 @@ import { StatusBar } from "expo-status-bar";
 import { router } from 'expo-router';
 import MapView, { PROVIDER_GOOGLE } from 'react-native-maps';
 import { GasStation } from '~/types/gasStation';
-import { useGasStationStore } from '~/stores/gasStationStore';
 import { useGasStations } from '~/hooks/useGasStations';
 import { useLocation } from '~/hooks/useLocation';
 import { useMapRegion } from '~/hooks/useMapRegion';
