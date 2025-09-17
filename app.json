@@ -28,14 +28,6 @@
         {
           "locationAlwaysAndWhenInUsePermission": "Con el acceso a tu ubicación, podremos mostrar las gasolineras cercanas a ti."
         }
-      ],
-      [
-        "@sentry/react-native/expo",
-        {
-          "url": "https://sentry.io/",
-          "project": "gas-station-finder",
-          "organization": "don-manuel"
-        }
       ]
     ],
     "experiments": {
