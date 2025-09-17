@@ -1,132 +1,127 @@
-# Gas Station Finder - Managua
+# Gas Station Finder - Nicaragua
 
-Una aplicación móvil desarrollada con React Native y Expo para encontrar gasolineras en la ciudad de Managua, Nicaragua.
+## App Store Connect - Ficha de Aplicación
 
-## 🚀 Características
+### **App Name**
 
-- **Lista de gasolineras** con información detallada
-- **Búsqueda en tiempo real** por nombre, marca o dirección
-- **Filtros avanzados** por marca, servicios, estado y calificación
-- **Información detallada** de cada gasolinera
-- **Navegación integrada** con Apple Maps
-- **Llamadas directas** a las gasolineras
-- **Diseño moderno** con NativeWind (Tailwind CSS)
+Gas Station Finder Nicaragua
 
-## 🛠️ Tecnologías
+### **Subtitle**
 
-- **React Native** con Expo
-- **TypeScript** para type safety
-- **NativeWind** para estilos
-- **FlatList** para listas optimizadas
-- **Zustand** para estado global
-- **TanStack Query** para manejo de datos
+Encuentra gasolineras en todo Nicaragua
 
-## 📱 Funcionalidades
+### **Promotional Text**
 
-### Pantalla Principal
-- Lista de gasolineras con tarjetas informativas
-- Información de estado (abierto/cerrado, 24 horas)
-- Contador de gasolineras disponibles
-- Diseño optimizado para móviles
+¡La forma más fácil de encontrar gasolineras en Nicaragua! Con cobertura completa de todos los departamentos, desde Managua hasta Bluefields. Navega con confianza sabiendo dónde está la gasolinera más cercana.
 
-### Búsqueda y Filtros
-- Búsqueda por texto en tiempo real
-- Filtros por marca (Shell, Petronic, UNO Gas, etc.)
-- Filtros por servicios (Tienda, ATM, Lavado, etc.)
-- Filtros por estado (abierto, 24 horas)
-- Filtros por calificación mínima
+### **Description**
 
-### Detalles de Gasolinera
-- Información completa de la gasolinera
-- Precios de combustible actualizados
-- Servicios disponibles
-- Calificación y número de teléfono
-- Botones de acción (direcciones, llamar)
+**Encuentra gasolineras en toda Nicaragua con facilidad**
 
-## 🚀 Instalación
+Gas Station Finder Nicaragua es la aplicación definitiva para conductores nicaragüenses. Con cobertura completa de todos los departamentos y regiones autónomas, nunca más te quedarás sin combustible.
 
-1. Clona el repositorio:
-```bash
-git clone https://github.com/tu-usuario/gas-station-finder.git
-cd gas-station-finder
-```
+**🚗 Características principales:**
+• **Mapa interactivo** - Visualiza gasolineras en tiempo real con Google Maps
+• **Cobertura nacional** - Todos los 15 departamentos y 2 regiones autónomas
+• **Búsqueda inteligente** - Encuentra gasolineras por ubicación o departamento
+• **Información detallada** - Precios, servicios, horarios y calificaciones
+• **Navegación integrada** - Direcciones directas a Apple Maps
+• **Optimización de datos** - API calls inteligentes para ahorrar costos
 
-2. Instala las dependencias:
-```bash
-bun install
-```
+**📍 Departamentos incluidos:**
+Managua, León, Granada, Masaya, Matagalpa, Estelí, Jinotega, Chinandega, Boaco, Carazo, Chontales, Madriz, Nueva Segovia, Río San Juan, Rivas, Costa Caribe Norte y Costa Caribe Sur.
 
-3. Inicia el servidor de desarrollo:
-```bash
-bun start
-```
+**⛽ Información de gasolineras:**
+• Precios actualizados de combustible (Regular, Super, Diesel)
+• Servicios disponibles (Tienda, ATM, Lavado, etc.)
+• Horarios de operación y estado actual
+• Calificaciones y reseñas
+• Números de teléfono para contacto
 
-4. Ejecuta en dispositivo:
-```bash
-# iOS
-bun run ios
+**🎯 Perfecto para:**
+• Conductores que viajan por Nicaragua
+• Residentes que buscan la gasolinera más cercana
+• Viajeros que necesitan planificar rutas
+• Empresarios del sector transporte
 
-# Android
-bun run android
-```
+**🔧 Tecnología avanzada:**
+• Optimización de costos de API
+• Caché inteligente para uso offline
+• Interfaz moderna y fácil de usar
+• Actualizaciones en tiempo real
 
-## 📁 Estructura del Proyecto
+Descarga Gas Station Finder Nicaragua y nunca más te quedes sin combustible en tu viaje por Nicaragua.
 
-```
-├── app/                    # Pantallas con Expo Router
-│   ├── (tabs)/            # Navegación por tabs
-│   │   ├── index.tsx      # Pantalla principal con lista
-│   │   └── list.tsx       # Lista adicional de gasolineras
-├── components/            # Componentes reutilizables
-│   ├── GasStationCard.tsx # Tarjeta de gasolinera
-│   ├── SearchBar.tsx      # Barra de búsqueda
-│   └── FilterModal.tsx    # Modal de filtros
-├── hooks/                 # Hooks personalizados
-│   └── useGasStationFilters.ts
-├── services/              # Servicios de datos
-│   └── gasStationService.ts
-├── types/                 # Definiciones de tipos
-│   └── gasStation.ts
-└── assets/               # Recursos estáticos
-```
+### **What's New in This Version**
 
-## 🎨 Diseño
+**Versión 1.0.0 - Lanzamiento Inicial**
 
-La aplicación utiliza un diseño moderno y limpio con:
-- **Colores principales**: Verde para gasolineras, azul para acciones
-- **Tipografía**: Sistema nativo con pesos semibold y bold
-- **Espaciado**: Consistente usando Tailwind CSS
-- **Componentes**: Reutilizables y accesibles
+🎉 **¡Primera versión disponible!**
 
-## 📊 Datos
+**Nuevas características:**
+• Mapa interactivo con gasolineras en tiempo real
+• Cobertura completa de todos los departamentos de Nicaragua
+• Búsqueda inteligente por ubicación y departamento
+• Información detallada de gasolineras con precios actualizados
+• Navegación integrada con Apple Maps
+• Interfaz moderna y optimizada para iOS
+• Optimización de costos de API para mejor rendimiento
+• Caché local para uso offline
 
-Actualmente la aplicación utiliza datos mock de gasolineras en Managua, incluyendo:
-- 12 gasolineras distribuidas por la ciudad
-- Información realista de precios de combustible
-- Servicios y amenidades disponibles
-- Horarios de operación
+**Departamentos incluidos:**
+✅ Managua, León, Granada, Masaya
+✅ Matagalpa, Estelí, Jinotega, Chinandega
+✅ Boaco, Carazo, Chontales, Madriz
+✅ Nueva Segovia, Río San Juan, Rivas
+✅ Costa Caribe Norte y Costa Caribe Sur
 
-## 🔮 Próximas Características
+**Servicios de gasolineras:**
+• Precios de Regular, Super y Diesel
+• Servicios: Tienda, ATM, Lavado, Baños, WiFi
+• Horarios de operación y estado actual
+• Calificaciones y información de contacto
 
-- [ ] Integración con API real de gasolineras
-- [ ] Precios actualizados en tiempo real
-- [ ] Notificaciones de precios bajos
-- [ ] Historial de gasolineras visitadas
-- [ ] Modo offline
-- [ ] Integración con Google Maps
+¡Comienza a explorar las gasolineras de Nicaragua hoy mismo!
 
-## 🤝 Contribuir
+### **Keywords**
 
-1. Fork el proyecto
-2. Crea una rama para tu feature (`git checkout -b feature/AmazingFeature`)
-3. Commit tus cambios (`git commit -m 'Add some AmazingFeature'`)
-4. Push a la rama (`git push origin feature/AmazingFeature`)
-5. Abre un Pull Request
+gasolinera, gas station, nicaragua, managua, combustible, fuel, mapa, map, navegacion, navigation, puma, shell, petronic, uno, texaco, esso, diesel, regular, super, leon, granada, masaya, matagalpa, esteli, jinotega, chinandega, boaco, carazo, chontales, madriz, nueva segovia, rivas, costa caribe, bluefields, puerto cabezas, viaje, travel, conductor, driver, auto, car, vehiculo, vehicle
 
-## 📄 Licencia
+### **App Store Categories**
 
-Este proyecto está bajo la Licencia MIT - ver el archivo [LICENSE](LICENSE) para detalles.
+- **Primary Category:** Navigation
+- **Secondary Category:** Travel
 
-## 👨‍💻 Autor
+### **Age Rating**
 
-Desarrollado con ❤️ para la comunidad de Managua, Nicaragua.
+4+ (Suitable for all ages)
+
+### **Pricing**
+
+Free
+
+### **Availability**
+
+Nicaragua, United States, Costa Rica, Honduras, El Salvador, Guatemala, Panama
+
+### **Languages**
+
+- Spanish (Primary)
+- English (Secondary)
+
+### **App Store Optimization (ASO)**
+
+- **Title:** Gas Station Finder Nicaragua
+- **Subtitle:** Encuentra gasolineras en todo Nicaragua
+- **Keywords:** 100 characters optimized for Nicaragua gas station search
+- **Screenshots:** 6.7" iPhone, 6.5" iPhone, 5.5" iPhone, 12.9" iPad Pro
+- **App Preview:** 30-second video showcasing map functionality
+
+### **Marketing Assets Needed**
+
+- App icon (1024x1024)
+- Screenshots for all device sizes
+- App preview video
+- Marketing website
+- Social media assets
+- Press release
