@@ -43,7 +43,6 @@ function RootLayoutNav() {
     >
       <GestureHandlerRootView style={{ flex: 1 }}>
         <Stack screenOptions={{ headerShown: false }}>
-          <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
           <Stack.Screen
             name="settings"
             options={{
@@ -52,7 +51,6 @@ function RootLayoutNav() {
               presentation: 'formSheet',
             }}
           />
-          <Stack.Screen name="+not-found" />
           <Stack.Screen
             name="gas-station-details"
             options={{
@@ -61,6 +59,7 @@ function RootLayoutNav() {
               presentation: 'pageSheet',
             }}
           />
+          <Stack.Screen name="+not-found" />
         </Stack>
       </GestureHandlerRootView>
     </PersistQueryClientProvider>
