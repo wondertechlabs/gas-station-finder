@@ -5,15 +5,15 @@ export const MAP_CONFIG = {
     latitudeDelta: 0.0922,
     longitudeDelta: 0.0421,
   },
-  DEFAULT_RADIUS: 10000, // 10km
+  DEFAULT_RADIUS: 10000,
 } as const;
 
 export const QUERY_CONFIG = {
-  STALE_TIME: 30 * 60 * 1000, // 30 minutes - Gas stations don't change frequently
-  GC_TIME: 2 * 60 * 60 * 1000, // 2 hours - Keep in cache longer
-  RETRY_ATTEMPTS: 2, // Reduce retry attempts
+  STALE_TIME: 30 * 60 * 1000,
+  GC_TIME: 2 * 60 * 60 * 1000,
+  RETRY_ATTEMPTS: 2,
   RETRY_DELAY: (attemptIndex: number) =>
-    Math.min(1000 * 2 ** attemptIndex, 10000), // Max 10 seconds
+    Math.min(1000 * 2 ** attemptIndex, 10000),
 } as const;
 
 export const COLORS = {

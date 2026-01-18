@@ -9,7 +9,6 @@ import { useLocation } from '~/hooks/useLocation';
 import { useMapRegion } from '~/hooks/useMapRegion';
 import { LoadingScreen } from '~/components/ui/LoadingScreen';
 import { ErrorScreen } from '~/components/ui/ErrorScreen';
-import { LoadingOverlay } from '~/components/ui/LoadingOverlay';
 import { GasStationMarker } from '~/components/gas-station/GasStationMarker';
 import { LocationSelectorBar } from '~/components/location/LocationSelectorBar';
 
@@ -66,7 +65,6 @@ export default function GasStationMap() {
 
   return (
     <View className="flex-1">
-      <StatusBar style="dark" />
       
       <LocationSelectorBar />
       
@@ -85,8 +83,6 @@ export default function GasStationMap() {
           />
         ))}
       </MapView>
-
-      <LoadingOverlay visible={isLoading} message="Cargando gasolineras..." />
     </View>
   );
 }

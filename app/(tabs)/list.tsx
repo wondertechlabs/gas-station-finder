@@ -6,7 +6,6 @@ import { useLocation } from '~/hooks/useLocation';
 import { LoadingScreen } from '~/components/ui/LoadingScreen';
 import { ErrorScreen } from '~/components/ui/ErrorScreen';
 import { EmptyState } from '~/components/ui/EmptyState';
-import { LoadingOverlay } from '~/components/ui/LoadingOverlay';
 import { StatusBar } from "expo-status-bar";
 
 export default function ListTab() {
@@ -62,8 +61,6 @@ export default function ListTab() {
   return (
     <View className="flex-1 bg-slate-50">
       <StatusBar style="dark" />
-      <LoadingOverlay visible={isLoading} message="Cargando gasolineras..." />
-
       <FlatList
         data={gasStations}
         keyExtractor={keyExtractor}
