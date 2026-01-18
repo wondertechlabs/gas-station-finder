@@ -22,11 +22,11 @@ interface GooglePlaceResult {
   business_status?: string;
 }
 
-type GooglePlacesStatus = 
-  | 'OK' 
-  | 'ZERO_RESULTS' 
-  | 'OVER_QUERY_LIMIT' 
-  | 'REQUEST_DENIED' 
+type GooglePlacesStatus =
+  | 'OK'
+  | 'ZERO_RESULTS'
+  | 'OVER_QUERY_LIMIT'
+  | 'REQUEST_DENIED'
   | 'INVALID_REQUEST'
   | 'UNKNOWN_ERROR';
 
@@ -48,7 +48,7 @@ interface GooglePlaceDetails {
   types: string[];
 }
 
-type BrandName = 
+type BrandName =
   | 'Puma Energy'
   | 'DNP Petronic'
   | 'UNO'
@@ -91,26 +91,26 @@ export class GooglePlacesService {
       const url = `${this.BASE_URL}/nearbysearch/json?location=${latitude},${longitude}&radius=${radius}&type=gas_station&key=${this.API_KEY}`;
 
       const response = await fetch(url);
-      
+
       if (!response.ok) {
         throw new Error(`HTTP error: ${response.status}`);
       }
-      
+
       const data: GooglePlacesResponse = await response.json();
 
       if (data.status === 'ZERO_RESULTS') {
         // Return empty array instead of throwing error for no results
         return [];
       }
-      
+
       if (data.status !== 'OK') {
         throw new Error(`Google Places API error: ${data.status}`);
       }
 
       return this.transformGooglePlacesToGasStations(data.results);
     } catch (error) {
-      const errorMessage = error instanceof Error 
-        ? error.message 
+      const errorMessage = error instanceof Error
+        ? error.message
         : 'Error fetching gas stations from Google Places';
       throw new Error(errorMessage);
     }

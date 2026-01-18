@@ -7,11 +7,11 @@ import { GasStation } from '~/types/gasStation';
 import { useGasStations } from '~/hooks/useGasStations';
 import { useLocation } from '~/hooks/useLocation';
 import { useMapRegion } from '~/hooks/useMapRegion';
-import { LoadingScreen } from '~/components/LoadingScreen';
-import { ErrorScreen } from '~/components/ErrorScreen';
-import { LoadingOverlay } from '~/components/LoadingOverlay';
-import { GasStationMarker } from '~/components/GasStationMarker';
-import { LocationSelectorBar } from '~/components/LocationSelectorBar';
+import { LoadingScreen } from '~/components/ui/LoadingScreen';
+import { ErrorScreen } from '~/components/ui/ErrorScreen';
+import { LoadingOverlay } from '~/components/ui/LoadingOverlay';
+import { GasStationMarker } from '~/components/gas-station/GasStationMarker';
+import { LocationSelectorBar } from '~/components/location/LocationSelectorBar';
 
 export default function GasStationMap() {
   const {

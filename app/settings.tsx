@@ -1,8 +1,8 @@
 import { useState } from 'react';
 import { Alert, ScrollView, View, Text, TouchableOpacity, ActivityIndicator } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
-import { SettingItem } from '~/components/SettingItem';
-import { LocationSelector } from '~/components/LocationSelector';
+import { SettingItem } from '~/components/settings/SettingItem';
+import { LocationSelector } from '~/components/location/LocationSelector';
 import { LocationResult } from '~/types/location';
 import { useLocationStore } from '~/stores/locationStore';
 

@@ -1,12 +1,12 @@
 import { useCallback, useMemo } from 'react';
 import { View, FlatList } from 'react-native';
-import { GasStationCard } from '~/components/GasStationCard';
+import { GasStationCard } from '~/components/gas-station/GasStationCard';
 import { useGasStations } from '~/hooks/useGasStations';
 import { useLocation } from '~/hooks/useLocation';
-import { LoadingScreen } from '~/components/LoadingScreen';
-import { ErrorScreen } from '~/components/ErrorScreen';
-import { EmptyState } from '~/components/EmptyState';
-import { LoadingOverlay } from '~/components/LoadingOverlay';
+import { LoadingScreen } from '~/components/ui/LoadingScreen';
+import { ErrorScreen } from '~/components/ui/ErrorScreen';
+import { EmptyState } from '~/components/ui/EmptyState';
+import { LoadingOverlay } from '~/components/ui/LoadingOverlay';
 import { StatusBar } from "expo-status-bar";
 
 export default function ListTab() {

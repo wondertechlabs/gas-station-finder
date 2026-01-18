@@ -5,7 +5,7 @@ import { GestureHandlerRootView } from 'react-native-gesture-handler';
 import { useEffect } from 'react';
 import { useFonts } from 'expo-font';
 import { PersistQueryClientProvider } from '@tanstack/react-query-persist-client';
-import { queryClient, asyncStoragePersister } from '~/api/useQueryClient';
+import { queryClient, asyncStoragePersister } from '~/lib/queryClient';
 
 export const unstable_settings = {
   initialRouteName: '(tabs)',
