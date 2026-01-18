@@ -11,8 +11,8 @@
       "supportsTablet": true,
       "bundleIdentifier": "dev.donmanuel.gas-station-near-me",
       "infoPlist": {
-        "NSLocationWhenInUseUsageDescription": "Con el acceso a tu ubicación, podremos mostrar las gasolineras cercanas a ti.",
-        "NSLocationAlwaysUsageDescription": "Con el acceso a tu ubicación, podremos mostrar las gasolineras cercanas a ti.",
+        "NSLocationWhenInUseUsageDescription": "Con el acceso a tu ubicación, podremos mostrar las gasolineras cercanas a ti",
+        "NSLocationAlwaysUsageDescription": "Con el acceso a tu ubicación, podremos mostrar las gasolineras cercanas a ti",
         "ITSAppUsesNonExemptEncryption": false
       }
     },
@@ -40,6 +40,6 @@
         "projectId": "3e60f601-fd0a-451c-9dd6-ab95cf0919a8"
       }
     },
-    "owner": "donmanuel"
+    "owner": "manuelduarte077"
   }
 }

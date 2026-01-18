@@ -1,3 +1,4 @@
+import { useCallback, useMemo } from 'react';
 import { View, FlatList } from 'react-native';
 import { GasStationCard } from '~/components/GasStationCard';
 import { useGasStations } from '~/hooks/useGasStations';
@@ -12,9 +13,15 @@ export default function ListTab() {
   const { isLoading: locationLoading, error: locationError } = useLocation();
   const { gasStations, isLoading, error, refetch } = useGasStations();
 
-  const handleRetry = () => {
+  const handleRetry = useCallback(() => {
     refetch();
-  };
+  }, [refetch]);
+
+  const renderItem = useCallback(({ item }: { item: typeof gasStations[0] }) => (
+    <GasStationCard station={item} />
+  ), []);
+
+  const keyExtractor = useCallback((item: typeof gasStations[0]) => item.id, []);
 
   if (locationLoading) {
     return <LoadingScreen message="Obteniendo ubicación..." />;
@@ -59,8 +66,8 @@ export default function ListTab() {
 
       <FlatList
         data={gasStations}
-        keyExtractor={(item) => item.id}
-        renderItem={({ item }) => <GasStationCard station={item} />}
+        keyExtractor={keyExtractor}
+        renderItem={renderItem}
         contentContainerStyle={{
           paddingTop: 12,
           paddingBottom: 12,
@@ -70,6 +77,11 @@ export default function ListTab() {
         maxToRenderPerBatch={10}
         windowSize={10}
         initialNumToRender={10}
+        getItemLayout={(_, index) => ({
+          length: 200, // Approximate item height
+          offset: 200 * index,
+          index,
+        })}
       />
     </View>
   );

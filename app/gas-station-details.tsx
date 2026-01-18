@@ -1,16 +1,35 @@
+import { useMemo, useCallback } from 'react';
 import { View, Text, TouchableOpacity, ScrollView, Alert } from 'react-native';
 import { useLocalSearchParams, router } from 'expo-router';
 import { Ionicons } from '@expo/vector-icons';
 import MapView, { PROVIDER_GOOGLE, Marker } from 'react-native-maps';
+import { useQueryClient } from '@tanstack/react-query';
 import { GasStation } from '~/types/gasStation';
 import { useGasStationActions } from '~/hooks/useGasStationActions';
+import { gasStationKeys } from '~/hooks/useGasStations';
 import { StatusBar } from "expo-status-bar";
 
 export default function GasStationDetailsScreen() {
-  const { stationData } = useLocalSearchParams<{ stationData: string }>();
+  const { stationId } = useLocalSearchParams<{ stationId: string }>();
   const { handleNavigate } = useGasStationActions();
+  const queryClient = useQueryClient();
 
-  const station: GasStation = stationData ? JSON.parse(stationData) : null;
+  const station: GasStation | null = useMemo(() => {
+    if (!stationId) return null;
+      
+    const queries = queryClient.getQueriesData<GasStation[]>({
+      queryKey: gasStationKeys.lists(),
+    });
+    
+    for (const [, data] of queries) {
+      if (data) {
+        const found = data.find((s) => s.id === stationId);
+        if (found) return found;
+      }
+    }
+    
+    return null;
+  }, [stationId, queryClient]);
 
   if (!station) {
     return (
@@ -32,7 +51,8 @@ export default function GasStationDetailsScreen() {
     );
   }
 
-  const handleNavigatePress = () => {
+  const handleNavigatePress = useCallback(() => {
+    if (!station) return;
     Alert.alert(
       'Elegir App de Navegación',
       `¿Cómo quieres navegar a ${station.name}?`,
@@ -51,7 +71,7 @@ export default function GasStationDetailsScreen() {
         },
       ]
     );
-  };
+  }, [station, handleNavigate]);
 
   return (
     <View className="flex-1 bg-gray-50">

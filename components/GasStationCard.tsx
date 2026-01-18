@@ -1,5 +1,6 @@
-import React from 'react';
+import React, { useCallback, useMemo } from 'react';
 import { View, Text, TouchableOpacity, Alert } from 'react-native';
+import { router } from 'expo-router';
 import { GasStation } from '~/types/gasStation';
 import { Ionicons } from '@expo/vector-icons';
 import { useGasStationActions } from '~/hooks/useGasStationActions';
@@ -8,11 +9,19 @@ interface GasStationCardProps {
   station: GasStation;
 }
 
-export function GasStationCard({ station }: GasStationCardProps) {
+export const GasStationCard = React.memo<GasStationCardProps>(({ station }) => {
   const { handleNavigate } = useGasStationActions();
 
-  const handleNavigatePress = () => {
-    console.log('Navigate button pressed in card');
+  const handleCardPress = useCallback(() => {
+    router.push({
+      pathname: '/gas-station-details',
+      params: {
+        stationId: station.id,
+      },
+    });
+  }, [station.id]);
+
+  const handleNavigatePress = useCallback(() => {
     Alert.alert(
       'Elegir App de Navegación',
       `¿Cómo quieres navegar a ${station.name}?`,
@@ -31,18 +40,18 @@ export function GasStationCard({ station }: GasStationCardProps) {
         },
       ]
     );
-  };
+  }, [station, handleNavigate]);
 
-  const formatDistance = (distance?: number): string => {
+  const formatDistance = useCallback((distance?: number): string => {
     if (!distance) return '';
     if (distance < 1000) {
       return `${Math.round(distance)}m`;
     }
     return `${(distance / 1000).toFixed(1)}km`;
-  };
+  }, []);
 
-  const getBrandColor = (brand?: string): string => {
-    const brandColors: { [key: string]: string } = {
+  const brandColor = useMemo(() => {
+    const brandColors: Record<string, string> = {
       shell: '#fbbf24',
       petronic: '#dc2626',
       texaco: '#dc2626',
@@ -50,16 +59,20 @@ export function GasStationCard({ station }: GasStationCardProps) {
       puma: '#ea580c',
       esso: '#dc2626',
     };
-    return brandColors[brand?.toLowerCase() || ''] || '#64748b';
-  };
+    return brandColors[station.brand?.toLowerCase() || ''] || '#64748b';
+  }, [station.brand]);
 
   return (
-    <View className="bg-white rounded-2xl p-5 mb-3 mx-4 border border-slate-200">
+    <TouchableOpacity 
+      className="bg-white rounded-2xl p-5 mb-3 mx-4 border border-slate-200"
+      onPress={handleCardPress}
+      activeOpacity={0.7}
+    >
       <View className="mb-4">
         <View className="flex-row items-center mb-3">
           <View
             className="w-1 h-7 rounded-sm mr-4"
-            style={{ backgroundColor: getBrandColor(station.brand) }}
+            style={{ backgroundColor: brandColor }}
           />
           <Text className="text-xl font-bold text-slate-900 flex-1">
             {station.name}
@@ -130,9 +143,9 @@ export function GasStationCard({ station }: GasStationCardProps) {
         <Ionicons name="navigate" size={18} color="white" />
         <Text className="text-base font-bold text-white">Navegar</Text>
       </TouchableOpacity>
-    </View>
+    </TouchableOpacity>
   );
-}
+});
 
 const getFuelColor = (type: string): string => {
   const colors: { [key: string]: string } = {

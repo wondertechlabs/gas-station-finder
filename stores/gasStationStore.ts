@@ -30,3 +30,9 @@ export const useGasStationStore = create<GasStationStore>((set) => ({
     set({ selectedStation: null });
   },
 }));
+
+export const useSearchQuery = () => 
+  useGasStationStore((state) => state.searchQuery);
+
+export const useSelectedStation = () => 
+  useGasStationStore((state) => state.selectedStation);

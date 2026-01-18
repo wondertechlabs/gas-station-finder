@@ -1,48 +1,55 @@
 import { useQuery } from '@tanstack/react-query';
 import { useMemo } from 'react';
 import { GasStationService } from '~/services/gasStationService';
-import { useGasStationStore } from '~/stores/gasStationStore';
-import { useLocationStore } from '~/stores/locationStore';
+import { useSearchQuery } from '~/stores/gasStationStore';
+import { useCurrentLocation } from '~/stores/locationStore';
 import { MAP_CONFIG, QUERY_CONFIG } from '~/config/constants';
+import { GasStation } from '~/types/gasStation';
+import { Coordinates } from '~/types/gasStation';
 
-const GAS_STATION_QUERY_KEYS = {
+export const gasStationKeys = {
   all: ['gasStations'] as const,
+  lists: () => [...gasStationKeys.all, 'list'] as const,
+  list: (location: Coordinates | null) => 
+    location 
+      ? [...gasStationKeys.lists(), location.latitude, location.longitude] as const
+      : [...gasStationKeys.lists(), 'no-location'] as const,
   nearby: (lat: number, lng: number, radius: number) =>
-    [...GAS_STATION_QUERY_KEYS.all, 'nearby', lat, lng, radius] as const,
+    [...gasStationKeys.all, 'nearby', lat, lng, radius] as const,
 } as const;
 
-// Helper function to round coordinates for better caching
-const roundCoordinate = (coord: number, precision: number = 3) => {
+const roundCoordinate = (coord: number, precision: number = 3): number => {
   return Math.round(coord * Math.pow(10, precision)) / Math.pow(10, precision);
 };
 
-export const useGasStations = () => {
-  const { userLocation, selectedLocation } = useLocationStore();
-  const { searchQuery } = useGasStationStore();
+interface UseGasStationsReturn {
+  gasStations: GasStation[];
+  filteredStations: GasStation[];
+  isLoading: boolean;
+  error: Error | null;
+  refetch: () => void;
+}
 
-  // Usar ubicación seleccionada si existe, sino usar ubicación GPS
-  const currentLocation = selectedLocation || userLocation;
+export const useGasStations = (): UseGasStationsReturn => {
+  const currentLocation = useCurrentLocation();
+  const searchQuery = useSearchQuery();
 
-  // Round coordinates to improve cache hit rate (reduce API calls for nearby locations)
-  const roundedLocation = currentLocation ? {
-    latitude: roundCoordinate(currentLocation.latitude),
-    longitude: roundCoordinate(currentLocation.longitude),
-  } : null;
+  const roundedLocation = useMemo(() => {
+    if (!currentLocation) return null;
+    return {
+      latitude: roundCoordinate(currentLocation.latitude),
+      longitude: roundCoordinate(currentLocation.longitude),
+    };
+  }, [currentLocation]);
 
   const {
     data: gasStations = [],
     isLoading,
     error,
     refetch,
-  } = useQuery({
-    queryKey: roundedLocation
-      ? GAS_STATION_QUERY_KEYS.nearby(
-          roundedLocation.latitude,
-          roundedLocation.longitude,
-          MAP_CONFIG.DEFAULT_RADIUS,
-        )
-      : GAS_STATION_QUERY_KEYS.all,
-    queryFn: async () => {
+  } = useQuery<GasStation[]>({
+    queryKey: gasStationKeys.list(currentLocation),
+    queryFn: async (): Promise<GasStation[]> => {
       if (!currentLocation) {
         throw new Error('Ubicación no disponible');
       }
@@ -57,7 +64,6 @@ export const useGasStations = () => {
     gcTime: QUERY_CONFIG.GC_TIME,
     retry: QUERY_CONFIG.RETRY_ATTEMPTS,
     retryDelay: QUERY_CONFIG.RETRY_DELAY,
-    // Add network mode to prevent unnecessary requests when offline
     networkMode: 'online',
   });
 
@@ -66,9 +72,9 @@ export const useGasStations = () => {
       return gasStations;
     }
 
-    const query = searchQuery.toLowerCase();
+    const query = searchQuery.toLowerCase().trim();
     return gasStations.filter(
-      (station) =>
+      (station): boolean =>
         station.name.toLowerCase().includes(query) ||
         station.brand?.toLowerCase().includes(query) ||
         station.address.toLowerCase().includes(query),
@@ -79,7 +85,7 @@ export const useGasStations = () => {
     gasStations,
     filteredStations,
     isLoading,
-    error,
+    error: error as Error | null,
     refetch,
   };
 };

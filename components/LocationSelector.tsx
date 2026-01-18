@@ -69,7 +69,6 @@ export const LocationSelector = ({
         }
       }
     } catch (error) {
-      console.log('Error searching location:', error);
       // Fallback to popular cities if geocoding fails
       const filteredCities = popularCities.filter(city =>
         city.name.toLowerCase().includes(query.toLowerCase()) ||

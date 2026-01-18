@@ -24,7 +24,6 @@ export default function SettingsTab() {
   };
 
   const handleLocationSelect = (location: LocationResult) => {
-    // This will be handled by the LocationSelector component
     setShowLocationSelector(false);
   };
 
@@ -40,7 +39,12 @@ export default function SettingsTab() {
       '¿Te gusta la aplicación? ¡Déjanos una reseña!',
       [
         { text: 'Más tarde', style: 'cancel' },
-        { text: 'Calificar', onPress: () => console.log('Rate app') },
+        { 
+          text: 'Calificar', 
+          onPress: () => {
+            // TODO: Implement app rating functionality
+          }
+        },
       ],
     );
   };

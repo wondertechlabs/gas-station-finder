@@ -1,15 +1,17 @@
-import { GasStation, FuelType } from '~/types/gasStation';
+import { GasStation, FuelType, FuelTypeName } from '~/types/gasStation';
+
+interface GooglePlaceGeometry {
+  location: {
+    lat: number;
+    lng: number;
+  };
+}
 
 interface GooglePlaceResult {
   place_id: string;
   name: string;
   formatted_address: string;
-  geometry: {
-    location: {
-      lat: number;
-      lng: number;
-    };
-  };
+  geometry: GooglePlaceGeometry;
   rating?: number;
   user_ratings_total?: number;
   opening_hours?: {
@@ -20,9 +22,17 @@ interface GooglePlaceResult {
   business_status?: string;
 }
 
+type GooglePlacesStatus = 
+  | 'OK' 
+  | 'ZERO_RESULTS' 
+  | 'OVER_QUERY_LIMIT' 
+  | 'REQUEST_DENIED' 
+  | 'INVALID_REQUEST'
+  | 'UNKNOWN_ERROR';
+
 interface GooglePlacesResponse {
   results: GooglePlaceResult[];
-  status: string;
+  status: GooglePlacesStatus;
 }
 
 interface GooglePlaceDetails {
@@ -37,6 +47,16 @@ interface GooglePlaceDetails {
   user_ratings_total?: number;
   types: string[];
 }
+
+type BrandName = 
+  | 'Puma Energy'
+  | 'DNP Petronic'
+  | 'UNO'
+  | 'Shell'
+  | 'Texaco'
+  | 'Esso'
+  | 'Independiente'
+  | 'Local';
 
 export class GooglePlacesService {
   private static readonly API_KEY = process.env.EXPO_PUBLIC_GOOGLE_MAPS_API_KEY;
@@ -89,8 +109,10 @@ export class GooglePlacesService {
 
       return this.transformGooglePlacesToGasStations(data.results);
     } catch (error) {
-      console.error('Google Places API error:', error);
-      throw new Error('Error fetching gas stations from Google Places');
+      const errorMessage = error instanceof Error 
+        ? error.message 
+        : 'Error fetching gas stations from Google Places';
+      throw new Error(errorMessage);
     }
   }
 
@@ -142,7 +164,7 @@ export class GooglePlacesService {
     });
   }
 
-  private static determineBrand(name: string): string {
+  private static determineBrand(name: string): BrandName {
     const nameLower = name.toLowerCase();
 
     if (nameLower.includes('puma')) return 'Puma Energy';
@@ -161,7 +183,7 @@ export class GooglePlacesService {
     if (nameLower.includes('local') || nameLower.includes('privada'))
       return 'Local';
 
-    const nicaraguaBrands = [
+    const nicaraguaBrands: BrandName[] = [
       'Puma Energy',
       'DNP Petronic',
       'UNO',
@@ -174,15 +196,15 @@ export class GooglePlacesService {
     return nicaraguaBrands[Math.floor(Math.random() * nicaraguaBrands.length)];
   }
 
-  private static generateFuelPrices(brand: string): FuelType[] {
-    const basePrices = {
+  private static generateFuelPrices(brand: BrandName): FuelType[] {
+    const basePrices: Record<FuelTypeName, number> = {
       regular: 35.5,
       super: 37.2,
       diesel: 33.8,
       glp: 28.5,
     };
 
-    const brandMultiplier = {
+    const brandMultiplier: Record<BrandName, number> = {
       'Puma Energy': 1.02,
       Shell: 1.05,
       Texaco: 1.03,
@@ -193,26 +215,19 @@ export class GooglePlacesService {
       Local: 0.96,
     };
 
-    const multiplier =
-      brandMultiplier[brand as keyof typeof brandMultiplier] || 1.0;
+    const multiplier = brandMultiplier[brand] || 1.0;
 
-    return [
-      {
-        type: 'regular',
-        displayName: 'Regular',
-        price: Math.round(basePrices.regular * multiplier * 100) / 100,
-      },
-      {
-        type: 'super',
-        displayName: 'Super',
-        price: Math.round(basePrices.super * multiplier * 100) / 100,
-      },
-      {
-        type: 'diesel',
-        displayName: 'Diesel',
-        price: Math.round(basePrices.diesel * multiplier * 100) / 100,
-      },
+    const fuelTypes: Array<{ type: FuelTypeName; displayName: string }> = [
+      { type: 'regular', displayName: 'Regular' },
+      { type: 'super', displayName: 'Super' },
+      { type: 'diesel', displayName: 'Diesel' },
     ];
+
+    return fuelTypes.map((fuel) => ({
+      type: fuel.type,
+      displayName: fuel.displayName,
+      price: Math.round(basePrices[fuel.type] * multiplier * 100) / 100,
+    }));
   }
 
   private static generateAmenities(types: string[]): string[] {

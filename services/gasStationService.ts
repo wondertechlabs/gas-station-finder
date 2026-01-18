@@ -13,8 +13,11 @@ class GasStationServiceClass {
         longitude,
         radius,
       );
-    } catch {
-      throw new Error('No se pudieron cargar las gasolineras');
+    } catch (error) {
+      const errorMessage = error instanceof Error 
+        ? error.message 
+        : 'No se pudieron cargar las gasolineras';
+      throw new Error(errorMessage);
     }
   }
 }

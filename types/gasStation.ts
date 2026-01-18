@@ -1,12 +1,22 @@
+export interface Coordinates {
+  latitude: number;
+  longitude: number;
+}
+
+export type FuelTypeName = 'regular' | 'super' | 'diesel' | 'glp';
+
+export interface FuelType {
+  type: FuelTypeName;
+  price: number;
+  displayName: string;
+}
+
 export interface GasStation {
   id: string;
   name: string;
   brand?: string;
   address: string;
-  coordinates: {
-    latitude: number;
-    longitude: number;
-  };
+  coordinates: Coordinates;
   distance?: number;
   fuelTypes: FuelType[];
   amenities: string[];
@@ -15,10 +25,4 @@ export interface GasStation {
   rating?: number;
   phone?: string;
   lastUpdated?: string;
-}
-
-export interface FuelType {
-  type: 'regular' | 'super' | 'diesel' | 'glp';
-  price: number;
-  displayName: string;
 }

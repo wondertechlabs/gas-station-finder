@@ -1,11 +1,15 @@
+import { Coordinates } from './gasStation';
+
 export interface LocationResult {
   id: string;
   name: string;
   address: string;
-  coordinates: {
-    latitude: number;
-    longitude: number;
-  };
+  coordinates: Coordinates;
+}
+
+export interface SelectedLocation extends Coordinates {
+  name: string;
+  address: string;
 }
 
 export const NICARAGUA_DEPARTMENTS: LocationResult[] = [

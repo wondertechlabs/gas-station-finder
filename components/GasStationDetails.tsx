@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useCallback } from 'react';
 import { View, Text, TouchableOpacity, Alert } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 import { GasStation } from '~/types/gasStation';
@@ -12,8 +12,7 @@ interface GasStationDetailsProps {
 
 export const GasStationDetails = React.memo<GasStationDetailsProps>(
   ({ station, onClose, onNavigate, onCall }) => {
-    const handleNavigatePress = () => {
-      console.log('Navigate button pressed');
+    const handleNavigatePress = useCallback(() => {
       Alert.alert(
         'Elegir App de Navegación',
         `¿Cómo quieres navegar a ${station.name}?`,
@@ -32,7 +31,7 @@ export const GasStationDetails = React.memo<GasStationDetailsProps>(
           },
         ]
       );
-    };
+    }, [station, onNavigate]);
 
     return (
       <>

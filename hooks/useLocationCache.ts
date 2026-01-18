@@ -14,19 +14,15 @@ export const useLocationCache = () => {
     setIsSearching(true);
     
     try {
-      // First, search in popular cities (no API cost)
       const filteredCities = NICARAGUA_DEPARTMENTS.filter(city =>
         city.name.toLowerCase().includes(query.toLowerCase()) ||
         city.address.toLowerCase().includes(query.toLowerCase())
       );
 
       if (filteredCities.length > 0) {
-        // Use popular cities results (no API cost)
         setSearchResults(filteredCities);
         return filteredCities;
       } else {
-        // Only use geocoding as last resort for very specific searches
-        // Add minimum query length to reduce unnecessary API calls
         if (query.length >= 3) {
           const geocodeResults = await Location.geocodeAsync(query);
           const results: LocationResult[] = geocodeResults.map((result, index) => ({
@@ -46,7 +42,6 @@ export const useLocationCache = () => {
         }
       }
     } catch (error) {
-      console.log('Error searching location:', error);
       // Fallback to popular cities if geocoding fails
       const filteredCities = NICARAGUA_DEPARTMENTS.filter(city =>
         city.name.toLowerCase().includes(query.toLowerCase()) ||

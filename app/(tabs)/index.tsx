@@ -28,7 +28,7 @@ export default function GasStationMap() {
       router.push({
         pathname: '/gas-station-details',
         params: {
-          stationData: JSON.stringify(station),
+          stationId: station.id,
         },
       });
     },

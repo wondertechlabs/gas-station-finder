@@ -1,19 +1,21 @@
 import { useMemo } from 'react';
 import { MAP_CONFIG } from '~/config/constants';
-import { useLocationStore } from '~/stores/locationStore';
+import { useCurrentLocation } from '~/stores/locationStore';
+import { Coordinates } from '~/types/gasStation';
 
-interface Location {
+interface MapRegion {
   latitude: number;
   longitude: number;
+  latitudeDelta: number;
+  longitudeDelta: number;
 }
 
-export const useMapRegion = (userLocation: Location | null) => {
-  const { selectedLocation } = useLocationStore();
+export const useMapRegion = (userLocation: Coordinates | null): MapRegion => {
+  const selectedLocation = useCurrentLocation();
   
-  // Usar ubicación seleccionada si existe, sino usar ubicación GPS
   const currentLocation = selectedLocation || userLocation;
 
-  return useMemo(() => {
+  return useMemo((): MapRegion => {
     if (!currentLocation) {
       return MAP_CONFIG.MANAGUA_COORDINATES;
     }

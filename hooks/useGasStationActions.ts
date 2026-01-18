@@ -10,15 +10,12 @@ export const useGasStationActions = () => {
       let url: string;
 
       if (app === 'waze') {
-        // Waze URL scheme
         url = `waze://?ll=${latitude},${longitude}&navigate=yes`;
       } else {
-        // Google Maps URL
         url = `https://www.google.com/maps/dir/?api=1&destination=${latitude},${longitude}`;
       }
 
       Linking.openURL(url).catch(() => {
-        // Fallback to Google Maps if Waze is not installed
         if (app === 'waze') {
           const fallbackUrl = `https://www.google.com/maps/dir/?api=1&destination=${latitude},${longitude}`;
           Linking.openURL(fallbackUrl);

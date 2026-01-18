@@ -1,17 +1,11 @@
 import { create } from 'zustand';
 import * as Location from 'expo-location';
+import { Coordinates } from '~/types/gasStation';
+import { SelectedLocation } from '~/types/location';
 
 interface LocationState {
-  userLocation: {
-    latitude: number;
-    longitude: number;
-  } | null;
-  selectedLocation: {
-    latitude: number;
-    longitude: number;
-    name: string;
-    address: string;
-  } | null;
+  userLocation: Coordinates | null;
+  selectedLocation: SelectedLocation | null;
   address: string | null;
   isLoading: boolean;
   error: string | null;
@@ -20,15 +14,8 @@ interface LocationState {
 }
 
 interface LocationActions {
-  setUserLocation: (
-    location: { latitude: number; longitude: number } | null,
-  ) => void;
-  setSelectedLocation: (location: {
-    latitude: number;
-    longitude: number;
-    name: string;
-    address: string;
-  } | null) => void;
+  setUserLocation: (location: Coordinates | null) => void;
+  setSelectedLocation: (location: SelectedLocation | null) => void;
   clearSelectedLocation: () => void;
   setAddress: (address: string | null) => void;
   setLoading: (loading: boolean) => void;
@@ -40,7 +27,7 @@ interface LocationActions {
   setShowLocationModal: (show: boolean) => void;
 }
 
-type LocationStore = LocationState & LocationActions;
+export type LocationStore = LocationState & LocationActions;
 
 export const useLocationStore = create<LocationStore>((set, get) => ({
   userLocation: null,
@@ -122,10 +109,29 @@ export const useLocationStore = create<LocationStore>((set, get) => ({
       
       // Set a simple address without reverse geocoding to save API costs
       set({ address: 'Ubicación actual' });
-    } catch {
-      set({ error: 'Error al obtener la ubicación actual' });
+    } catch (error) {
+      const errorMessage = error instanceof Error 
+        ? error.message 
+        : 'Error al obtener la ubicación actual';
+      set({ error: errorMessage });
     } finally {
       set({ isLoading: false });
     }
   },
 }));
+
+// Selectors for better performance
+export const useUserLocation = () => 
+  useLocationStore((state) => state.userLocation);
+
+export const useSelectedLocation = () => 
+  useLocationStore((state) => state.selectedLocation);
+
+export const useCurrentLocation = () => 
+  useLocationStore((state) => state.selectedLocation || state.userLocation);
+
+export const useLocationError = () => 
+  useLocationStore((state) => state.error);
+
+export const useLocationLoading = () => 
+  useLocationStore((state) => state.isLoading);
