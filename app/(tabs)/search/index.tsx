@@ -1,6 +1,7 @@
-import { useCallback, useEffect, useState } from 'react';
+import { useCallback, useEffect, useState, useMemo } from 'react';
 import { View, ScrollView, Text, ActivityIndicator, Pressable } from 'react-native';
-import { useNavigation } from 'expo-router';
+import { useNavigation, router } from 'expo-router';
+import * as Location from 'expo-location';
 import { Ionicons } from '@expo/vector-icons';
 import { useLocationStore } from '~/stores/locationStore';
 import { useLocationSearch } from '~/hooks/useLocationSearch';
@@ -10,6 +11,8 @@ import { COLORS } from '~/config/constants';
 export default function SearchIndex() {
   const navigation = useNavigation();
   const [searchText, setSearchText] = useState('');
+  const [currentAddress, setCurrentAddress] = useState<string | null>(null);
+  const [isLoadingAddress, setIsLoadingAddress] = useState(false);
   
   const { userLocation, address, setSelectedLocation } = useLocationStore();
   const {
@@ -18,6 +21,63 @@ export default function SearchIndex() {
     setSearchQuery,
     popularCities,
   } = useLocationSearch();
+
+  const displayAddress = useMemo(() => {
+    if (currentAddress) return currentAddress;
+    if (address && address !== 'Ubicación actual') return address;
+    if (userLocation) {
+      return `${userLocation.latitude.toFixed(4)}, ${userLocation.longitude.toFixed(4)}`;
+    }
+    return 'Obteniendo ubicación...';
+  }, [currentAddress, address, userLocation]);
+
+  useEffect(() => {
+    const getAddressFromLocation = async () => {
+      if (!userLocation) {
+        setCurrentAddress(null);
+        return;
+      }
+
+      // Si ya tenemos una dirección válida del store, usarla
+      if (address && address !== 'Ubicación actual') {
+        setCurrentAddress(address);
+        return;
+      }
+
+      // Intentar hacer reverse geocoding
+      setIsLoadingAddress(true);
+      try {
+        const reverseGeocode = await Location.reverseGeocodeAsync({
+          latitude: userLocation.latitude,
+          longitude: userLocation.longitude,
+        });
+
+        if (reverseGeocode.length > 0) {
+          const result = reverseGeocode[0];
+          const addressParts: string[] = [];
+          
+          if (result.street) addressParts.push(result.street);
+          if (result.district) addressParts.push(result.district);
+          if (result.city) addressParts.push(result.city);
+          if (result.region) addressParts.push(result.region);
+          
+          const fullAddress = addressParts.length > 0 
+            ? addressParts.join(', ')
+            : `${userLocation.latitude.toFixed(4)}, ${userLocation.longitude.toFixed(4)}`;
+          
+          setCurrentAddress(fullAddress);
+        } else {
+          setCurrentAddress(`${userLocation.latitude.toFixed(4)}, ${userLocation.longitude.toFixed(4)}`);
+        }
+      } catch {
+        setCurrentAddress(`${userLocation.latitude.toFixed(4)}, ${userLocation.longitude.toFixed(4)}`);
+      } finally {
+        setIsLoadingAddress(false);
+      }
+    };
+
+    getAddressFromLocation();
+  }, [userLocation, address]);
 
   useEffect(() => {
     navigation.setOptions({
@@ -40,6 +100,7 @@ export default function SearchIndex() {
         name: location.name,
         address: location.address,
       });
+      router.push('/(tabs)');
     },
     [setSelectedLocation],
   );
@@ -52,6 +113,7 @@ export default function SearchIndex() {
         name: 'Mi ubicación actual',
         address: address || 'Ubicación actual',
       });
+      router.push('/(tabs)');
     }
   }, [userLocation, address, setSelectedLocation]);
 
@@ -76,7 +138,9 @@ export default function SearchIndex() {
       {userLocation && (
         <View className="bg-white border-b border-gray-200">
           <View className="px-4 py-3 border-b border-gray-100">
-            <Text className="text-sm font-semibold text-gray-700">Ubicación Actual</Text>
+            <Text className="text-sm font-semibold text-gray-700">
+              Ubicación actual
+            </Text>
           </View>
           <Pressable
             onPress={handleUseCurrentLocation}
@@ -89,12 +153,14 @@ export default function SearchIndex() {
               <Ionicons name="location" size={20} color="white" />
             </View>
             <View className="flex-1">
-              <Text className="text-base font-semibold text-gray-900">
-                Mi ubicación actual
+              <Text className="text-base font-semibold text-gray-900" numberOfLines={1}>
+                {isLoadingAddress ? 'Obteniendo dirección...' : displayAddress}
               </Text>
-              <Text className="text-sm text-gray-600" numberOfLines={1}>
-                {address || 'Usar GPS actual'}
-              </Text>
+              {userLocation && (
+                <Text className="text-sm text-gray-500 mt-0.5" numberOfLines={1}>
+                  {userLocation.latitude.toFixed(4)}, {userLocation.longitude.toFixed(4)}
+                </Text>
+              )}
             </View>
             <Ionicons name="chevron-forward" size={18} color="#9ca3af" />
           </Pressable>
