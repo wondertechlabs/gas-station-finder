@@ -16,7 +16,7 @@ export default function GasStationMap() {
     isLoading: locationLoading,
     error: locationError,
   } = useLocation();
-  const { filteredStations, isLoading, error, refetch } = useGasStations();
+  const { filteredStations, error, refetch } = useGasStations();
 
   const mapRegion = useMapRegion(userLocation);
 

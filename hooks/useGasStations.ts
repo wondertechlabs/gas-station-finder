@@ -4,8 +4,7 @@ import { GasStationService } from '~/services/gasStationService';
 import { useSearchQuery } from '~/stores/gasStationStore';
 import { useCurrentLocation } from '~/stores/locationStore';
 import { MAP_CONFIG, QUERY_CONFIG } from '~/config/constants';
-import { GasStation } from '~/types/gasStation';
-import { Coordinates } from '~/types/gasStation';
+import { GasStation , Coordinates } from '~/types/gasStation';
 
 export const gasStationKeys = {
   all: ['gasStations'] as const,
@@ -18,10 +17,6 @@ export const gasStationKeys = {
     [...gasStationKeys.all, 'nearby', lat, lng, radius] as const,
 } as const;
 
-const roundCoordinate = (coord: number, precision: number = 3): number => {
-  return Math.round(coord * Math.pow(10, precision)) / Math.pow(10, precision);
-};
-
 interface UseGasStationsReturn {
   gasStations: GasStation[];
   filteredStations: GasStation[];
@@ -33,14 +28,6 @@ interface UseGasStationsReturn {
 export const useGasStations = (): UseGasStationsReturn => {
   const currentLocation = useCurrentLocation();
   const searchQuery = useSearchQuery();
-
-  const roundedLocation = useMemo(() => {
-    if (!currentLocation) return null;
-    return {
-      latitude: roundCoordinate(currentLocation.latitude),
-      longitude: roundCoordinate(currentLocation.longitude),
-    };
-  }, [currentLocation]);
 
   const {
     data: gasStations = [],

@@ -31,26 +31,6 @@ export default function GasStationDetailsScreen() {
     return null;
   }, [stationId, queryClient]);
 
-  if (!station) {
-    return (
-      <View className="flex-1 justify-center items-center bg-gray-50">
-        <Ionicons name="alert-circle-outline" size={64} color="#ef4444" />
-        <Text className="text-xl font-semibold text-gray-900 text-center mb-2 mt-4">
-          Gasolinera no encontrada
-        </Text>
-        <Text className="text-gray-600 text-center mb-6">
-          No se pudo cargar la información de la gasolinera
-        </Text>
-        <TouchableOpacity
-          className="bg-primary-500 px-6 py-3 rounded-lg"
-          onPress={() => router.back()}
-        >
-          <Text className="text-white font-semibold">Volver</Text>
-        </TouchableOpacity>
-      </View>
-    );
-  }
-
   const handleNavigatePress = useCallback(() => {
     if (!station) return;
     Alert.alert(
@@ -72,6 +52,26 @@ export default function GasStationDetailsScreen() {
       ]
     );
   }, [station, handleNavigate]);
+
+  if (!station) {
+    return (
+      <View className="flex-1 justify-center items-center bg-gray-50">
+        <Ionicons name="alert-circle-outline" size={64} color="#ef4444" />
+        <Text className="text-xl font-semibold text-gray-900 text-center mb-2 mt-4">
+          Gasolinera no encontrada
+        </Text>
+        <Text className="text-gray-600 text-center mb-6">
+          No se pudo cargar la información de la gasolinera
+        </Text>
+        <TouchableOpacity
+          className="bg-primary-500 px-6 py-3 rounded-lg"
+          onPress={() => router.back()}
+        >
+          <Text className="text-white font-semibold">Volver</Text>
+        </TouchableOpacity>
+      </View>
+    );
+  }
 
   return (
     <View className="flex-1 bg-gray-50">

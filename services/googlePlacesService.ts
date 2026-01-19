@@ -217,7 +217,7 @@ export class GooglePlacesService {
 
     const multiplier = brandMultiplier[brand] || 1.0;
 
-    const fuelTypes: Array<{ type: FuelTypeName; displayName: string }> = [
+    const fuelTypes: { type: FuelTypeName; displayName: string }[] = [
       { type: 'regular', displayName: 'Regular' },
       { type: 'super', displayName: 'Super' },
       { type: 'diesel', displayName: 'Diesel' },
