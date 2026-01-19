@@ -1,6 +1,5 @@
 import { useCallback } from 'react';
 import { View } from 'react-native';
-import { StatusBar } from "expo-status-bar";
 import { router } from 'expo-router';
 import MapView, { PROVIDER_GOOGLE } from 'react-native-maps';
 import { GasStation } from '~/types/gasStation';
@@ -10,7 +9,6 @@ import { useMapRegion } from '~/hooks/useMapRegion';
 import { LoadingScreen } from '~/components/ui/LoadingScreen';
 import { ErrorScreen } from '~/components/ui/ErrorScreen';
 import { GasStationMarker } from '~/components/gas-station/GasStationMarker';
-import { LocationSelectorBar } from '~/components/location/LocationSelectorBar';
 
 export default function GasStationMap() {
   const {
@@ -65,9 +63,9 @@ export default function GasStationMap() {
 
   return (
     <View className="flex-1">
-      
-      <LocationSelectorBar />
-      
+
+      {/* <LocationSelectorBar /> */}
+
       <MapView
         provider={PROVIDER_GOOGLE}
         style={{ flex: 1 }}

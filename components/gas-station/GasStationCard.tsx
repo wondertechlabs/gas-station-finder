@@ -141,7 +141,9 @@ export const GasStationCard = React.memo<GasStationCardProps>(({ station }) => {
         onPress={handleNavigatePress}
       >
         <Ionicons name="navigate" size={18} color="white" />
-        <Text className="text-base font-bold text-white">Navegar</Text>
+        <Text className="text-base font-bold text-white">
+          Ir a la gasolinera
+        </Text>
       </TouchableOpacity>
     </TouchableOpacity>
   );

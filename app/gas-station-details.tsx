@@ -209,7 +209,7 @@ export default function GasStationDetailsScreen() {
           >
             <Ionicons name="navigate" size={20} color="white" />
             <Text className="text-white font-semibold text-lg ml-2">
-              Navegar
+              Ir a la gasolinera
             </Text>
           </TouchableOpacity>
         </View>

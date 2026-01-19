@@ -59,6 +59,19 @@ function RootLayoutNav() {
               presentation: 'pageSheet',
             }}
           />
+          <Stack.Screen
+            name="search"
+            options={{
+              title: 'Search',
+              headerSearchBarOptions: {
+                placement: 'automatic',
+                placeholder: 'Search',
+                onChangeText: () => {
+                  console.log('onChangeText');
+                },
+              },
+            }}
+          />
           <Stack.Screen name="+not-found" />
         </Stack>
       </GestureHandlerRootView>
