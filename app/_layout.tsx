@@ -44,14 +44,6 @@ function RootLayoutNav() {
       <GestureHandlerRootView style={{ flex: 1 }}>
         <Stack screenOptions={{ headerShown: false }}>
           <Stack.Screen
-            name="settings"
-            options={{
-              title: 'Configuración',
-              headerShown: true,
-              presentation: 'formSheet',
-            }}
-          />
-          <Stack.Screen
             name="gas-station-details"
             options={{
               title: 'Detalles de la gasolinera',
