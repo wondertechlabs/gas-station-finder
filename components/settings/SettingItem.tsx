@@ -1,4 +1,4 @@
-import { TouchableOpacity, View, Text } from 'react-native';
+import { Pressable, View, Text } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 
 interface SettingItemProps {
@@ -14,7 +14,7 @@ export const SettingItem: React.FC<SettingItemProps> = ({
   subtitle,
   onPress,
 }) => (
-  <TouchableOpacity
+  <Pressable
     className="flex-row items-center justify-between px-6 py-6 active:bg-slate-50/50"
     onPress={onPress}
     style={{
@@ -50,5 +50,5 @@ export const SettingItem: React.FC<SettingItemProps> = ({
     <View className="ml-3">
       <Ionicons name="chevron-forward" size={20} color="#94a3b8" />
     </View>
-  </TouchableOpacity>
+  </Pressable>
 );

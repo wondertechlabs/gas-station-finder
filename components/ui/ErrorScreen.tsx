@@ -1,5 +1,5 @@
 import React from 'react';
-import { View, Text, TouchableOpacity } from 'react-native';
+import { View, Text, Pressable } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 
 interface ErrorScreenProps {
@@ -18,12 +18,12 @@ export const ErrorScreen = React.memo<ErrorScreenProps>(
       </Text>
       <Text className="text-gray-600 text-center mb-6">{message}</Text>
       {onRetry && (
-        <TouchableOpacity
+        <Pressable
           className="bg-primary-500 px-6 py-3 rounded-lg"
           onPress={onRetry}
         >
           <Text className="text-white font-semibold">Reintentar</Text>
-        </TouchableOpacity>
+        </Pressable>
       )}
     </View>
   ),
