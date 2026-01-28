@@ -4,15 +4,19 @@ import { GasStationService } from '~/services/gasStationService';
 import { useSearchQuery } from '~/stores/gasStationStore';
 import { useCurrentLocation } from '~/stores/locationStore';
 import { MAP_CONFIG, QUERY_CONFIG } from '~/config/constants';
-import { GasStation , Coordinates } from '~/types/gasStation';
+import { GasStation, Coordinates } from '~/types/gasStation';
 
 export const gasStationKeys = {
   all: ['gasStations'] as const,
   lists: () => [...gasStationKeys.all, 'list'] as const,
-  list: (location: Coordinates | null) => 
-    location 
-      ? [...gasStationKeys.lists(), location.latitude, location.longitude] as const
-      : [...gasStationKeys.lists(), 'no-location'] as const,
+  list: (location: Coordinates | null) =>
+    location
+      ? ([
+          ...gasStationKeys.lists(),
+          location.latitude,
+          location.longitude,
+        ] as const)
+      : ([...gasStationKeys.lists(), 'no-location'] as const),
   nearby: (lat: number, lng: number, radius: number) =>
     [...gasStationKeys.all, 'nearby', lat, lng, radius] as const,
 } as const;

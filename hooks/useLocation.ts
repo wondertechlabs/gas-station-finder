@@ -24,11 +24,21 @@ export const useLocation = (): UseLocationReturn => {
   const isLoading = useLocationStore((state) => state.isLoading);
   const error = useLocationStore((state) => state.error);
   const hasPermission = useLocationStore((state) => state.hasPermission);
-  const showLocationModal = useLocationStore((state) => state.showLocationModal);
-  const getCurrentLocation = useLocationStore((state) => state.getCurrentLocation);
-  const setSelectedLocation = useLocationStore((state) => state.setSelectedLocation);
-  const clearSelectedLocation = useLocationStore((state) => state.clearSelectedLocation);
-  const setShowLocationModal = useLocationStore((state) => state.setShowLocationModal);
+  const showLocationModal = useLocationStore(
+    (state) => state.showLocationModal,
+  );
+  const getCurrentLocation = useLocationStore(
+    (state) => state.getCurrentLocation,
+  );
+  const setSelectedLocation = useLocationStore(
+    (state) => state.setSelectedLocation,
+  );
+  const clearSelectedLocation = useLocationStore(
+    (state) => state.clearSelectedLocation,
+  );
+  const setShowLocationModal = useLocationStore(
+    (state) => state.setShowLocationModal,
+  );
   const clearError = useLocationStore((state) => state.clearError);
 
   useEffect(() => {

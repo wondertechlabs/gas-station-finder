@@ -7,7 +7,7 @@ import { useQueryClient } from '@tanstack/react-query';
 import { GasStation } from '~/types/gasStation';
 import { useGasStationActions } from '~/hooks/useGasStationActions';
 import { gasStationKeys } from '~/hooks/useGasStations';
-import { StatusBar } from "expo-status-bar";
+import { StatusBar } from 'expo-status-bar';
 
 export default function GasStationDetailsScreen() {
   const { stationId } = useLocalSearchParams<{ stationId: string }>();
@@ -16,18 +16,18 @@ export default function GasStationDetailsScreen() {
 
   const station: GasStation | null = useMemo(() => {
     if (!stationId) return null;
-      
+
     const queries = queryClient.getQueriesData<GasStation[]>({
       queryKey: gasStationKeys.lists(),
     });
-    
+
     for (const [, data] of queries) {
       if (data) {
         const found = data.find((s) => s.id === stationId);
         if (found) return found;
       }
     }
-    
+
     return null;
   }, [stationId, queryClient]);
 
@@ -49,7 +49,7 @@ export default function GasStationDetailsScreen() {
           text: 'Cancelar',
           style: 'cancel',
         },
-      ]
+      ],
     );
   }, [station, handleNavigate]);
 
@@ -77,7 +77,10 @@ export default function GasStationDetailsScreen() {
     <View className="flex-1 bg-gray-50">
       <StatusBar style="dark" />
 
-      <ScrollView className="flex-1 px-4 py-6 pb-20" showsVerticalScrollIndicator={false}>
+      <ScrollView
+        className="flex-1 px-4 py-6 pb-20"
+        showsVerticalScrollIndicator={false}
+      >
         <View className="bg-white rounded-xl shadow-sm border border-gray-100 p-5 mb-6">
           <View className="flex-row items-start justify-between mb-3">
             <View className="flex-1">
@@ -105,7 +108,9 @@ export default function GasStationDetailsScreen() {
               </Text>
               {station.is24Hours && (
                 <View className="ml-2 bg-green-100 px-2 py-1 rounded-full">
-                  <Text className="text-xs font-medium text-green-700">24h</Text>
+                  <Text className="text-xs font-medium text-green-700">
+                    24h
+                  </Text>
                 </View>
               )}
             </View>
@@ -125,7 +130,6 @@ export default function GasStationDetailsScreen() {
               A {station.distance?.toFixed(1)} km de distancia
             </Text>
           </View>
-
         </View>
 
         {station.fuelTypes && station.fuelTypes.length > 0 && (
@@ -135,7 +139,10 @@ export default function GasStationDetailsScreen() {
             </Text>
             <View className="space-y-4">
               {station.fuelTypes.map((fuel, index) => (
-                <View key={index} className="flex-row items-center justify-between py-2">
+                <View
+                  key={index}
+                  className="flex-row items-center justify-between py-2"
+                >
                   <Text className="text-base text-gray-700">
                     {fuel.displayName}
                   </Text>

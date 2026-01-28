@@ -20,31 +20,37 @@ export const useLocationSearch = (): UseLocationSearchReturn => {
 
   const popularCities = useMemo(() => NICARAGUA_DEPARTMENTS, []);
 
-  const searchInCities = useCallback((query: string): LocationResult[] => {
-    const normalizedQuery = query.toLowerCase().trim();
-    return popularCities.filter(
-      (city) =>
-        city.name.toLowerCase().includes(normalizedQuery) ||
-        city.address.toLowerCase().includes(normalizedQuery),
-    );
-  }, [popularCities]);
+  const searchInCities = useCallback(
+    (query: string): LocationResult[] => {
+      const normalizedQuery = query.toLowerCase().trim();
+      return popularCities.filter(
+        (city) =>
+          city.name.toLowerCase().includes(normalizedQuery) ||
+          city.address.toLowerCase().includes(normalizedQuery),
+      );
+    },
+    [popularCities],
+  );
 
-  const searchWithGeocoding = useCallback(async (query: string): Promise<LocationResult[]> => {
-    try {
-      const geocodeResults = await Location.geocodeAsync(query);
-      return geocodeResults.map((result, index) => ({
-        id: `geocode_${index}`,
-        name: query,
-        address: `${query}, Nicaragua`,
-        coordinates: {
-          latitude: result.latitude,
-          longitude: result.longitude,
-        },
-      }));
-    } catch {
-      return [];
-    }
-  }, []);
+  const searchWithGeocoding = useCallback(
+    async (query: string): Promise<LocationResult[]> => {
+      try {
+        const geocodeResults = await Location.geocodeAsync(query);
+        return geocodeResults.map((result, index) => ({
+          id: `geocode_${index}`,
+          name: query,
+          address: `${query}, Nicaragua`,
+          coordinates: {
+            latitude: result.latitude,
+            longitude: result.longitude,
+          },
+        }));
+      } catch {
+        return [];
+      }
+    },
+    [],
+  );
 
   const performSearch = useCallback(
     async (query: string) => {

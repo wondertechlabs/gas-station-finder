@@ -20,17 +20,14 @@ export default function GasStationMap() {
 
   const mapRegion = useMapRegion(userLocation);
 
-  const handleMarkerPress = useCallback(
-    (station: GasStation) => {
-      router.push({
-        pathname: '/gas-station-details',
-        params: {
-          stationId: station.id,
-        },
-      });
-    },
-    [],
-  );
+  const handleMarkerPress = useCallback((station: GasStation) => {
+    router.push({
+      pathname: '/gas-station-details',
+      params: {
+        stationId: station.id,
+      },
+    });
+  }, []);
 
   const handleRetry = useCallback(() => {
     refetch();

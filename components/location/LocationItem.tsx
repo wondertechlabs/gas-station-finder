@@ -12,7 +12,12 @@ interface LocationItemProps {
 }
 
 export const LocationItem = React.memo<LocationItemProps>(
-  ({ location, onPress, iconColor = COLORS.PRIMARY, iconName = 'location' }) => (
+  ({
+    location,
+    onPress,
+    iconColor = COLORS.PRIMARY,
+    iconName = 'location',
+  }) => (
     <Pressable
       onPress={onPress}
       className="flex-row items-center p-4 bg-white border-b border-gray-100 active:bg-gray-50"
@@ -24,7 +29,9 @@ export const LocationItem = React.memo<LocationItemProps>(
         <Ionicons name={iconName} size={18} color="white" />
       </View>
       <View className="flex-1">
-        <Text className="text-base font-semibold text-gray-900">{location.name}</Text>
+        <Text className="text-base font-semibold text-gray-900">
+          {location.name}
+        </Text>
         <Text className="text-sm text-gray-600" numberOfLines={1}>
           {location.address}
         </Text>

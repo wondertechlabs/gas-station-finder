@@ -12,7 +12,7 @@ interface MapRegion {
 
 export const useMapRegion = (userLocation: Coordinates | null): MapRegion => {
   const selectedLocation = useCurrentLocation();
-  
+
   const currentLocation = selectedLocation || userLocation;
 
   return useMemo((): MapRegion => {

@@ -7,7 +7,7 @@ import { useLocation } from '~/hooks/useLocation';
 import { LoadingScreen } from '~/components/ui/LoadingScreen';
 import { ErrorScreen } from '~/components/ui/ErrorScreen';
 import { EmptyState } from '~/components/ui/EmptyState';
-import { StatusBar } from "expo-status-bar";
+import { StatusBar } from 'expo-status-bar';
 
 export default function ListTab() {
   const { isLoading: locationLoading, error: locationError } = useLocation();
