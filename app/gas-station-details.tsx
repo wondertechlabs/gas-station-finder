@@ -4,9 +4,9 @@ import { useLocalSearchParams, router } from 'expo-router';
 import { Ionicons } from '@expo/vector-icons';
 import MapView, { Marker } from 'react-native-maps';
 import { useQueryClient } from '@tanstack/react-query';
-import { GasStation } from '~/types/gasStation';
-import { useGasStationActions } from '~/hooks/useGasStationActions';
-import { gasStationKeys } from '~/hooks/useGasStations';
+import type { GasStation } from '~/domain/gasStation/models';
+import { useGasStationActions } from '~/presentation/hooks/useGasStationActions';
+import { gasStationKeys } from '~/presentation/hooks/useGasStations';
 import { StatusBar } from 'expo-status-bar';
 
 export default function GasStationDetailsScreen() {

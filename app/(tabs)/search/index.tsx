@@ -9,10 +9,10 @@ import {
 import { useNavigation, router } from 'expo-router';
 import * as Location from 'expo-location';
 import { Ionicons } from '@expo/vector-icons';
-import { useLocationStore } from '~/stores/locationStore';
-import { useLocationSearch } from '~/hooks/useLocationSearch';
-import { LocationItem } from '~/components/location/LocationItem';
-import { COLORS } from '~/config/constants';
+import { COLORS } from '~/shared/constants';
+import { LocationItem } from '~/presentation/components/location/LocationItem';
+import { useLocationSearch } from '~/presentation/hooks/useLocationSearch';
+import { useLocationStore } from '~/presentation/stores/locationStore';
 
 export default function SearchIndex() {
   const navigation = useNavigation();

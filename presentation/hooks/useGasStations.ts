@@ -1,10 +1,11 @@
-import { useQuery } from '@tanstack/react-query';
 import { useMemo } from 'react';
-import { GasStationService } from '~/services/gasStationService';
-import { useSearchQuery } from '~/stores/gasStationStore';
-import { useCurrentLocation } from '~/stores/locationStore';
-import { MAP_CONFIG, QUERY_CONFIG } from '~/config/constants';
-import { GasStation, Coordinates } from '~/types/gasStation';
+import { useQuery } from '@tanstack/react-query';
+import { findNearbyGasStations } from '~/application/gasStation/findNearbyGasStations';
+import { gasStationRepository } from '~/composition/gasStation';
+import { MAP_CONFIG, QUERY_CONFIG } from '~/shared/constants';
+import type { Coordinates, GasStation } from '~/domain/gasStation/models';
+import { useSearchQuery } from '~/presentation/stores/gasStationStore';
+import { useCurrentLocation } from '~/presentation/stores/locationStore';
 
 export const gasStationKeys = {
   all: ['gasStations'] as const,
@@ -44,11 +45,12 @@ export const useGasStations = (): UseGasStationsReturn => {
       if (!currentLocation) {
         throw new Error('Ubicación no disponible');
       }
-      return GasStationService.findNearby(
-        currentLocation.latitude,
-        currentLocation.longitude,
-        MAP_CONFIG.DEFAULT_RADIUS,
-      );
+
+      return findNearbyGasStations(gasStationRepository, {
+        latitude: currentLocation.latitude,
+        longitude: currentLocation.longitude,
+        radius: MAP_CONFIG.DEFAULT_RADIUS,
+      });
     },
     enabled: !!currentLocation,
     staleTime: QUERY_CONFIG.STALE_TIME,

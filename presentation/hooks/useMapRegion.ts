@@ -1,7 +1,7 @@
 import { useMemo } from 'react';
-import { MAP_CONFIG } from '~/config/constants';
-import { useCurrentLocation } from '~/stores/locationStore';
-import { Coordinates } from '~/types/gasStation';
+import { MAP_CONFIG } from '~/shared/constants';
+import { useCurrentLocation } from '~/presentation/stores/locationStore';
+import type { Coordinates } from '~/domain/gasStation/models';
 
 interface MapRegion {
   latitude: number;

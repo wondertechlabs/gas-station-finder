@@ -1,6 +1,7 @@
-import { useState, useCallback, useMemo } from 'react';
+import { useCallback, useMemo, useState } from 'react';
 import * as Location from 'expo-location';
-import { LocationResult, NICARAGUA_DEPARTMENTS } from '~/types/location';
+import type { LocationResult } from '~/domain/location/models';
+import { NICARAGUA_DEPARTMENTS } from '~/domain/location/models';
 
 interface UseLocationSearchReturn {
   searchQuery: string;

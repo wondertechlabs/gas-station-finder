@@ -1,6 +1,6 @@
 import React, { useCallback } from 'react';
 import { Marker } from 'react-native-maps';
-import { GasStation } from '~/types/gasStation';
+import type { GasStation } from '~/domain/gasStation/models';
 
 interface GasStationMarkerProps {
   station: GasStation;

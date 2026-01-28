@@ -28,4 +28,3 @@ export const ErrorScreen = React.memo<ErrorScreenProps>(
     </View>
   ),
 );
-

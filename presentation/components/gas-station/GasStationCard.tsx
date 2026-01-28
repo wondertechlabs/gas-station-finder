@@ -1,9 +1,9 @@
 import React, { useCallback, useMemo } from 'react';
-import { View, Text, TouchableOpacity, Alert } from 'react-native';
-import { router } from 'expo-router';
-import { GasStation } from '~/types/gasStation';
+import { Alert, Text, TouchableOpacity, View } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
-import { useGasStationActions } from '~/hooks/useGasStationActions';
+import { router } from 'expo-router';
+import type { GasStation } from '~/domain/gasStation/models';
+import { useGasStationActions } from '~/presentation/hooks/useGasStationActions';
 
 interface GasStationCardProps {
   station: GasStation;
@@ -38,7 +38,7 @@ export const GasStationCard = React.memo<GasStationCardProps>(({ station }) => {
           text: 'Cancelar',
           style: 'cancel',
         },
-      ]
+      ],
     );
   }, [station, handleNavigate]);
 
@@ -63,7 +63,7 @@ export const GasStationCard = React.memo<GasStationCardProps>(({ station }) => {
   }, [station.brand]);
 
   return (
-    <TouchableOpacity 
+    <TouchableOpacity
       className="bg-white rounded-2xl p-5 mb-3 mx-4 border border-slate-200"
       onPress={handleCardPress}
       activeOpacity={0.7}

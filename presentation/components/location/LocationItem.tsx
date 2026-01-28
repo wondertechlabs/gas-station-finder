@@ -1,8 +1,8 @@
 import React from 'react';
-import { View, Text, Pressable } from 'react-native';
+import { Pressable, Text, View } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
-import { LocationResult } from '~/types/location';
-import { COLORS } from '~/config/constants';
+import type { LocationResult } from '~/domain/location/models';
+import { COLORS } from '~/shared/constants';
 
 interface LocationItemProps {
   location: LocationResult;

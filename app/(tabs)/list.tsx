@@ -1,12 +1,12 @@
 import { useCallback } from 'react';
 import { View, ScrollView } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
-import { GasStationCard } from '~/components/gas-station/GasStationCard';
-import { useGasStations } from '~/hooks/useGasStations';
-import { useLocation } from '~/hooks/useLocation';
-import { LoadingScreen } from '~/components/ui/LoadingScreen';
-import { ErrorScreen } from '~/components/ui/ErrorScreen';
-import { EmptyState } from '~/components/ui/EmptyState';
+import { EmptyState } from '~/presentation/components/ui/EmptyState';
+import { ErrorScreen } from '~/presentation/components/ui/ErrorScreen';
+import { LoadingScreen } from '~/presentation/components/ui/LoadingScreen';
+import { GasStationCard } from '~/presentation/components/gas-station/GasStationCard';
+import { useGasStations } from '~/presentation/hooks/useGasStations';
+import { useLocation } from '~/presentation/hooks/useLocation';
 import { StatusBar } from 'expo-status-bar';
 
 export default function ListTab() {

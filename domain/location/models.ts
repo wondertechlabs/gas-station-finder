@@ -116,4 +116,3 @@ export const NICARAGUA_DEPARTMENTS: LocationResult[] = [
     coordinates: { latitude: 12.0167, longitude: -83.7667 },
   },
 ];
-

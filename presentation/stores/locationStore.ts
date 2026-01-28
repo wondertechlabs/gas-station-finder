@@ -1,7 +1,7 @@
 import { create } from 'zustand';
 import * as Location from 'expo-location';
-import { Coordinates } from '~/types/gasStation';
-import { SelectedLocation } from '~/types/location';
+import type { Coordinates } from '~/domain/gasStation/models';
+import type { SelectedLocation } from '~/domain/location/models';
 
 interface LocationState {
   userLocation: Coordinates | null;
@@ -106,13 +106,14 @@ export const useLocationStore = create<LocationStore>((set, get) => ({
       };
 
       set({ userLocation: coords });
-      
+
       // Set a simple address without reverse geocoding to save API costs
       set({ address: 'Ubicación actual' });
     } catch (error) {
-      const errorMessage = error instanceof Error 
-        ? error.message 
-        : 'Error al obtener la ubicación actual';
+      const errorMessage =
+        error instanceof Error
+          ? error.message
+          : 'Error al obtener la ubicación actual';
       set({ error: errorMessage });
     } finally {
       set({ isLoading: false });
@@ -121,17 +122,16 @@ export const useLocationStore = create<LocationStore>((set, get) => ({
 }));
 
 // Selectors for better performance
-export const useUserLocation = () => 
+export const useUserLocation = () =>
   useLocationStore((state) => state.userLocation);
 
-export const useSelectedLocation = () => 
+export const useSelectedLocation = () =>
   useLocationStore((state) => state.selectedLocation);
 
-export const useCurrentLocation = () => 
+export const useCurrentLocation = () =>
   useLocationStore((state) => state.selectedLocation || state.userLocation);
 
-export const useLocationError = () => 
-  useLocationStore((state) => state.error);
+export const useLocationError = () => useLocationStore((state) => state.error);
 
-export const useLocationLoading = () => 
+export const useLocationLoading = () =>
   useLocationStore((state) => state.isLoading);

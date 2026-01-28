@@ -1,6 +1,6 @@
 import { useCallback } from 'react';
 import * as Linking from 'expo-linking';
-import { GasStation } from '~/types/gasStation';
+import type { GasStation } from '~/domain/gasStation/models';
 
 export const useGasStationActions = () => {
   const handleNavigate = useCallback(

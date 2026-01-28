@@ -1,6 +1,6 @@
 import { useEffect } from 'react';
-import { useLocationStore } from '~/stores/locationStore';
-import type { LocationStore } from '~/stores/locationStore';
+import { useLocationStore } from '~/presentation/stores/locationStore';
+import type { LocationStore } from '~/presentation/stores/locationStore';
 
 interface UseLocationReturn {
   userLocation: LocationStore['userLocation'];

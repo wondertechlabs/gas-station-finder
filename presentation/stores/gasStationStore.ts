@@ -1,5 +1,5 @@
 import { create } from 'zustand';
-import { GasStation } from '~/types/gasStation';
+import type { GasStation } from '~/domain/gasStation/models';
 
 interface GasStationState {
   searchQuery: string;
@@ -31,8 +31,8 @@ export const useGasStationStore = create<GasStationStore>((set) => ({
   },
 }));
 
-export const useSearchQuery = () => 
+export const useSearchQuery = () =>
   useGasStationStore((state) => state.searchQuery);
 
-export const useSelectedStation = () => 
+export const useSelectedStation = () =>
   useGasStationStore((state) => state.selectedStation);

@@ -1,6 +1,6 @@
 import React from 'react';
-import { View, Text, ActivityIndicator } from 'react-native';
-import { COLORS } from '~/config/constants';
+import { ActivityIndicator, Text, View } from 'react-native';
+import { COLORS } from '~/shared/constants';
 
 interface LoadingScreenProps {
   message?: string;
