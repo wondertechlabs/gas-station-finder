@@ -1,16 +1,31 @@
 import { GasStation, FuelType, FuelTypeName } from '~/types/gasStation';
 
+type LatLng = { lat: number; lng: number };
+
+const NICARAGUA_BOUNDS = {
+  minLat: 10.7,
+  maxLat: 15.1,
+  minLng: -87.8,
+  maxLng: -82.6,
+} as const;
+
+function isWithinNicaraguaBounds(location: LatLng): boolean {
+  return (
+    location.lat >= NICARAGUA_BOUNDS.minLat &&
+    location.lat <= NICARAGUA_BOUNDS.maxLat &&
+    location.lng >= NICARAGUA_BOUNDS.minLng &&
+    location.lng <= NICARAGUA_BOUNDS.maxLng
+  );
+}
+
 interface GooglePlaceGeometry {
-  location: {
-    lat: number;
-    lng: number;
-  };
+  location: LatLng;
 }
 
 interface GooglePlaceResult {
   place_id: string;
   name: string;
-  formatted_address: string;
+  formatted_address?: string;
   geometry: GooglePlaceGeometry;
   rating?: number;
   user_ratings_total?: number;
@@ -33,6 +48,7 @@ type GooglePlacesStatus =
 interface GooglePlacesResponse {
   results: GooglePlaceResult[];
   status: GooglePlacesStatus;
+  error_message?: string;
 }
 
 interface GooglePlaceDetails {
@@ -69,10 +85,10 @@ export class GooglePlacesService {
     }
 
     try {
-      const testUrl = `${this.BASE_URL}/nearbysearch/json?location=12.1364,-86.2514&radius=1000&type=gas_station&key=${this.API_KEY}`;
+      const testUrl = `${this.BASE_URL}/nearbysearch/json?location=12.1364,-86.2514&radius=1000&type=gas_station&key=${this.API_KEY}&language=es&region=ni`;
       const response = await fetch(testUrl);
       const data = await response.json();
-      return data.status === 'OK';
+      return data.status === 'OK' || data.status === 'ZERO_RESULTS';
     } catch {
       return false;
     }
@@ -88,26 +104,30 @@ export class GooglePlacesService {
     }
 
     try {
-      const url = `${this.BASE_URL}/nearbysearch/json?location=${latitude},${longitude}&radius=${radius}&type=gas_station&key=${this.API_KEY}`;
-
+      const url = `${this.BASE_URL}/nearbysearch/json?location=${latitude},${longitude}&radius=${radius}&type=gas_station&key=${this.API_KEY}&language=es&region=ni`;
       const response = await fetch(url);
+      const data: GooglePlacesResponse = await response.json();
 
       if (!response.ok) {
         throw new Error(`HTTP error: ${response.status}`);
       }
 
-      const data: GooglePlacesResponse = await response.json();
-
       if (data.status === 'ZERO_RESULTS') {
-        // Return empty array instead of throwing error for no results
         return [];
       }
 
       if (data.status !== 'OK') {
-        throw new Error(`Google Places API error: ${data.status}`);
+        const msg = data.error_message ? ` - ${data.error_message}` : '';
+        throw new Error(`Google Places API error: ${data.status}${msg}`);
       }
 
-      return this.transformGooglePlacesToGasStations(data.results);
+      const onlyGasStationsInNicaragua = data.results.filter((place) => {
+        const isGasStation = place.types.includes('gas_station');
+        const inNicaragua = isWithinNicaraguaBounds(place.geometry.location);
+        return isGasStation && inNicaragua;
+      });
+
+      return this.transformGooglePlacesToGasStations(onlyGasStationsInNicaragua);
     } catch (error) {
       const errorMessage = error instanceof Error
         ? error.message
@@ -136,19 +156,20 @@ export class GooglePlacesService {
   private static transformGooglePlacesToGasStations(
     places: GooglePlaceResult[],
   ): GasStation[] {
-    return places.map((place, index) => {
+    return places.map((place) => {
       const brand = this.determineBrand(place.name);
       const fuelTypes = this.generateFuelPrices(brand);
       const amenities = this.generateAmenities(place.types);
+      const address =
+        place.formatted_address ||
+        place.vicinity ||
+        'Dirección no disponible';
 
       return {
         id: place.place_id,
         name: place.name,
         brand: brand,
-        address:
-          place.formatted_address ||
-          place.vicinity ||
-          'Dirección no disponible',
+        address,
         coordinates: {
           latitude: place.geometry.location.lat,
           longitude: place.geometry.location.lng,
