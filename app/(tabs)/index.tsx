@@ -1,7 +1,7 @@
 import { useCallback } from 'react';
 import { View } from 'react-native';
 import { router } from 'expo-router';
-import MapView, { PROVIDER_GOOGLE } from 'react-native-maps';
+import MapView from 'react-native-maps';
 import { GasStation } from '~/types/gasStation';
 import { useGasStations } from '~/hooks/useGasStations';
 import { useLocation } from '~/hooks/useLocation';
@@ -63,9 +63,7 @@ export default function GasStationMap() {
 
   return (
     <View className="flex-1">
-
       <MapView
-        provider={PROVIDER_GOOGLE}
         style={{ flex: 1 }}
         region={mapRegion}
         showsUserLocation

@@ -2,7 +2,7 @@ import { useMemo, useCallback } from 'react';
 import { View, Text, TouchableOpacity, ScrollView, Alert } from 'react-native';
 import { useLocalSearchParams, router } from 'expo-router';
 import { Ionicons } from '@expo/vector-icons';
-import MapView, { PROVIDER_GOOGLE, Marker } from 'react-native-maps';
+import MapView, { Marker } from 'react-native-maps';
 import { useQueryClient } from '@tanstack/react-query';
 import { GasStation } from '~/types/gasStation';
 import { useGasStationActions } from '~/hooks/useGasStationActions';
@@ -176,7 +176,6 @@ export default function GasStationDetailsScreen() {
           </Text>
           <View className="h-48 rounded-lg overflow-hidden">
             <MapView
-              provider={PROVIDER_GOOGLE}
               style={{ flex: 1 }}
               region={{
                 latitude: station.coordinates.latitude,
