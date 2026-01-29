@@ -31,7 +31,7 @@ export const GasStationCard = React.memo<Props>(({ station }) => {
     : null;
 
   return (
-    <Pressable className="bg-white px-4 py-4 mx-4 mr-4 mb-3 rounded-xl border border-gray-200" onPress={onPress}>
+    <Pressable className="bg-white p-4 mb-3 rounded-xl" onPress={onPress}>
       <View className="flex-row items-center justify-between mb-2">
         <Text className="text-lg font-bold text-gray-900 flex-1 mr-2" numberOfLines={1}>
           {station.name}

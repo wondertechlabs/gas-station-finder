@@ -34,7 +34,7 @@ export default function ListTab() {
         data={gasStations}
         keyExtractor={(item: GasStation) => item.id}
         renderItem={({ item }) => <GasStationCard station={item} />}
-        contentContainerStyle={{ paddingVertical: 16 }}
+        contentContainerStyle={{ paddingVertical: 16, paddingHorizontal: 12 }}
         showsVerticalScrollIndicator={false}
       />
     </SafeAreaView>
