@@ -16,11 +16,11 @@ export default function TabLayout() {
         light: '#22C55E',
       })}
     >
-      <NativeTabs.Trigger name='index'>
+      <NativeTabs.Trigger name="index">
         <Icon sf="map.fill" drawable="map" />
         <Label>Mapa</Label>
       </NativeTabs.Trigger>
-      <NativeTabs.Trigger name='list'>
+      <NativeTabs.Trigger name="list">
         <Icon sf="list.bullet" drawable="list" />
         <Label>Estaciones</Label>
       </NativeTabs.Trigger>

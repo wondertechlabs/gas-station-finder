@@ -20,9 +20,9 @@ module.exports = {
         },
       },
       fontFamily: {
-        "avenir-black": ["Avenir-Black", "sans-serif"],
-        "avenir-light": ["Avenir-Light", "sans-serif"],
-        "avenir-medium": ["Avenir-Medium", "sans-serif"],
+        'avenir-black': ['Avenir-Black', 'sans-serif'],
+        'avenir-light': ['Avenir-Light', 'sans-serif'],
+        'avenir-medium': ['Avenir-Medium', 'sans-serif'],
       },
     },
   },

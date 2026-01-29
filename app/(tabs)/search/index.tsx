@@ -1,26 +1,28 @@
 import { useCallback, useEffect, useState, useMemo } from 'react';
-import { View, ScrollView, Text, ActivityIndicator, Pressable } from 'react-native';
+import {
+  View,
+  ScrollView,
+  Text,
+  ActivityIndicator,
+  Pressable,
+} from 'react-native';
 import { useNavigation, router } from 'expo-router';
 import * as Location from 'expo-location';
 import { Ionicons } from '@expo/vector-icons';
-import { useLocationStore } from '~/stores/locationStore';
-import { useLocationSearch } from '~/hooks/useLocationSearch';
-import { LocationItem } from '~/components/location/LocationItem';
-import { COLORS } from '~/config/constants';
+import { COLORS } from '~/shared/constants';
+import { LocationItem } from '~/presentation/components/location/LocationItem';
+import { useLocationSearch } from '~/presentation/hooks/useLocationSearch';
+import { useLocationStore } from '~/presentation/stores/locationStore';
 
 export default function SearchIndex() {
   const navigation = useNavigation();
   const [searchText, setSearchText] = useState('');
   const [currentAddress, setCurrentAddress] = useState<string | null>(null);
   const [isLoadingAddress, setIsLoadingAddress] = useState(false);
-  
+
   const { userLocation, address, setSelectedLocation } = useLocationStore();
-  const {
-    searchResults,
-    isSearching,
-    setSearchQuery,
-    popularCities,
-  } = useLocationSearch();
+  const { searchResults, isSearching, setSearchQuery, popularCities } =
+    useLocationSearch();
 
   const displayAddress = useMemo(() => {
     if (currentAddress) return currentAddress;
@@ -55,22 +57,27 @@ export default function SearchIndex() {
         if (reverseGeocode.length > 0) {
           const result = reverseGeocode[0];
           const addressParts: string[] = [];
-          
+
           if (result.street) addressParts.push(result.street);
           if (result.district) addressParts.push(result.district);
           if (result.city) addressParts.push(result.city);
           if (result.region) addressParts.push(result.region);
-          
-          const fullAddress = addressParts.length > 0 
-            ? addressParts.join(', ')
-            : `${userLocation.latitude.toFixed(4)}, ${userLocation.longitude.toFixed(4)}`;
-          
+
+          const fullAddress =
+            addressParts.length > 0
+              ? addressParts.join(', ')
+              : `${userLocation.latitude.toFixed(4)}, ${userLocation.longitude.toFixed(4)}`;
+
           setCurrentAddress(fullAddress);
         } else {
-          setCurrentAddress(`${userLocation.latitude.toFixed(4)}, ${userLocation.longitude.toFixed(4)}`);
+          setCurrentAddress(
+            `${userLocation.latitude.toFixed(4)}, ${userLocation.longitude.toFixed(4)}`,
+          );
         }
       } catch {
-        setCurrentAddress(`${userLocation.latitude.toFixed(4)}, ${userLocation.longitude.toFixed(4)}`);
+        setCurrentAddress(
+          `${userLocation.latitude.toFixed(4)}, ${userLocation.longitude.toFixed(4)}`,
+        );
       } finally {
         setIsLoadingAddress(false);
       }
@@ -93,7 +100,7 @@ export default function SearchIndex() {
   }, [navigation, setSearchQuery]);
 
   const handleSelectLocation = useCallback(
-    (location: typeof searchResults[0]) => {
+    (location: (typeof searchResults)[0]) => {
       setSelectedLocation({
         latitude: location.coordinates.latitude,
         longitude: location.coordinates.longitude,
@@ -134,7 +141,10 @@ export default function SearchIndex() {
   }
 
   return (
-    <ScrollView className="flex-1 bg-gray-50" showsVerticalScrollIndicator={false}>
+    <ScrollView
+      className="flex-1 bg-gray-50"
+      showsVerticalScrollIndicator={false}
+    >
       {userLocation && (
         <View className="bg-white border-b border-gray-200">
           <View className="px-4 py-3 border-b border-gray-100">
@@ -153,12 +163,19 @@ export default function SearchIndex() {
               <Ionicons name="location" size={20} color="white" />
             </View>
             <View className="flex-1">
-              <Text className="text-base font-semibold text-gray-900" numberOfLines={1}>
+              <Text
+                className="text-base font-semibold text-gray-900"
+                numberOfLines={1}
+              >
                 {isLoadingAddress ? 'Obteniendo dirección...' : displayAddress}
               </Text>
               {userLocation && (
-                <Text className="text-sm text-gray-500 mt-0.5" numberOfLines={1}>
-                  {userLocation.latitude.toFixed(4)}, {userLocation.longitude.toFixed(4)}
+                <Text
+                  className="text-sm text-gray-500 mt-0.5"
+                  numberOfLines={1}
+                >
+                  {userLocation.latitude.toFixed(4)},{' '}
+                  {userLocation.longitude.toFixed(4)}
                 </Text>
               )}
             </View>

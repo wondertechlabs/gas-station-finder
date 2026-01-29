@@ -2,13 +2,13 @@ import { useCallback } from 'react';
 import { View } from 'react-native';
 import { router } from 'expo-router';
 import MapView from 'react-native-maps';
-import { GasStation } from '~/types/gasStation';
-import { useGasStations } from '~/hooks/useGasStations';
-import { useLocation } from '~/hooks/useLocation';
-import { useMapRegion } from '~/hooks/useMapRegion';
-import { LoadingScreen } from '~/components/ui/LoadingScreen';
-import { ErrorScreen } from '~/components/ui/ErrorScreen';
-import { GasStationMarker } from '~/components/gas-station/GasStationMarker';
+import type { GasStation } from '~/domain/gasStation/models';
+import { GasStationMarker } from '~/presentation/components/gas-station/GasStationMarker';
+import { ErrorScreen } from '~/presentation/components/ui/ErrorScreen';
+import { LoadingScreen } from '~/presentation/components/ui/LoadingScreen';
+import { useGasStations } from '~/presentation/hooks/useGasStations';
+import { useLocation } from '~/presentation/hooks/useLocation';
+import { useMapRegion } from '~/presentation/hooks/useMapRegion';
 
 export default function GasStationMap() {
   const {
@@ -20,17 +20,14 @@ export default function GasStationMap() {
 
   const mapRegion = useMapRegion(userLocation);
 
-  const handleMarkerPress = useCallback(
-    (station: GasStation) => {
-      router.push({
-        pathname: '/gas-station-details',
-        params: {
-          stationId: station.id,
-        },
-      });
-    },
-    [],
-  );
+  const handleMarkerPress = useCallback((station: GasStation) => {
+    router.push({
+      pathname: '/gas-station-details',
+      params: {
+        stationId: station.id,
+      },
+    });
+  }, []);
 
   const handleRetry = useCallback(() => {
     refetch();
