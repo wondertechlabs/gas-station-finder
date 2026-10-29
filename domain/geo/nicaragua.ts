@@ -4,7 +4,7 @@ type LatLng = { lat: number; lng: number };
  * Bounding box aproximado de Nicaragua (suficiente para filtrar resultados).
  * Esto evita llamadas extra a Place Details (menos costo / menos latencia).
  */
-const NICARAGUA_BOUNDS = {
+export const NICARAGUA_BOUNDS = {
   minLat: 10.7,
   maxLat: 15.1,
   minLng: -87.8,

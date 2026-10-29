@@ -1,3 +1,5 @@
+import type { DepartmentId } from '~/domain/location/departments';
+
 export interface Coordinates {
   latitude: number;
   longitude: number;
@@ -17,12 +19,14 @@ export interface GasStation {
   brand?: string;
   address: string;
   coordinates: Coordinates;
+  /** Departamento donde está la estación (si la fuente lo permite saber). */
+  department?: DepartmentId;
+  /** Distancia en metros desde el punto de búsqueda. */
   distance?: number;
+  /** Precios estimados a partir de la marca, no son precios oficiales. */
   fuelTypes: FuelType[];
   amenities: string[];
-  isOpen: boolean;
-  is24Hours: boolean;
+  /** `undefined` cuando Google no reporta el horario. */
+  isOpen?: boolean;
   rating?: number;
-  phone?: string;
-  lastUpdated?: string;
 }
