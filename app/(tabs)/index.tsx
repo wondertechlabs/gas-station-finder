@@ -1,24 +1,26 @@
 import { useCallback } from 'react';
 import { router } from 'expo-router';
+import * as Haptics from 'expo-haptics';
 import type { GasStation } from '~/domain/gasStation/models';
+import { GasStationsError } from '~/presentation/components/gas-station/GasStationsError';
+import { MapLoadingPill } from '~/presentation/components/map/MapLoadingPill';
 import { StationsMap } from '~/presentation/components/map/StationsMap';
-import { ContentUnavailable } from '~/presentation/components/ui/ContentUnavailable';
+import { LocationUnavailable } from '~/presentation/components/location/LocationUnavailable';
+import { FadeIn } from '~/presentation/components/ui/FadeIn';
 import { LoadingScreen } from '~/presentation/components/ui/LoadingScreen';
 import { useGasStations } from '~/presentation/hooks/useGasStations';
 import { useLocation } from '~/presentation/hooks/useLocation';
 import { useMapCamera } from '~/presentation/hooks/useMapCamera';
 
 export default function GasStationMap() {
-  const {
-    isLoading: locationLoading,
-    error: locationError,
-    getCurrentLocation,
-  } = useLocation();
-  const { gasStations, error, refetch } = useGasStations();
+  const { isLoading: locationLoading, error: locationError } = useLocation();
+  const { gasStations, isLoading, isShowingPrevious, error, refetch } =
+    useGasStations();
 
   const cameraPosition = useMapCamera();
 
   const handleMarkerPress = useCallback((station: GasStation) => {
+    Haptics.selectionAsync();
     router.push({
       pathname: '/gas-station-details',
       params: {
@@ -28,40 +30,27 @@ export default function GasStationMap() {
   }, []);
 
   if (locationLoading) {
-    return <LoadingScreen message="Obteniendo ubicación..." />;
+    return <LoadingScreen message="Buscando tu ubicación…" />;
   }
 
   if (locationError) {
-    return (
-      <ContentUnavailable
-        title="Ubicación no disponible"
-        message={locationError}
-        icon="location"
-        actionLabel="Reintentar"
-        onAction={getCurrentLocation}
-      />
-    );
+    return <LocationUnavailable error={locationError} />;
   }
 
   if (error) {
-    return (
-      <ContentUnavailable
-        title="No se pudieron cargar"
-        message={error.message}
-        icon="alert"
-        actionLabel="Reintentar"
-        onAction={refetch}
-      />
-    );
+    return <GasStationsError onRetry={refetch} />;
   }
 
   return (
-    <StationsMap
-      style={{ flex: 1 }}
-      stations={gasStations}
-      cameraPosition={cameraPosition}
-      onStationPress={handleMarkerPress}
-      showsUserLocation
-    />
+    <FadeIn>
+      <StationsMap
+        style={{ flex: 1 }}
+        stations={gasStations}
+        cameraPosition={cameraPosition}
+        onStationPress={handleMarkerPress}
+        showsUserLocation
+      />
+      <MapLoadingPill visible={isLoading || isShowingPrevious} />
+    </FadeIn>
   );
 }

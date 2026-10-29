@@ -3,6 +3,7 @@ import type { ColorValue } from 'react-native';
 import { ActivityIndicator, Text, View } from 'react-native';
 import { FlashList } from '@shopify/flash-list';
 import { router, Stack } from 'expo-router';
+import * as Haptics from 'expo-haptics';
 import type { LocationResult } from '~/domain/location/models';
 import { LocationItem } from '~/presentation/components/location/LocationItem';
 import {
@@ -36,7 +37,7 @@ export default function SearchIndex() {
   const setSelectedLocation = useLocationStore(
     (state) => state.setSelectedLocation,
   );
-  const { searchResults, isSearching, setSearchQuery, popularCities } =
+  const { searchResults, isSearching, setSearchQuery, departmentCapitals } =
     useLocationSearch();
   const { address, isLoading: isLoadingAddress } =
     useReverseGeocode(userLocation);
@@ -51,6 +52,7 @@ export default function SearchIndex() {
 
   const handleSelectLocation = useCallback(
     (location: LocationResult) => {
+      Haptics.selectionAsync();
       setSelectedLocation({
         latitude: location.coordinates.latitude,
         longitude: location.coordinates.longitude,
@@ -64,12 +66,13 @@ export default function SearchIndex() {
 
   // Sin selección manual, el mapa sigue la ubicación real del usuario.
   const handleUseCurrentLocation = useCallback(() => {
+    Haptics.selectionAsync();
     setSelectedLocation(null);
     router.navigate('/');
   }, [setSelectedLocation]);
 
   const hasSearchQuery = searchText.trim().length > 0;
-  const results = hasSearchQuery ? searchResults : popularCities;
+  const results = hasSearchQuery ? searchResults : departmentCapitals;
 
   const items: SearchItem[] = [];
   if (userLocation && !hasSearchQuery) {
@@ -86,7 +89,7 @@ export default function SearchIndex() {
         location: {
           id: 'current',
           name:
-            isLoadingAddress || !address ? 'Obteniendo dirección...' : address,
+            isLoadingAddress || !address ? 'Buscando tu dirección…' : address,
           address: `${userLocation.latitude.toFixed(4)}, ${userLocation.longitude.toFixed(4)}`,
           coordinates: userLocation,
         },
@@ -101,7 +104,7 @@ export default function SearchIndex() {
   items.push({
     type: 'header',
     key: 'h-results',
-    title: hasSearchQuery ? 'Resultados' : 'Ciudades populares',
+    title: hasSearchQuery ? 'Resultados' : 'Cabeceras departamentales',
     first: items.length === 0,
   });
   if (isSearching) {
@@ -137,12 +140,13 @@ export default function SearchIndex() {
         contentInsetAdjustmentBehavior="automatic"
         keyboardShouldPersistTaps="handled"
         keyboardDismissMode="on-drag"
+        automaticallyAdjustKeyboardInsets
         style={{ backgroundColor: colors.groupedBackground }}
         contentContainerStyle={{ padding: 16 }}
       />
 
       <Stack.SearchBar
-        placeholder="Buscar ciudad..."
+        placeholder="Ciudad o municipio"
         onChangeText={(event) => handleChangeText(event.nativeEvent.text)}
         onCancelButtonPress={() => handleChangeText('')}
       />

@@ -4,10 +4,6 @@ import type {
   GasStationRepository,
 } from '~/domain/gasStation/repository';
 import type { Coordinates, GasStation } from '~/domain/gasStation/models';
-import {
-  determineBrand,
-  estimateFuelPrices,
-} from '~/domain/gasStation/pricing';
 import { distanceInMeters } from '~/domain/geo/distance';
 import {
   departmentFromName,
@@ -42,19 +38,16 @@ function readCache(): PointOfInterest[] | null {
 }
 
 function toGasStation(place: PointOfInterest, origin: Coordinates): GasStation {
-  const brand = determineBrand(place.name);
   const coordinates = { latitude: place.latitude, longitude: place.longitude };
 
   return {
     id: place.id,
     name: place.name,
-    brand,
     address: place.address ?? 'Dirección no disponible',
     coordinates,
     department:
       departmentFromName(place.administrativeArea) ??
       nearestDepartment(coordinates),
-    fuelTypes: estimateFuelPrices(brand),
     amenities: [],
     distance: distanceInMeters(origin, coordinates),
   };

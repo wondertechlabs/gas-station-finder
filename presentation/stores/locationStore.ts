@@ -1,13 +1,17 @@
+import { AppState } from 'react-native';
 import { create } from 'zustand';
 import * as Location from 'expo-location';
 import type { Coordinates } from '~/domain/gasStation/models';
 import type { SelectedLocation } from '~/domain/location/models';
 
+/** `denied`: el usuario negó el permiso; `unavailable`: el GPS falló. */
+export type LocationError = 'denied' | 'unavailable';
+
 interface LocationState {
   userLocation: Coordinates | null;
   selectedLocation: SelectedLocation | null;
   isLoading: boolean;
-  error: string | null;
+  error: LocationError | null;
 }
 
 interface LocationActions {
@@ -17,7 +21,7 @@ interface LocationActions {
 
 export type LocationStore = LocationState & LocationActions;
 
-export const useLocationStore = create<LocationStore>((set) => ({
+export const useLocationStore = create<LocationStore>((set, get) => ({
   userLocation: null,
   selectedLocation: null,
   isLoading: false,
@@ -33,8 +37,21 @@ export const useLocationStore = create<LocationStore>((set) => ({
 
       const { status } = await Location.requestForegroundPermissionsAsync();
       if (status !== 'granted') {
-        set({ error: 'Permisos de ubicación denegados' });
+        set({ error: 'denied' });
         return;
+      }
+
+      // La última posición conocida es instantánea: deja pintar la lista
+      // guardada en caché mientras el GPS obtiene una lectura fresca.
+      const lastKnown = await Location.getLastKnownPositionAsync();
+      if (lastKnown) {
+        set({
+          userLocation: {
+            latitude: lastKnown.coords.latitude,
+            longitude: lastKnown.coords.longitude,
+          },
+          isLoading: false,
+        });
       }
 
       const location = await Location.getCurrentPositionAsync({
@@ -47,12 +64,10 @@ export const useLocationStore = create<LocationStore>((set) => ({
           longitude: location.coords.longitude,
         },
       });
-    } catch (error) {
-      const errorMessage =
-        error instanceof Error
-          ? error.message
-          : 'Error al obtener la ubicación actual';
-      set({ error: errorMessage });
+    } catch {
+      // Con una posición previa ya en pantalla, un fallo del GPS no la tapa.
+      if (get().userLocation) return;
+      set({ error: 'unavailable' });
     } finally {
       set({ isLoading: false });
     }
@@ -61,3 +76,9 @@ export const useLocationStore = create<LocationStore>((set) => ({
 
 export const useCurrentLocation = () =>
   useLocationStore((state) => state.selectedLocation || state.userLocation);
+
+// iOS no vuelve a pedir un permiso negado: al volver de Ajustes se reintenta.
+AppState.addEventListener('change', (state) => {
+  const { error, getCurrentLocation } = useLocationStore.getState();
+  if (state === 'active' && error === 'denied') getCurrentLocation();
+});

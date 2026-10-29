@@ -27,6 +27,10 @@ export const colors = {
     ios: Color.ios.secondarySystemGroupedBackground,
     default: '#ffffff',
   })!,
+  cellHighlight: Platform.select({
+    ios: Color.ios.systemGray4,
+    default: '#d1d1d6',
+  })!,
   fill: Platform.select({
     ios: Color.ios.tertiarySystemFill,
     default: '#7676801f',

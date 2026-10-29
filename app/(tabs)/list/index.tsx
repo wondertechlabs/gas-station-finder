@@ -1,7 +1,8 @@
-import { useMemo, useState } from 'react';
-import { Text, View } from 'react-native';
-import { Stack } from 'expo-router';
-import { FlashList } from '@shopify/flash-list';
+import { useMemo, useRef, useState } from 'react';
+import { LayoutAnimation, Text, View } from 'react-native';
+import { router, Stack } from 'expo-router';
+import { FlashList, type FlashListRef } from '@shopify/flash-list';
+import * as Haptics from 'expo-haptics';
 import type { GasStation } from '~/domain/gasStation/models';
 import {
   DEPARTMENTS,
@@ -9,19 +10,19 @@ import {
   type DepartmentId,
 } from '~/domain/location/departments';
 import { GasStationCard } from '~/presentation/components/gas-station/GasStationCard';
+import { GasStationListSkeleton } from '~/presentation/components/gas-station/GasStationListSkeleton';
+import { GasStationsError } from '~/presentation/components/gas-station/GasStationsError';
+import { LocationUnavailable } from '~/presentation/components/location/LocationUnavailable';
 import { ContentUnavailable } from '~/presentation/components/ui/ContentUnavailable';
-import { LoadingScreen } from '~/presentation/components/ui/LoadingScreen';
+import { FadeIn } from '~/presentation/components/ui/FadeIn';
 import { useGasStations } from '~/presentation/hooks/useGasStations';
 import { useLocation } from '~/presentation/hooks/useLocation';
 import { colors } from '~/presentation/theme/colors';
 
 export default function ListTab() {
-  const {
-    isLoading: locationLoading,
-    error: locationError,
-    getCurrentLocation,
-  } = useLocation();
-  const { gasStations, isLoading, error, refetch } = useGasStations();
+  const { isLoading: locationLoading, error: locationError } = useLocation();
+  const { gasStations, isLoading, isShowingPrevious, error, refetch } =
+    useGasStations();
   const [department, setDepartment] = useState<DepartmentId | null>(null);
   // Solo el gesto de "tirar para recargar" muestra el spinner: el barrido de
   // MapKit dispara refetch en segundo plano y no debe mover la lista.
@@ -36,6 +37,18 @@ export default function ListTab() {
     }
   };
 
+  // Al cambiar de departamento las filas se deslizan en vez de saltar.
+  const listRef = useRef<FlashListRef<GasStation>>(null);
+  const selectDepartment = (id: DepartmentId | null) => {
+    if (id === department) return;
+    Haptics.selectionAsync();
+    listRef.current?.prepareForLayoutAnimationRender();
+    LayoutAnimation.configureNext(
+      LayoutAnimation.create(200, 'easeInEaseOut', 'opacity'),
+    );
+    setDepartment(id);
+  };
+
   const visibleStations = useMemo(
     () =>
       department
@@ -47,7 +60,7 @@ export default function ListTab() {
   const header = (
     <>
       <Stack.Title large>
-        {department ? departmentName(department) : 'Estaciones'}
+        {department ? departmentName(department) : 'Gasolineras'}
       </Stack.Title>
       <Stack.Toolbar placement="right">
         <Stack.Toolbar.Menu
@@ -63,7 +76,7 @@ export default function ListTab() {
             <Stack.Toolbar.MenuAction
               icon="map"
               isOn={department === null}
-              onPress={() => setDepartment(null)}
+              onPress={() => selectDepartment(null)}
             >
               Todo el país
             </Stack.Toolbar.MenuAction>
@@ -72,7 +85,7 @@ export default function ListTab() {
             <Stack.Toolbar.MenuAction
               key={id}
               isOn={department === id}
-              onPress={() => setDepartment(id)}
+              onPress={() => selectDepartment(id)}
             >
               {name}
             </Stack.Toolbar.MenuAction>
@@ -82,36 +95,21 @@ export default function ListTab() {
     </>
   );
 
-  if (locationLoading) {
-    return <LoadingScreen message="Obteniendo ubicación..." />;
-  }
-
   if (locationError) {
-    return (
-      <ContentUnavailable
-        title="Ubicación no disponible"
-        message={locationError}
-        icon="location"
-        actionLabel="Reintentar"
-        onAction={getCurrentLocation}
-      />
-    );
+    return <LocationUnavailable error={locationError} />;
   }
 
-  if (isLoading) {
-    return <LoadingScreen message="Buscando gasolineras..." />;
+  if (locationLoading || isLoading) {
+    return (
+      <>
+        <GasStationListSkeleton />
+        {header}
+      </>
+    );
   }
 
   if (error) {
-    return (
-      <ContentUnavailable
-        title="No se pudieron cargar"
-        message={error.message}
-        icon="alert"
-        actionLabel="Reintentar"
-        onAction={refetch}
-      />
-    );
+    return <GasStationsError onRetry={refetch} />;
   }
 
   if (visibleStations.length === 0) {
@@ -121,16 +119,16 @@ export default function ListTab() {
         {department ? (
           <ContentUnavailable
             title={`Sin gasolineras en ${departmentName(department)}`}
-            message="Puede que aún se estén cargando las de todo el país."
             icon="search"
             actionLabel="Ver todo el país"
-            onAction={() => setDepartment(null)}
+            onAction={() => selectDepartment(null)}
           />
         ) : (
           <ContentUnavailable
-            title="No hay gasolineras"
-            message="No encontramos gasolineras cercanas"
+            title="No hay gasolineras cerca"
             icon="search"
+            actionLabel="Buscar otra ciudad"
+            onAction={() => router.navigate('/search')}
           />
         )}
       </>
@@ -139,32 +137,36 @@ export default function ListTab() {
 
   return (
     <>
-      <FlashList
-        data={visibleStations}
-        keyExtractor={(item: GasStation) => item.id}
-        renderItem={({ item }) => <GasStationCard station={item} />}
-        ItemSeparatorComponent={Separator}
-        ListHeaderComponent={
-          <Text
-            style={{
-              paddingHorizontal: 4,
-              paddingBottom: 10,
-              fontSize: 13,
-              color: colors.secondaryLabel,
-            }}
-          >
-            {visibleStations.length === 1
-              ? '1 gasolinera'
-              : `${visibleStations.length} gasolineras`}{' '}
-            · por distancia · precios estimados en C$
-          </Text>
-        }
-        contentInsetAdjustmentBehavior="automatic"
-        style={{ backgroundColor: colors.groupedBackground }}
-        contentContainerStyle={{ padding: 16 }}
-        refreshing={isPullRefreshing}
-        onRefresh={handlePullRefresh}
-      />
+      <FadeIn>
+        <FlashList
+          ref={listRef}
+          data={visibleStations}
+          keyExtractor={(item: GasStation) => item.id}
+          renderItem={({ item }) => <GasStationCard station={item} />}
+          ItemSeparatorComponent={Separator}
+          ListHeaderComponent={
+            <Text
+              style={{
+                paddingHorizontal: 4,
+                paddingBottom: 10,
+                fontSize: 13,
+                color: colors.secondaryLabel,
+              }}
+            >
+              {isShowingPrevious
+                ? 'Actualizando…'
+                : visibleStations.length === 1
+                  ? '1 gasolinera'
+                  : `${visibleStations.length} gasolineras`}
+            </Text>
+          }
+          contentInsetAdjustmentBehavior="automatic"
+          style={{ backgroundColor: colors.groupedBackground }}
+          contentContainerStyle={{ padding: 16 }}
+          refreshing={isPullRefreshing}
+          onRefresh={handlePullRefresh}
+        />
+      </FadeIn>
       {header}
     </>
   );

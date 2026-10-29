@@ -46,7 +46,7 @@ export function StationsMap({
         id: station.id,
         coordinates: station.coordinates,
         title: station.name,
-        snippet: station.brand,
+        snippet: station.address,
       })),
     [stations],
   );
