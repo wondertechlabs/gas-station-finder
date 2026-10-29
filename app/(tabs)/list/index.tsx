@@ -12,6 +12,7 @@ import {
 import { GasStationCard } from '~/presentation/components/gas-station/GasStationCard';
 import { LocationUnavailable } from '~/presentation/components/location/LocationUnavailable';
 import { ContentUnavailable } from '~/presentation/components/ui/ContentUnavailable';
+import { FadeIn, useWasLoading } from '~/presentation/components/ui/FadeIn';
 import { LoadingScreen } from '~/presentation/components/ui/LoadingScreen';
 import { useGasStations } from '~/presentation/hooks/useGasStations';
 import { useLocation } from '~/presentation/hooks/useLocation';
@@ -23,7 +24,9 @@ export default function ListTab() {
     error: locationError,
     getCurrentLocation,
   } = useLocation();
-  const { gasStations, isLoading, error, refetch } = useGasStations();
+  const { gasStations, isLoading, isShowingPrevious, error, refetch, retry } =
+    useGasStations();
+  const fadeIn = useWasLoading(locationLoading || isLoading);
   const [department, setDepartment] = useState<DepartmentId | null>(null);
   // Solo el gesto de "tirar para recargar" muestra el spinner: el barrido de
   // MapKit dispara refetch en segundo plano y no debe mover la lista.
@@ -41,16 +44,6 @@ export default function ListTab() {
   const selectDepartment = (id: DepartmentId | null) => {
     if (id !== department) Haptics.selectionAsync();
     setDepartment(id);
-  };
-
-  // El reintento confirma con una vibración si funcionó o falló.
-  const handleRetry = async () => {
-    const result = await refetch();
-    Haptics.notificationAsync(
-      result.status === 'success'
-        ? Haptics.NotificationFeedbackType.Success
-        : Haptics.NotificationFeedbackType.Error,
-    );
   };
 
   const visibleStations = useMemo(
@@ -118,7 +111,12 @@ export default function ListTab() {
   );
 
   if (locationLoading) {
-    return <LoadingScreen message="Obteniendo ubicación..." />;
+    return (
+      <>
+        <LoadingScreen message="Obteniendo ubicación..." />
+        {header}
+      </>
+    );
   }
 
   if (locationError) {
@@ -128,7 +126,12 @@ export default function ListTab() {
   }
 
   if (isLoading) {
-    return <LoadingScreen message="Buscando gasolineras..." />;
+    return (
+      <>
+        <LoadingScreen message="Buscando gasolineras..." />
+        {header}
+      </>
+    );
   }
 
   if (error) {
@@ -138,7 +141,7 @@ export default function ListTab() {
         message="Revisa tu conexión a internet e inténtalo de nuevo."
         icon="alert"
         actionLabel="Reintentar"
-        onAction={handleRetry}
+        onAction={retry}
       />
     );
   }
@@ -170,33 +173,38 @@ export default function ListTab() {
 
   return (
     <>
-      <FlashList
-        ref={listRef}
-        data={shownStations}
-        keyExtractor={(item: GasStation) => item.id}
-        renderItem={({ item }) => <GasStationCard station={item} />}
-        ItemSeparatorComponent={Separator}
-        ListHeaderComponent={
-          <Text
-            style={{
-              paddingHorizontal: 4,
-              paddingBottom: 10,
-              fontSize: 13,
-              color: colors.secondaryLabel,
-            }}
-          >
-            {shownStations.length === 1
-              ? '1 gasolinera'
-              : `${shownStations.length} gasolineras`}{' '}
-            · por distancia · precios estimados en C$
-          </Text>
-        }
-        contentInsetAdjustmentBehavior="automatic"
-        style={{ backgroundColor: colors.groupedBackground }}
-        contentContainerStyle={{ padding: 16 }}
-        refreshing={isPullRefreshing}
-        onRefresh={handlePullRefresh}
-      />
+      <FadeIn enabled={fadeIn}>
+        <FlashList
+          ref={listRef}
+          data={shownStations}
+          keyExtractor={(item: GasStation) => item.id}
+          renderItem={({ item }) => <GasStationCard station={item} />}
+          ItemSeparatorComponent={Separator}
+          ListHeaderComponent={
+            <Text
+              style={{
+                paddingHorizontal: 4,
+                paddingBottom: 10,
+                fontSize: 13,
+                color: colors.secondaryLabel,
+              }}
+            >
+              {isShowingPrevious
+                ? 'Actualizando para la nueva ubicación…'
+                : `${
+                    shownStations.length === 1
+                      ? '1 gasolinera'
+                      : `${shownStations.length} gasolineras`
+                  } · por distancia · precios estimados en C$`}
+            </Text>
+          }
+          contentInsetAdjustmentBehavior="automatic"
+          style={{ backgroundColor: colors.groupedBackground }}
+          contentContainerStyle={{ padding: 16 }}
+          refreshing={isPullRefreshing}
+          onRefresh={handlePullRefresh}
+        />
+      </FadeIn>
       {header}
     </>
   );

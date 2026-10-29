@@ -9,6 +9,7 @@ import { gasStationRepository } from '~/composition/gasStation';
 import { MAP_CONFIG, QUERY_CONFIG } from '~/shared/constants';
 import type { Coordinates, GasStation } from '~/domain/gasStation/models';
 import { useCurrentLocation } from '~/presentation/stores/locationStore';
+import { retryWithFeedback } from '~/presentation/utils/haptics';
 
 // ~1 km: cada lectura del GPS varía en los últimos decimales; sin redondear,
 // la clave cambia en cada arranque y el caché persistido nunca se reutiliza.
@@ -30,8 +31,12 @@ export const gasStationKeys = {
 interface UseGasStationsReturn {
   gasStations: GasStation[];
   isLoading: boolean;
+  /** Se muestra la lista de la ubicación anterior mientras llega la nueva. */
+  isShowingPrevious: boolean;
   error: Error | null;
   refetch: () => Promise<QueryObserverResult<GasStation[]>>;
+  /** Reintento manual: confirma con vibración si funcionó o falló. */
+  retry: () => Promise<void>;
 }
 
 export const useGasStations = (): UseGasStationsReturn => {
@@ -40,6 +45,7 @@ export const useGasStations = (): UseGasStationsReturn => {
   const {
     data: gasStations = [],
     isLoading,
+    isPlaceholderData,
     error,
     refetch,
   } = useQuery<GasStation[]>({
@@ -72,7 +78,10 @@ export const useGasStations = (): UseGasStationsReturn => {
   return {
     gasStations,
     isLoading,
+    isShowingPrevious: isPlaceholderData,
     error: error as Error | null,
     refetch,
+    retry: () =>
+      retryWithFeedback(async () => (await refetch()).status === 'success'),
   };
 };

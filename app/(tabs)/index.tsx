@@ -1,10 +1,13 @@
 import { useCallback } from 'react';
+import { View } from 'react-native';
 import { router } from 'expo-router';
 import * as Haptics from 'expo-haptics';
 import type { GasStation } from '~/domain/gasStation/models';
+import { MapLoadingPill } from '~/presentation/components/map/MapLoadingPill';
 import { StationsMap } from '~/presentation/components/map/StationsMap';
 import { LocationUnavailable } from '~/presentation/components/location/LocationUnavailable';
 import { ContentUnavailable } from '~/presentation/components/ui/ContentUnavailable';
+import { FadeIn, useWasLoading } from '~/presentation/components/ui/FadeIn';
 import { LoadingScreen } from '~/presentation/components/ui/LoadingScreen';
 import { useGasStations } from '~/presentation/hooks/useGasStations';
 import { useLocation } from '~/presentation/hooks/useLocation';
@@ -16,7 +19,9 @@ export default function GasStationMap() {
     error: locationError,
     getCurrentLocation,
   } = useLocation();
-  const { gasStations, error, refetch } = useGasStations();
+  const { gasStations, isLoading, isShowingPrevious, error, retry } =
+    useGasStations();
+  const fadeIn = useWasLoading(locationLoading);
 
   const cameraPosition = useMapCamera();
 
@@ -47,18 +52,23 @@ export default function GasStationMap() {
         message="Revisa tu conexión a internet e inténtalo de nuevo."
         icon="alert"
         actionLabel="Reintentar"
-        onAction={refetch}
+        onAction={retry}
       />
     );
   }
 
   return (
-    <StationsMap
-      style={{ flex: 1 }}
-      stations={gasStations}
-      cameraPosition={cameraPosition}
-      onStationPress={handleMarkerPress}
-      showsUserLocation
-    />
+    <FadeIn enabled={fadeIn}>
+      <View style={{ flex: 1 }}>
+        <StationsMap
+          style={{ flex: 1 }}
+          stations={gasStations}
+          cameraPosition={cameraPosition}
+          onStationPress={handleMarkerPress}
+          showsUserLocation
+        />
+        <MapLoadingPill visible={isLoading || isShowingPrevious} />
+      </View>
+    </FadeIn>
   );
 }

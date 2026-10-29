@@ -1,11 +1,15 @@
 import { useEffect } from 'react';
 import { AppState, Linking } from 'react-native';
 import { ContentUnavailable } from '~/presentation/components/ui/ContentUnavailable';
-import type { LocationError } from '~/presentation/stores/locationStore';
+import {
+  useLocationStore,
+  type LocationError,
+} from '~/presentation/stores/locationStore';
+import { retryWithFeedback } from '~/presentation/utils/haptics';
 
 interface Props {
   error: LocationError;
-  onRetry: () => void;
+  onRetry: () => Promise<void>;
 }
 
 // iOS no vuelve a pedir un permiso negado: se manda a Ajustes y, al volver
@@ -37,7 +41,12 @@ export function LocationUnavailable({ error, onRetry }: Props) {
       message="Revisa que la ubicación esté activada e inténtalo de nuevo, o busca una ciudad en Buscar."
       icon="location"
       actionLabel="Reintentar"
-      onAction={onRetry}
+      onAction={() =>
+        retryWithFeedback(async () => {
+          await onRetry();
+          return useLocationStore.getState().error === null;
+        })
+      }
     />
   );
 }
