@@ -20,7 +20,7 @@ export const queryClient = new QueryClient({
  * Versión del caché persistido: súbela cuando cambie la forma de los datos
  * guardados (p. ej. un campo nuevo en GasStation) para descartar el caché viejo.
  */
-export const QUERY_CACHE_BUSTER = '2';
+export const QUERY_CACHE_BUSTER = '3';
 
 export const queryPersister = createAsyncStoragePersister({
   storage: mmkvStorageAdapter,

@@ -5,6 +5,7 @@ import {
   ThemeProvider,
 } from 'expo-router/react-navigation';
 import { useColorScheme } from 'react-native';
+import { defaultShouldDehydrateQuery } from '@tanstack/react-query';
 import { PersistQueryClientProvider } from '@tanstack/react-query-persist-client';
 import {
   QUERY_CACHE_BUSTER,
@@ -26,6 +27,11 @@ export default function RootLayout() {
         persistOptions={{
           persister: queryPersister,
           buster: QUERY_CACHE_BUSTER,
+          dehydrateOptions: {
+            shouldDehydrateQuery: (query) =>
+              defaultShouldDehydrateQuery(query) &&
+              query.meta?.persist !== false,
+          },
         }}
       >
         <Stack screenOptions={{ headerShown: false }}>
@@ -34,6 +40,7 @@ export default function RootLayout() {
             options={{
               headerShown: true,
               presentation: 'pageSheet',
+              title: 'Gasolinera',
             }}
           />
           <Stack.Screen name="+not-found" options={{ headerShown: true }} />
