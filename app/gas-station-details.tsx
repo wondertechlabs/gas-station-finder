@@ -1,13 +1,12 @@
-import { useMemo, type ReactNode } from 'react';
+import type { ReactNode } from 'react';
 import { Pressable, Text } from 'react-native';
 import * as Linking from 'expo-linking';
 import { FlashList } from '@shopify/flash-list';
 import { router, Stack, useLocalSearchParams } from 'expo-router';
-import { useQueryClient } from '@tanstack/react-query';
-import type { GasStation } from '~/domain/gasStation/models';
 import { StationsMap } from '~/presentation/components/map/StationsMap';
 import { AppIcon } from '~/presentation/components/ui/AppIcon';
 import { ContentUnavailable } from '~/presentation/components/ui/ContentUnavailable';
+import { LoadingScreen } from '~/presentation/components/ui/LoadingScreen';
 import {
   GroupedCell,
   GroupedHeader,
@@ -17,7 +16,7 @@ import {
   NAVIGATION_APPS,
   useGasStationActions,
 } from '~/presentation/hooks/useGasStationActions';
-import { gasStationKeys } from '~/presentation/hooks/useGasStations';
+import { useGasStation } from '~/presentation/hooks/useGasStations';
 import { colors } from '~/presentation/theme/colors';
 import {
   formatDistance,
@@ -32,23 +31,10 @@ type DetailItem =
 
 export default function GasStationDetailsScreen() {
   const { stationId } = useLocalSearchParams<{ stationId: string }>();
-  const queryClient = useQueryClient();
   const { handleNavigate } = useGasStationActions();
+  const { station, isLoading } = useGasStation(stationId);
 
-  const station: GasStation | null = useMemo(() => {
-    if (!stationId) return null;
-
-    const queries = queryClient.getQueriesData<GasStation[]>({
-      queryKey: gasStationKeys.lists(),
-    });
-
-    for (const [, data] of queries) {
-      const found = data?.find((s) => s.id === stationId);
-      if (found) return found;
-    }
-
-    return null;
-  }, [stationId, queryClient]);
+  if (isLoading) return <LoadingScreen />;
 
   if (!station) {
     return (

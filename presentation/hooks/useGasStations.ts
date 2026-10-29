@@ -18,6 +18,7 @@ const roundForKey = (value: number) => Math.round(value * 100) / 100;
 export const gasStationKeys = {
   all: ['gasStations'] as const,
   lists: () => [...gasStationKeys.all, 'list'] as const,
+  detail: (id: string) => [...gasStationKeys.all, 'detail', id] as const,
   list: (location: Coordinates | null) =>
     location
       ? ([
@@ -93,3 +94,48 @@ export function useGasStationsSync() {
     [queryClient],
   );
 }
+
+/**
+ * Una estación por id. Primero la busca en las listas ya cargadas (render
+ * inmediato); si no está (caché vencido, deep link en arranque en frío),
+ * la pide al repositorio.
+ */
+export const useGasStation = (id: string | undefined) => {
+  const queryClient = useQueryClient();
+  const currentLocation = useCurrentLocation();
+
+  const findInLists = () => {
+    for (const [, data] of queryClient.getQueriesData<GasStation[]>({
+      queryKey: gasStationKeys.lists(),
+    })) {
+      const found = data?.find((station) => station.id === id);
+      if (found) return found;
+    }
+    return undefined;
+  };
+
+  const { data, isLoading } = useQuery<GasStation>({
+    queryKey: gasStationKeys.detail(id ?? ''),
+    queryFn: async () => {
+      const station =
+        findInLists() ??
+        (await gasStationRepository.findById?.(
+          id!,
+          currentLocation ?? undefined,
+        ));
+      // Un error (y no `null`) para que "no encontrada" no quede persistida.
+      if (!station) throw new Error('Gasolinera no encontrada');
+      return station;
+    },
+    initialData: findInLists,
+    enabled: !!id,
+    // Los datos de una estación no cambian mientras se ve el detalle.
+    staleTime: Infinity,
+    retry: false,
+    networkMode: 'always',
+    // Se reconstruye al instante desde las listas o el repositorio.
+    meta: { persist: false },
+  });
+
+  return { station: data ?? null, isLoading: !!id && isLoading };
+};

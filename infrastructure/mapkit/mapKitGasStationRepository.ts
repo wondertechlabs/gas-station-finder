@@ -26,18 +26,30 @@ interface CachedSweep {
   stations: PointOfInterest[];
 }
 
-function readCache(): PointOfInterest[] | null {
+/** Con `allowExpired`, devuelve también un barrido vencido (sirve para buscar por id). */
+function readCache({ allowExpired = false } = {}): PointOfInterest[] | null {
   const raw = storage.getString(CACHE_KEY);
   if (!raw) return null;
   try {
     const cached = JSON.parse(raw) as CachedSweep;
-    return Date.now() - cached.savedAt < CACHE_TTL_MS ? cached.stations : null;
+    const fresh = Date.now() - cached.savedAt < CACHE_TTL_MS;
+    return fresh || allowExpired ? cached.stations : null;
   } catch {
     return null;
   }
 }
 
-function toGasStation(place: PointOfInterest, origin: Coordinates): GasStation {
+// El rectángulo de Nicaragua toca Honduras y Costa Rica: se usa el país de MapKit.
+function isInNicaragua(place: PointOfInterest): boolean {
+  return place.countryCode
+    ? place.countryCode === 'NI'
+    : isWithinNicaraguaBounds({ lat: place.latitude, lng: place.longitude });
+}
+
+function toGasStation(
+  place: PointOfInterest,
+  origin?: Coordinates,
+): GasStation {
   const coordinates = { latitude: place.latitude, longitude: place.longitude };
 
   return {
@@ -51,7 +63,7 @@ function toGasStation(place: PointOfInterest, origin: Coordinates): GasStation {
     amenities: [],
     phone: place.phoneNumber,
     website: place.url,
-    distance: distanceInMeters(origin, coordinates),
+    distance: origin ? distanceInMeters(origin, coordinates) : undefined,
   };
 }
 
@@ -65,6 +77,8 @@ function toGasStation(place: PointOfInterest, origin: Coordinates): GasStation {
 export class MapKitGasStationRepository implements GasStationRepository {
   private sweep: Promise<void> | null = null;
   private partial: PointOfInterest[] = [];
+  /** Última búsqueda rápida: aún no está en el barrido guardado. */
+  private nearby: PointOfInterest[] = [];
   private listeners = new Set<() => void>();
 
   subscribe(listener: () => void) {
@@ -87,8 +101,19 @@ export class MapKitGasStationRepository implements GasStationRepository {
       latitudeDelta: NEARBY_DELTA,
       longitudeDelta: NEARBY_DELTA,
     }).catch(() => [] as PointOfInterest[]);
+    this.nearby = nearby;
 
     return this.toSortedStations([...this.partial, ...nearby], origin);
+  }
+
+  async findById(id: string, origin?: Coordinates): Promise<GasStation | null> {
+    const known = [
+      ...(readCache({ allowExpired: true }) ?? []),
+      ...this.partial,
+      ...this.nearby,
+    ];
+    const place = known.find((candidate) => candidate.id === id);
+    return place && isInNicaragua(place) ? toGasStation(place, origin) : null;
   }
 
   private startSweep() {
@@ -123,19 +148,9 @@ export class MapKitGasStationRepository implements GasStationRepository {
     origin: Coordinates,
   ): GasStation[] {
     const unique = new Map(places.map((place) => [place.id, place]));
-    return (
-      [...unique.values()]
-        // El rectángulo de Nicaragua toca Honduras y Costa Rica: se usa el país de MapKit.
-        .filter((place) =>
-          place.countryCode
-            ? place.countryCode === 'NI'
-            : isWithinNicaraguaBounds({
-                lat: place.latitude,
-                lng: place.longitude,
-              }),
-        )
-        .map((place) => toGasStation(place, origin))
-        .sort((a, b) => (a.distance ?? 0) - (b.distance ?? 0))
-    );
+    return [...unique.values()]
+      .filter(isInNicaragua)
+      .map((place) => toGasStation(place, origin))
+      .sort((a, b) => (a.distance ?? 0) - (b.distance ?? 0));
   }
 }
