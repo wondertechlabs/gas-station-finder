@@ -17,7 +17,7 @@ interface LocationActions {
 
 export type LocationStore = LocationState & LocationActions;
 
-export const useLocationStore = create<LocationStore>((set) => ({
+export const useLocationStore = create<LocationStore>((set, get) => ({
   userLocation: null,
   selectedLocation: null,
   isLoading: false,
@@ -37,6 +37,19 @@ export const useLocationStore = create<LocationStore>((set) => ({
         return;
       }
 
+      // La última posición conocida es instantánea: deja pintar la lista
+      // guardada en caché mientras el GPS obtiene una lectura fresca.
+      const lastKnown = await Location.getLastKnownPositionAsync();
+      if (lastKnown) {
+        set({
+          userLocation: {
+            latitude: lastKnown.coords.latitude,
+            longitude: lastKnown.coords.longitude,
+          },
+          isLoading: false,
+        });
+      }
+
       const location = await Location.getCurrentPositionAsync({
         accuracy: Location.Accuracy.Balanced,
       });
@@ -48,6 +61,8 @@ export const useLocationStore = create<LocationStore>((set) => ({
         },
       });
     } catch (error) {
+      // Con una posición previa ya en pantalla, un fallo del GPS no la tapa.
+      if (get().userLocation) return;
       const errorMessage =
         error instanceof Error
           ? error.message

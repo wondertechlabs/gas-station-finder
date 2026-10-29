@@ -1,10 +1,14 @@
 import { useEffect } from 'react';
-import { useQuery } from '@tanstack/react-query';
+import { keepPreviousData, useQuery } from '@tanstack/react-query';
 import { findNearbyGasStations } from '~/application/gasStation/findNearbyGasStations';
 import { gasStationRepository } from '~/composition/gasStation';
 import { MAP_CONFIG, QUERY_CONFIG } from '~/shared/constants';
 import type { Coordinates, GasStation } from '~/domain/gasStation/models';
 import { useCurrentLocation } from '~/presentation/stores/locationStore';
+
+// ~1 km: cada lectura del GPS varía en los últimos decimales; sin redondear,
+// la clave cambia en cada arranque y el caché persistido nunca se reutiliza.
+const roundForKey = (value: number) => Math.round(value * 100) / 100;
 
 export const gasStationKeys = {
   all: ['gasStations'] as const,
@@ -13,8 +17,8 @@ export const gasStationKeys = {
     location
       ? ([
           ...gasStationKeys.lists(),
-          location.latitude,
-          location.longitude,
+          roundForKey(location.latitude),
+          roundForKey(location.longitude),
         ] as const)
       : ([...gasStationKeys.lists(), 'no-location'] as const),
 } as const;
@@ -48,6 +52,8 @@ export const useGasStations = (): UseGasStationsReturn => {
       });
     },
     enabled: !!currentLocation,
+    // Al cambiar de ciudad se mantiene la lista anterior en vez de un spinner.
+    placeholderData: keepPreviousData,
     staleTime: QUERY_CONFIG.STALE_TIME,
     gcTime: QUERY_CONFIG.GC_TIME,
     retry: QUERY_CONFIG.RETRY_ATTEMPTS,
