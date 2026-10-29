@@ -119,7 +119,8 @@ export const GasStationCard = memo<Props>(({ station }) => {
                   }}
                   numberOfLines={1}
                 >
-                  {prices}
+                  {/* Precios estimados por marca, no oficiales: se rotulan como tal. */}
+                  Estimado: {prices}
                 </Text>
               )}
             </View>
