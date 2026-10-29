@@ -8,7 +8,6 @@ export interface Coordinates {
 export interface GasStation {
   id: string;
   name: string;
-  brand?: string;
   address: string;
   coordinates: Coordinates;
   /** Departamento donde está la estación (si la fuente lo permite saber). */

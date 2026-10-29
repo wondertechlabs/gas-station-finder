@@ -37,7 +37,7 @@ export default function SearchIndex() {
   const setSelectedLocation = useLocationStore(
     (state) => state.setSelectedLocation,
   );
-  const { searchResults, isSearching, setSearchQuery, popularCities } =
+  const { searchResults, isSearching, setSearchQuery, departmentCapitals } =
     useLocationSearch();
   const { address, isLoading: isLoadingAddress } =
     useReverseGeocode(userLocation);
@@ -72,7 +72,7 @@ export default function SearchIndex() {
   }, [setSelectedLocation]);
 
   const hasSearchQuery = searchText.trim().length > 0;
-  const results = hasSearchQuery ? searchResults : popularCities;
+  const results = hasSearchQuery ? searchResults : departmentCapitals;
 
   const items: SearchItem[] = [];
   if (userLocation && !hasSearchQuery) {
@@ -104,7 +104,7 @@ export default function SearchIndex() {
   items.push({
     type: 'header',
     key: 'h-results',
-    title: hasSearchQuery ? 'Resultados' : 'Ciudades populares',
+    title: hasSearchQuery ? 'Resultados' : 'Cabeceras departamentales',
     first: items.length === 0,
   });
   if (isSearching) {

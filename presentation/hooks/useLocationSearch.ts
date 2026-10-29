@@ -16,19 +16,30 @@ function searchInCities(query: string): LocationResult[] {
   );
 }
 
+// El geocoder no se limita a un país: cada resultado se confirma con su
+// dirección real y se descarta si no está en Nicaragua. Las consultas van en
+// serie porque iOS admite una sola geocodificación a la vez.
 async function searchWithGeocoding(query: string): Promise<LocationResult[]> {
   try {
     const geocodeResults = await Location.geocodeAsync(query);
-
-    return geocodeResults.map((result, index) => ({
-      id: `geocode_${index}`,
-      name: query,
-      address: `${query}, Nicaragua`,
-      coordinates: {
-        latitude: result.latitude,
-        longitude: result.longitude,
-      },
-    }));
+    const places: LocationResult[] = [];
+    for (const [index, coordinates] of geocodeResults.slice(0, 5).entries()) {
+      const [place] = await Location.reverseGeocodeAsync(coordinates);
+      if (place?.isoCountryCode !== 'NI') continue;
+      const name = place.city ?? place.subregion ?? place.name ?? query;
+      places.push({
+        id: `geocode_${index}`,
+        name,
+        address: [...new Set([name, place.region, place.country])]
+          .filter(Boolean)
+          .join(', '),
+        coordinates: {
+          latitude: coordinates.latitude,
+          longitude: coordinates.longitude,
+        },
+      });
+    }
+    return places;
   } catch {
     return [];
   }
@@ -74,6 +85,6 @@ export const useLocationSearch = () => {
     searchResults,
     isSearching,
     setSearchQuery,
-    popularCities: NICARAGUA_DEPARTMENTS,
+    departmentCapitals: NICARAGUA_DEPARTMENTS,
   };
 };

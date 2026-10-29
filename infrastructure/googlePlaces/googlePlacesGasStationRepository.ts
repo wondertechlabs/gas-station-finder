@@ -3,7 +3,6 @@ import type {
   FindNearbyGasStationsParams,
 } from '~/domain/gasStation/repository';
 import type { Coordinates, GasStation } from '~/domain/gasStation/models';
-import { determineBrand } from '~/domain/gasStation/brand';
 import { distanceInMeters } from '~/domain/geo/distance';
 import { isWithinNicaraguaBounds } from '~/domain/geo/nicaragua';
 import { GooglePlacesClient } from './googlePlacesClient';
@@ -21,7 +20,6 @@ function mapPlaceToGasStation(
   place: GooglePlaceResult,
   origin: Coordinates,
 ): GasStation {
-  const brand = determineBrand(place.name);
   const coordinates = {
     latitude: place.geometry.location.lat,
     longitude: place.geometry.location.lng,
@@ -30,7 +28,6 @@ function mapPlaceToGasStation(
   return {
     id: place.place_id,
     name: place.name,
-    brand,
     address:
       place.formatted_address || place.vicinity || 'Dirección no disponible',
     coordinates,
