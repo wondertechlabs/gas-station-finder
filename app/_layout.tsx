@@ -1,62 +1,44 @@
-import 'global.css';
-
-import { Stack, SplashScreen } from 'expo-router';
-import { GestureHandlerRootView } from 'react-native-gesture-handler';
-import { useEffect } from 'react';
-import { useFonts } from 'expo-font';
+import { Stack } from 'expo-router';
+import {
+  DarkTheme,
+  DefaultTheme,
+  ThemeProvider,
+} from 'expo-router/react-navigation';
+import { useColorScheme } from 'react-native';
 import { PersistQueryClientProvider } from '@tanstack/react-query-persist-client';
 import {
+  QUERY_CACHE_BUSTER,
   queryClient,
-  asyncStoragePersister,
+  queryPersister,
 } from '~/infrastructure/query/queryClient';
 
 export const unstable_settings = {
-  initialRouteName: '(tabs)',
+  anchor: '(tabs)',
 };
 
 export default function RootLayout() {
-  const [loaded, error] = useFonts({
-    'Avenir-Black': require('../assets/fonts/Avenir-Black.otf'),
-    'Avenir-Light': require('../assets/fonts/Avenir-Light.otf'),
-    'Avenir-Medium': require('../assets/fonts/Avenir-Medium.otf'),
-  });
+  const colorScheme = useColorScheme();
 
-  useEffect(() => {
-    if (error) throw error;
-  }, [error]);
-
-  useEffect(() => {
-    if (loaded) {
-      SplashScreen.hideAsync();
-    }
-  }, [loaded]);
-
-  if (!loaded) {
-    return null;
-  }
-
-  return <RootLayoutNav />;
-}
-
-function RootLayoutNav() {
   return (
-    <PersistQueryClientProvider
-      client={queryClient}
-      persistOptions={{ persister: asyncStoragePersister }}
-    >
-      <GestureHandlerRootView style={{ flex: 1 }}>
+    <ThemeProvider value={colorScheme === 'dark' ? DarkTheme : DefaultTheme}>
+      <PersistQueryClientProvider
+        client={queryClient}
+        persistOptions={{
+          persister: queryPersister,
+          buster: QUERY_CACHE_BUSTER,
+        }}
+      >
         <Stack screenOptions={{ headerShown: false }}>
           <Stack.Screen
             name="gas-station-details"
             options={{
-              title: 'Detalles de la gasolinera',
               headerShown: true,
               presentation: 'pageSheet',
             }}
           />
-          <Stack.Screen name="+not-found" />
+          <Stack.Screen name="+not-found" options={{ headerShown: true }} />
         </Stack>
-      </GestureHandlerRootView>
-    </PersistQueryClientProvider>
+      </PersistQueryClientProvider>
+    </ThemeProvider>
   );
 }

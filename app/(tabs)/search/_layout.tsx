@@ -5,13 +5,7 @@ export default function SearchLayout() {
     <Stack>
       <Stack.Screen
         name="index"
-        options={{
-          title: 'Buscar',
-          headerSearchBarOptions: {
-            placement: 'automatic',
-            placeholder: 'Buscar ciudad...',
-          },
-        }}
+        options={{ title: 'Buscar', headerLargeTitleEnabled: true }}
       />
     </Stack>
   );
