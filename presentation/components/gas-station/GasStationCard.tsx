@@ -136,10 +136,11 @@ export const GasStationCard = memo<Props>(({ station }) => {
         {NAVIGATION_APPS.map(({ app, label, icon }) => (
           <Link.MenuAction
             key={app}
-            title={label}
             icon={icon}
             onPress={() => handleNavigate(station, app)}
-          />
+          >
+            {label}
+          </Link.MenuAction>
         ))}
       </Link.Menu>
     </Link>
