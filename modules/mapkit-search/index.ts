@@ -8,6 +8,9 @@ export interface PointOfInterest {
   countryCode?: string;
   /** Departamento según el sistema, en el idioma del dispositivo. */
   administrativeArea?: string;
+  phoneNumber?: string;
+  /** Sitio web del negocio según Apple Maps. */
+  url?: string;
   latitude: number;
   longitude: number;
 }

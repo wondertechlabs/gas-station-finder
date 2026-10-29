@@ -15,6 +15,8 @@ export interface GasStation {
   /** Distancia en metros desde el punto de búsqueda. */
   distance?: number;
   amenities: string[];
+  phone?: string;
+  website?: string;
   /** `undefined` cuando Google no reporta el horario. */
   isOpen?: boolean;
   rating?: number;

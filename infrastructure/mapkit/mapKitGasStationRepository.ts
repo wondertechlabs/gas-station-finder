@@ -13,7 +13,7 @@ import { isWithinNicaraguaBounds } from '~/domain/geo/nicaragua';
 import { storage } from '~/infrastructure/storage/mmkv';
 import { searchRegion, sweepNicaragua } from './nicaraguaSweep';
 
-const CACHE_KEY = 'mapkit-nicaragua-gas-stations-v4';
+const CACHE_KEY = 'mapkit-nicaragua-gas-stations-v5';
 /** Las gasolineras casi no cambian: el barrido nacional se repite cada semana. */
 const CACHE_TTL_MS = 7 * 24 * 60 * 60 * 1000;
 /** Región de la búsqueda rápida alrededor del usuario (~20 km). */
@@ -49,6 +49,8 @@ function toGasStation(place: PointOfInterest, origin: Coordinates): GasStation {
       departmentFromName(place.administrativeArea) ??
       nearestDepartment(coordinates),
     amenities: [],
+    phone: place.phoneNumber,
+    website: place.url,
     distance: distanceInMeters(origin, coordinates),
   };
 }
@@ -58,7 +60,7 @@ function toGasStation(place: PointOfInterest, origin: Coordinates): GasStation {
  *
  * La primera vez muestra al instante las cercanas y recorre el país en segundo
  * plano (MapKit limita ~50 búsquedas por minuto, así que tarda). El resultado se
- * guarda en MMKV una semana. MapKit no expone rating, horario ni servicios.
+ * guarda en MMKV una semana. MapKit no expone rating, horario ni servicios; sí teléfono y sitio web.
  */
 export class MapKitGasStationRepository implements GasStationRepository {
   private sweep: Promise<void> | null = null;
