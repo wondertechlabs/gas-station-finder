@@ -4,10 +4,7 @@ import type {
   GasStationRepository,
 } from '~/domain/gasStation/repository';
 import type { Coordinates, GasStation } from '~/domain/gasStation/models';
-import {
-  determineBrand,
-  estimateFuelPrices,
-} from '~/domain/gasStation/pricing';
+import { determineBrand } from '~/domain/gasStation/brand';
 import { distanceInMeters } from '~/domain/geo/distance';
 import {
   departmentFromName,
@@ -54,7 +51,6 @@ function toGasStation(place: PointOfInterest, origin: Coordinates): GasStation {
     department:
       departmentFromName(place.administrativeArea) ??
       nearestDepartment(coordinates),
-    fuelTypes: estimateFuelPrices(brand),
     amenities: [],
     distance: distanceInMeters(origin, coordinates),
   };

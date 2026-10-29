@@ -155,11 +155,9 @@ export default function ListTab() {
             >
               {isShowingPrevious
                 ? 'Actualizando…'
-                : `${
-                    visibleStations.length === 1
-                      ? '1 gasolinera'
-                      : `${visibleStations.length} gasolineras`
-                  } · precios estimados en C$`}
+                : visibleStations.length === 1
+                  ? '1 gasolinera'
+                  : `${visibleStations.length} gasolineras`}
             </Text>
           }
           contentInsetAdjustmentBehavior="automatic"

@@ -42,9 +42,6 @@ export const iconCircleStyle = {
 export const GasStationCard = memo<Props>(({ station }) => {
   const { handleNavigate } = useGasStationActions();
   const status = openStatus(station);
-  const prices = station.fuelTypes
-    .map((fuel) => `${fuel.displayName} ${fuel.price.toFixed(2)}`)
-    .join(' · ');
 
   return (
     <Link
@@ -124,19 +121,6 @@ export const GasStationCard = memo<Props>(({ station }) => {
                       ? '  ·  '
                       : ''}
                     {station.rating != null && `★ ${station.rating.toFixed(1)}`}
-                  </Text>
-                )}
-                {prices.length > 0 && (
-                  <Text
-                    style={{
-                      fontSize: 13,
-                      color: colors.tertiaryLabel,
-                      fontVariant: ['tabular-nums'],
-                    }}
-                    numberOfLines={1}
-                  >
-                    {/* Precios estimados por marca, no oficiales: se rotulan como tal. */}
-                    Estimado: {prices}
                   </Text>
                 )}
               </View>

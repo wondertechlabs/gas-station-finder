@@ -30,21 +30,6 @@ export function GroupedHeader({
   );
 }
 
-export function GroupedFooter({ text }: { text: string }) {
-  return (
-    <Text
-      style={{
-        paddingTop: 6,
-        paddingHorizontal: 16,
-        fontSize: 13,
-        color: colors.secondaryLabel,
-      }}
-    >
-      {text}
-    </Text>
-  );
-}
-
 /** Fondo de celda: redondea solo las esquinas de la primera y última fila. */
 export function GroupedCell({
   first,

@@ -9,7 +9,6 @@ import { AppIcon } from '~/presentation/components/ui/AppIcon';
 import { ContentUnavailable } from '~/presentation/components/ui/ContentUnavailable';
 import {
   GroupedCell,
-  GroupedFooter,
   GroupedHeader,
   GroupedRow,
 } from '~/presentation/components/ui/GroupedSection';
@@ -28,7 +27,6 @@ import { MAP_CONFIG } from '~/shared/constants';
 type DetailItem =
   | { type: 'map'; key: string }
   | { type: 'header'; key: string; title: string }
-  | { type: 'footer'; key: string; text: string }
   | { type: 'cell'; key: string; content: ReactNode };
 
 export default function GasStationDetailsScreen() {
@@ -118,29 +116,6 @@ export default function GasStationDetailsScreen() {
     });
   }
 
-  if (station.fuelTypes.length > 0) {
-    items.push({ type: 'header', key: 'h-fuel', title: 'Precios estimados' });
-    station.fuelTypes.forEach((fuel) =>
-      items.push({
-        type: 'cell',
-        key: `fuel-${fuel.type}`,
-        content: (
-          <>
-            <Text style={textStyle}>{fuel.displayName}</Text>
-            <Text selectable style={styles.value}>
-              C${fuel.price.toFixed(2)}
-            </Text>
-          </>
-        ),
-      }),
-    );
-    items.push({
-      type: 'footer',
-      key: 'f-fuel',
-      text: 'No son precios oficiales.',
-    });
-  }
-
   if (station.amenities.length > 0) {
     items.push({ type: 'header', key: 'h-amenities', title: 'Servicios' });
     station.amenities.forEach((amenity) =>
@@ -180,8 +155,6 @@ export default function GasStationDetailsScreen() {
               );
             case 'header':
               return <GroupedHeader title={item.title} />;
-            case 'footer':
-              return <GroupedFooter text={item.text} />;
             case 'cell': {
               // Las celdas contiguas forman una sección: se redondean los extremos.
               const first = items[index - 1]?.type !== 'cell';

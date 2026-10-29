@@ -3,10 +3,7 @@ import type {
   FindNearbyGasStationsParams,
 } from '~/domain/gasStation/repository';
 import type { Coordinates, GasStation } from '~/domain/gasStation/models';
-import {
-  determineBrand,
-  estimateFuelPrices,
-} from '~/domain/gasStation/pricing';
+import { determineBrand } from '~/domain/gasStation/brand';
 import { distanceInMeters } from '~/domain/geo/distance';
 import { isWithinNicaraguaBounds } from '~/domain/geo/nicaragua';
 import { GooglePlacesClient } from './googlePlacesClient';
@@ -39,7 +36,6 @@ function mapPlaceToGasStation(
     coordinates,
     rating: place.rating,
     isOpen: place.opening_hours?.open_now,
-    fuelTypes: estimateFuelPrices(brand),
     amenities: amenitiesFromTypes(place.types),
     distance: distanceInMeters(origin, coordinates),
   };
