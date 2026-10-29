@@ -9,6 +9,8 @@ struct PointOfInterestRecord: Record {
   @Field var countryCode: String?
   /// Departamento según el sistema, en el idioma del dispositivo (p. ej. "Leon").
   @Field var administrativeArea: String?
+  @Field var phoneNumber: String?
+  @Field var url: String?
   @Field var latitude: Double = 0
   @Field var longitude: Double = 0
 }
@@ -80,6 +82,8 @@ public class MapKitSearchModule: Module {
     record.address = address
     record.countryCode = countryCode
     record.administrativeArea = administrativeArea
+    record.phoneNumber = item.phoneNumber
+    record.url = item.url?.absoluteString
     record.latitude = coordinate.latitude
     record.longitude = coordinate.longitude
 

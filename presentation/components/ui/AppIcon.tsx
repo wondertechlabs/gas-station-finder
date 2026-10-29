@@ -14,9 +14,11 @@ export const APP_ICONS = {
   distance: { ios: 'location.north.line.fill', android: 'near_me' },
   location: { ios: 'location.fill', android: 'location_on' },
   map: { ios: 'map.fill', android: 'map' },
+  phone: { ios: 'phone.fill', android: 'call' },
   pin: { ios: 'mappin.and.ellipse', android: 'pin_drop' },
   search: { ios: 'magnifyingglass', android: 'search' },
   star: { ios: 'star.fill', android: 'star' },
+  website: { ios: 'safari.fill', android: 'language' },
 } as const;
 
 export type AppIconName = keyof typeof APP_ICONS;

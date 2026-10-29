@@ -1,5 +1,6 @@
 import type { ReactNode } from 'react';
-import { Text } from 'react-native';
+import { Pressable, Text } from 'react-native';
+import * as Linking from 'expo-linking';
 import { FlashList } from '@shopify/flash-list';
 import { router, Stack, useLocalSearchParams } from 'expo-router';
 import { StationsMap } from '~/presentation/components/map/StationsMap';
@@ -26,7 +27,7 @@ import { MAP_CONFIG } from '~/shared/constants';
 type DetailItem =
   | { type: 'map'; key: string }
   | { type: 'header'; key: string; title: string }
-  | { type: 'cell'; key: string; content: ReactNode };
+  | { type: 'cell'; key: string; content: ReactNode; onPress?: () => void };
 
 export default function GasStationDetailsScreen() {
   const { stationId } = useLocalSearchParams<{ stationId: string }>();
@@ -102,6 +103,46 @@ export default function GasStationDetailsScreen() {
     });
   }
 
+  // Teléfono y web vienen de Apple Maps; muchas gasolineras no los tienen.
+  const contactStart = items.length;
+  if (station.phone) {
+    const phone = station.phone;
+    items.push({
+      type: 'cell',
+      key: 'phone',
+      onPress: () => Linking.openURL(`tel:${phone.replace(/[^\d+]/g, '')}`),
+      content: (
+        <>
+          <AppIcon name="phone" size={16} color={colors.secondaryLabel} />
+          <Text style={[textStyle, { color: colors.tint }]}>{phone}</Text>
+        </>
+      ),
+    });
+  }
+  if (station.website) {
+    const website = station.website;
+    items.push({
+      type: 'cell',
+      key: 'website',
+      onPress: () => Linking.openURL(website),
+      content: (
+        <>
+          <AppIcon name="website" size={16} color={colors.secondaryLabel} />
+          <Text numberOfLines={1} style={[textStyle, { color: colors.tint }]}>
+            {website.replace(/^https?:\/\/(www\.)?/, '').replace(/\/$/, '')}
+          </Text>
+        </>
+      ),
+    });
+  }
+  if (items.length > contactStart) {
+    items.splice(contactStart, 0, {
+      type: 'header',
+      key: 'h-contact',
+      title: 'Contacto',
+    });
+  }
+
   if (station.amenities.length > 0) {
     items.push({ type: 'header', key: 'h-amenities', title: 'Servicios' });
     station.amenities.forEach((amenity) =>
@@ -145,9 +186,24 @@ export default function GasStationDetailsScreen() {
               // Las celdas contiguas forman una sección: se redondean los extremos.
               const first = items[index - 1]?.type !== 'cell';
               const last = items[index + 1]?.type !== 'cell';
+              const row = <GroupedRow last={last}>{item.content}</GroupedRow>;
+
               return (
                 <GroupedCell first={first} last={last}>
-                  <GroupedRow last={last}>{item.content}</GroupedRow>
+                  {item.onPress ? (
+                    <Pressable
+                      onPress={item.onPress}
+                      style={({ pressed }) => ({
+                        backgroundColor: pressed
+                          ? colors.cellHighlight
+                          : 'transparent',
+                      })}
+                    >
+                      {row}
+                    </Pressable>
+                  ) : (
+                    row
+                  )}
                 </GroupedCell>
               );
             }
@@ -161,12 +217,15 @@ export default function GasStationDetailsScreen() {
       <Stack.Title>{station.name}</Stack.Title>
       <Stack.Toolbar placement="bottom">
         <Stack.Toolbar.Spacer />
+        {/* Sin tintColor el SF Symbol se pinta en modo 'original' y queda invisible
+            sobre el fondo prominent: se fuerza 'template' para que tome el color del botón. */}
         <Stack.Toolbar.Menu
           icon="arrow.triangle.turn.up.right.diamond.fill"
+          iconRenderingMode="template"
           variant="prominent"
           title="Cómo llegar"
+          accessibilityLabel="Cómo llegar"
         >
-          <Stack.Toolbar.Label>Abrir en</Stack.Toolbar.Label>
           {NAVIGATION_APPS.map(({ app, label, icon }) => (
             <Stack.Toolbar.MenuAction
               key={app}
