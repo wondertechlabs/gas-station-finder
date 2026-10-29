@@ -54,8 +54,7 @@ export default function GasStationDetailsScreen() {
   if (!station) {
     return (
       <ContentUnavailable
-        title="No encontramos esta gasolinera"
-        message="Puede que la lista se haya actualizado."
+        title="Gasolinera no encontrada"
         icon="alert"
         actionLabel="Volver"
         onAction={() => router.back()}
@@ -138,7 +137,7 @@ export default function GasStationDetailsScreen() {
     items.push({
       type: 'footer',
       key: 'f-fuel',
-      text: 'Estimados según la marca, no son precios oficiales.',
+      text: 'No son precios oficiales.',
     });
   }
 

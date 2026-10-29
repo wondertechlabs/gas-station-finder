@@ -2,6 +2,7 @@ import { useEffect } from 'react';
 import {
   keepPreviousData,
   useQuery,
+  useQueryClient,
   type QueryObserverResult,
 } from '@tanstack/react-query';
 import { findNearbyGasStations } from '~/application/gasStation/findNearbyGasStations';
@@ -9,7 +10,6 @@ import { gasStationRepository } from '~/composition/gasStation';
 import { MAP_CONFIG, QUERY_CONFIG } from '~/shared/constants';
 import type { Coordinates, GasStation } from '~/domain/gasStation/models';
 import { useCurrentLocation } from '~/presentation/stores/locationStore';
-import { retryWithFeedback } from '~/presentation/utils/haptics';
 
 // ~1 km: cada lectura del GPS varía en los últimos decimales; sin redondear,
 // la clave cambia en cada arranque y el caché persistido nunca se reutiliza.
@@ -35,8 +35,6 @@ interface UseGasStationsReturn {
   isShowingPrevious: boolean;
   error: Error | null;
   refetch: () => Promise<QueryObserverResult<GasStation[]>>;
-  /** Reintento manual: confirma con vibración si funcionó o falló. */
-  retry: () => Promise<void>;
 }
 
 export const useGasStations = (): UseGasStationsReturn => {
@@ -71,17 +69,27 @@ export const useGasStations = (): UseGasStationsReturn => {
     networkMode: 'online',
   });
 
-  // Recarga cuando el repositorio termina de traer datos en segundo plano
-  // (en iOS, el barrido de todo el país con MapKit).
-  useEffect(() => gasStationRepository.subscribe?.(() => refetch()), [refetch]);
-
   return {
     gasStations,
     isLoading,
     isShowingPrevious: isPlaceholderData,
     error: error as Error | null,
     refetch,
-    retry: () =>
-      retryWithFeedback(async () => (await refetch()).status === 'success'),
   };
 };
+
+/**
+ * Recarga las listas cuando el repositorio trae más datos en segundo plano
+ * (en iOS, el barrido de MapKit). Se monta una sola vez, en el layout de tabs.
+ */
+export function useGasStationsSync() {
+  const queryClient = useQueryClient();
+
+  useEffect(
+    () =>
+      gasStationRepository.subscribe?.(() => {
+        queryClient.invalidateQueries({ queryKey: gasStationKeys.lists() });
+      }),
+    [queryClient],
+  );
+}

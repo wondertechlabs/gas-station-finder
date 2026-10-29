@@ -1,27 +1,21 @@
 import { useCallback } from 'react';
-import { View } from 'react-native';
 import { router } from 'expo-router';
 import * as Haptics from 'expo-haptics';
 import type { GasStation } from '~/domain/gasStation/models';
+import { GasStationsError } from '~/presentation/components/gas-station/GasStationsError';
 import { MapLoadingPill } from '~/presentation/components/map/MapLoadingPill';
 import { StationsMap } from '~/presentation/components/map/StationsMap';
 import { LocationUnavailable } from '~/presentation/components/location/LocationUnavailable';
-import { ContentUnavailable } from '~/presentation/components/ui/ContentUnavailable';
-import { FadeIn, useWasLoading } from '~/presentation/components/ui/FadeIn';
+import { FadeIn } from '~/presentation/components/ui/FadeIn';
 import { LoadingScreen } from '~/presentation/components/ui/LoadingScreen';
 import { useGasStations } from '~/presentation/hooks/useGasStations';
 import { useLocation } from '~/presentation/hooks/useLocation';
 import { useMapCamera } from '~/presentation/hooks/useMapCamera';
 
 export default function GasStationMap() {
-  const {
-    isLoading: locationLoading,
-    error: locationError,
-    getCurrentLocation,
-  } = useLocation();
-  const { gasStations, isLoading, isShowingPrevious, error, retry } =
+  const { isLoading: locationLoading, error: locationError } = useLocation();
+  const { gasStations, isLoading, isShowingPrevious, error, refetch } =
     useGasStations();
-  const fadeIn = useWasLoading(locationLoading);
 
   const cameraPosition = useMapCamera();
 
@@ -40,35 +34,23 @@ export default function GasStationMap() {
   }
 
   if (locationError) {
-    return (
-      <LocationUnavailable error={locationError} onRetry={getCurrentLocation} />
-    );
+    return <LocationUnavailable error={locationError} />;
   }
 
   if (error) {
-    return (
-      <ContentUnavailable
-        title="No se pudieron cargar las gasolineras"
-        message="Revisa tu conexión a internet e inténtalo de nuevo."
-        icon="alert"
-        actionLabel="Reintentar"
-        onAction={retry}
-      />
-    );
+    return <GasStationsError onRetry={refetch} />;
   }
 
   return (
-    <FadeIn enabled={fadeIn}>
-      <View style={{ flex: 1 }}>
-        <StationsMap
-          style={{ flex: 1 }}
-          stations={gasStations}
-          cameraPosition={cameraPosition}
-          onStationPress={handleMarkerPress}
-          showsUserLocation
-        />
-        <MapLoadingPill visible={isLoading || isShowingPrevious} />
-      </View>
+    <FadeIn>
+      <StationsMap
+        style={{ flex: 1 }}
+        stations={gasStations}
+        cameraPosition={cameraPosition}
+        onStationPress={handleMarkerPress}
+        showsUserLocation
+      />
+      <MapLoadingPill visible={isLoading || isShowingPrevious} />
     </FadeIn>
   );
 }

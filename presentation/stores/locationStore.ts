@@ -1,3 +1,4 @@
+import { AppState } from 'react-native';
 import { create } from 'zustand';
 import * as Location from 'expo-location';
 import type { Coordinates } from '~/domain/gasStation/models';
@@ -75,3 +76,9 @@ export const useLocationStore = create<LocationStore>((set, get) => ({
 
 export const useCurrentLocation = () =>
   useLocationStore((state) => state.selectedLocation || state.userLocation);
+
+// iOS no vuelve a pedir un permiso negado: al volver de Ajustes se reintenta.
+AppState.addEventListener('change', (state) => {
+  const { error, getCurrentLocation } = useLocationStore.getState();
+  if (state === 'active' && error === 'denied') getCurrentLocation();
+});

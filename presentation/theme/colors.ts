@@ -27,7 +27,6 @@ export const colors = {
     ios: Color.ios.secondarySystemGroupedBackground,
     default: '#ffffff',
   })!,
-  // Resalte de celda presionada, como el de UITableView.
   cellHighlight: Platform.select({
     ios: Color.ios.systemGray4,
     default: '#d1d1d6',

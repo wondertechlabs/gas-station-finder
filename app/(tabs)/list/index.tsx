@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useRef, useState } from 'react';
+import { useMemo, useRef, useState } from 'react';
 import { LayoutAnimation, Text, View } from 'react-native';
 import { router, Stack } from 'expo-router';
 import { FlashList, type FlashListRef } from '@shopify/flash-list';
@@ -11,22 +11,18 @@ import {
 } from '~/domain/location/departments';
 import { GasStationCard } from '~/presentation/components/gas-station/GasStationCard';
 import { GasStationListSkeleton } from '~/presentation/components/gas-station/GasStationListSkeleton';
+import { GasStationsError } from '~/presentation/components/gas-station/GasStationsError';
 import { LocationUnavailable } from '~/presentation/components/location/LocationUnavailable';
 import { ContentUnavailable } from '~/presentation/components/ui/ContentUnavailable';
-import { FadeIn, useWasLoading } from '~/presentation/components/ui/FadeIn';
+import { FadeIn } from '~/presentation/components/ui/FadeIn';
 import { useGasStations } from '~/presentation/hooks/useGasStations';
 import { useLocation } from '~/presentation/hooks/useLocation';
 import { colors } from '~/presentation/theme/colors';
 
 export default function ListTab() {
-  const {
-    isLoading: locationLoading,
-    error: locationError,
-    getCurrentLocation,
-  } = useLocation();
-  const { gasStations, isLoading, isShowingPrevious, error, refetch, retry } =
+  const { isLoading: locationLoading, error: locationError } = useLocation();
+  const { gasStations, isLoading, isShowingPrevious, error, refetch } =
     useGasStations();
-  const fadeIn = useWasLoading(locationLoading || isLoading);
   const [department, setDepartment] = useState<DepartmentId | null>(null);
   // Solo el gesto de "tirar para recargar" muestra el spinner: el barrido de
   // MapKit dispara refetch en segundo plano y no debe mover la lista.
@@ -41,8 +37,15 @@ export default function ListTab() {
     }
   };
 
+  // Al cambiar de departamento las filas se deslizan en vez de saltar.
+  const listRef = useRef<FlashListRef<GasStation>>(null);
   const selectDepartment = (id: DepartmentId | null) => {
-    if (id !== department) Haptics.selectionAsync();
+    if (id === department) return;
+    Haptics.selectionAsync();
+    listRef.current?.prepareForLayoutAnimationRender();
+    LayoutAnimation.configureNext(
+      LayoutAnimation.create(200, 'easeInEaseOut', 'opacity'),
+    );
     setDepartment(id);
   };
 
@@ -53,24 +56,6 @@ export default function ListTab() {
         : gasStations,
     [gasStations, department],
   );
-
-  // El barrido de MapKit y el filtro cambian la lista: las filas se deslizan
-  // a su nuevo lugar en vez de saltar bajo el dedo.
-  const listRef = useRef<FlashListRef<GasStation>>(null);
-  const [shownStations, setShownStations] = useState(visibleStations);
-  useEffect(() => {
-    if (shownStations === visibleStations) return;
-    if (shownStations.length > 0) {
-      listRef.current?.prepareForLayoutAnimationRender();
-      LayoutAnimation.configureNext(
-        LayoutAnimation.create(200, 'easeInEaseOut', 'opacity'),
-      );
-    }
-    // Intencional: la animación debe configurarse antes del commit que cambia
-    // la lista, así que la nueva lista se aplica un render después.
-    // eslint-disable-next-line react-hooks/set-state-in-effect
-    setShownStations(visibleStations);
-  }, [visibleStations, shownStations]);
 
   const header = (
     <>
@@ -110,22 +95,11 @@ export default function ListTab() {
     </>
   );
 
-  if (locationLoading) {
-    return (
-      <>
-        <GasStationListSkeleton />
-        {header}
-      </>
-    );
-  }
-
   if (locationError) {
-    return (
-      <LocationUnavailable error={locationError} onRetry={getCurrentLocation} />
-    );
+    return <LocationUnavailable error={locationError} />;
   }
 
-  if (isLoading) {
+  if (locationLoading || isLoading) {
     return (
       <>
         <GasStationListSkeleton />
@@ -135,15 +109,7 @@ export default function ListTab() {
   }
 
   if (error) {
-    return (
-      <ContentUnavailable
-        title="No se pudieron cargar las gasolineras"
-        message="Revisa tu conexión a internet e inténtalo de nuevo."
-        icon="alert"
-        actionLabel="Reintentar"
-        onAction={retry}
-      />
-    );
+    return <GasStationsError onRetry={refetch} />;
   }
 
   if (visibleStations.length === 0) {
@@ -153,15 +119,13 @@ export default function ListTab() {
         {department ? (
           <ContentUnavailable
             title={`Sin gasolineras en ${departmentName(department)}`}
-            message="Puede que aún estemos cargando las gasolineras de todo el país."
             icon="search"
             actionLabel="Ver todo el país"
-            onAction={() => setDepartment(null)}
+            onAction={() => selectDepartment(null)}
           />
         ) : (
           <ContentUnavailable
-            title="No hay gasolineras"
-            message="No encontramos gasolineras cerca de esta ubicación. Prueba con otra ciudad."
+            title="No hay gasolineras cerca"
             icon="search"
             actionLabel="Buscar otra ciudad"
             onAction={() => router.navigate('/search')}
@@ -173,10 +137,10 @@ export default function ListTab() {
 
   return (
     <>
-      <FadeIn enabled={fadeIn}>
+      <FadeIn>
         <FlashList
           ref={listRef}
-          data={shownStations}
+          data={visibleStations}
           keyExtractor={(item: GasStation) => item.id}
           renderItem={({ item }) => <GasStationCard station={item} />}
           ItemSeparatorComponent={Separator}
@@ -190,12 +154,12 @@ export default function ListTab() {
               }}
             >
               {isShowingPrevious
-                ? 'Actualizando para la nueva ubicación…'
+                ? 'Actualizando…'
                 : `${
-                    shownStations.length === 1
+                    visibleStations.length === 1
                       ? '1 gasolinera'
-                      : `${shownStations.length} gasolineras`
-                  } · por distancia · precios estimados en C$`}
+                      : `${visibleStations.length} gasolineras`
+                  } · precios estimados en C$`}
             </Text>
           }
           contentInsetAdjustmentBehavior="automatic"

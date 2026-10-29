@@ -7,7 +7,7 @@ import { colors } from '~/presentation/theme/colors';
 
 export interface ContentUnavailableProps {
   title: string;
-  message: string;
+  message?: string;
   icon?: AppIconName;
   actionLabel?: string;
   onAction?: () => void;
@@ -43,16 +43,18 @@ export function ContentUnavailableBase({
       >
         {title}
       </Text>
-      <Text
-        selectable
-        style={{
-          fontSize: 15,
-          color: colors.secondaryLabel,
-          textAlign: 'center',
-        }}
-      >
-        {message}
-      </Text>
+      {message && (
+        <Text
+          selectable
+          style={{
+            fontSize: 15,
+            color: colors.secondaryLabel,
+            textAlign: 'center',
+          }}
+        >
+          {message}
+        </Text>
+      )}
       {actionLabel && onAction && (
         <Pressable
           onPress={onAction}

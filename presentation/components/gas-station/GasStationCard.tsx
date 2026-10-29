@@ -17,6 +17,26 @@ interface Props {
   station: GasStation;
 }
 
+// Compartidos con GasStationListSkeleton para que la silueta coincida.
+export const cardStyle = {
+  flexDirection: 'row',
+  alignItems: 'center',
+  gap: 12,
+  paddingVertical: 12,
+  paddingHorizontal: 14,
+  borderRadius: 14,
+  borderCurve: 'continuous',
+} as const;
+
+export const iconCircleStyle = {
+  width: 36,
+  height: 36,
+  borderRadius: 18,
+  alignItems: 'center',
+  justifyContent: 'center',
+  backgroundColor: colors.fill,
+} as const;
+
 // Fila compacta al estilo de los resultados de Mapas.
 // Toque: abre el detalle. Mantener presionado: vista previa + menú nativo para navegar.
 export const GasStationCard = memo<Props>(({ station }) => {
@@ -35,34 +55,20 @@ export const GasStationCard = memo<Props>(({ station }) => {
       asChild
     >
       <Link.Trigger>
-        {/* El estilo va en un View interno: Link asChild no conserva `style` como función,
-            pero sí `children` como función, que da el resalte al presionar. */}
+        {/* Link asChild descarta `style` como función; `children` sí funciona. */}
         <Pressable>
           {({ pressed }) => (
             <View
-              style={{
-                flexDirection: 'row',
-                alignItems: 'center',
-                gap: 12,
-                paddingVertical: 12,
-                paddingHorizontal: 14,
-                borderRadius: 14,
-                borderCurve: 'continuous',
-                backgroundColor: pressed
-                  ? colors.cellHighlight
-                  : colors.cellBackground,
-              }}
+              style={[
+                cardStyle,
+                {
+                  backgroundColor: pressed
+                    ? colors.cellHighlight
+                    : colors.cellBackground,
+                },
+              ]}
             >
-              <View
-                style={{
-                  width: 36,
-                  height: 36,
-                  borderRadius: 18,
-                  alignItems: 'center',
-                  justifyContent: 'center',
-                  backgroundColor: colors.fill,
-                }}
-              >
+              <View style={iconCircleStyle}>
                 <AppIcon name="fuel" size={18} color={colors.tint} />
               </View>
 

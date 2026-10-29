@@ -7,47 +7,41 @@ import {
   View,
   type DimensionValue,
 } from 'react-native';
+import {
+  cardStyle,
+  iconCircleStyle,
+} from '~/presentation/components/gas-station/GasStationCard';
+import {
+  LOADING_DELAY_MS,
+  useFadeIn,
+} from '~/presentation/components/ui/FadeIn';
 import { colors } from '~/presentation/theme/colors';
 
 const ROWS = 6;
-// Igual que LoadingScreen: las cargas cortas no muestran nada.
-const SHOW_DELAY_MS = 300;
 
-// Silueta de la lista mientras llegan las gasolineras: mismas medidas que
-// GasStationCard para que el contenido real caiga en su sitio sin saltos.
+// Silueta de la lista mientras llegan las gasolineras.
 export function GasStationListSkeleton() {
-  const opacity = useAnimatedValue(0);
+  const opacity = useFadeIn(LOADING_DELAY_MS);
   const pulse = useAnimatedValue(1);
 
   useEffect(() => {
-    Animated.timing(opacity, {
-      toValue: 1,
-      delay: SHOW_DELAY_MS,
-      duration: 200,
-      useNativeDriver: true,
-    }).start();
-
     let loop: Animated.CompositeAnimation | undefined;
     AccessibilityInfo.isReduceMotionEnabled().then((reduceMotion) => {
       if (reduceMotion) return;
-      loop = Animated.loop(
-        Animated.sequence([
-          Animated.timing(pulse, {
-            toValue: 0.5,
-            duration: 800,
-            useNativeDriver: true,
-          }),
-          Animated.timing(pulse, {
-            toValue: 1,
-            duration: 800,
-            useNativeDriver: true,
-          }),
-        ]),
-      );
+      const step = (toValue: number) =>
+        Animated.timing(pulse, {
+          toValue,
+          duration: 800,
+          useNativeDriver: true,
+        });
+      loop = Animated.sequence([
+        Animated.delay(LOADING_DELAY_MS),
+        Animated.loop(Animated.sequence([step(0.5), step(1)])),
+      ]);
       loop.start();
     });
     return () => loop?.stop();
-  }, [opacity, pulse]);
+  }, [pulse]);
 
   return (
     <ScrollView
@@ -61,9 +55,21 @@ export function GasStationListSkeleton() {
     >
       <Animated.View style={{ opacity }}>
         <Animated.View style={{ gap: 10, opacity: pulse }}>
-          <Bar width="70%" height={13} style={{ marginHorizontal: 4 }} />
+          <View style={{ paddingHorizontal: 4 }}>
+            <Bar width="70%" height={13} />
+          </View>
           {Array.from({ length: ROWS }, (_, index) => (
-            <SkeletonCard key={index} />
+            <View
+              key={index}
+              style={[cardStyle, { backgroundColor: colors.cellBackground }]}
+            >
+              <View style={iconCircleStyle} />
+              <View style={{ flex: 1, gap: 8, paddingVertical: 3 }}>
+                <Bar width="55%" height={15} />
+                <Bar width="80%" height={13} />
+                <Bar width="65%" height={11} />
+              </View>
+            </View>
           ))}
         </Animated.View>
       </Animated.View>
@@ -71,57 +77,15 @@ export function GasStationListSkeleton() {
   );
 }
 
-function SkeletonCard() {
+function Bar({ width, height }: { width: DimensionValue; height: number }) {
   return (
     <View
       style={{
-        flexDirection: 'row',
-        alignItems: 'center',
-        gap: 12,
-        paddingVertical: 12,
-        paddingHorizontal: 14,
-        borderRadius: 14,
-        borderCurve: 'continuous',
-        backgroundColor: colors.cellBackground,
+        width,
+        height,
+        borderRadius: height / 2,
+        backgroundColor: colors.fill,
       }}
-    >
-      <View
-        style={{
-          width: 36,
-          height: 36,
-          borderRadius: 18,
-          backgroundColor: colors.fill,
-        }}
-      />
-      <View style={{ flex: 1, gap: 8, paddingVertical: 3 }}>
-        <Bar width="55%" height={15} />
-        <Bar width="80%" height={13} />
-        <Bar width="65%" height={11} />
-      </View>
-    </View>
-  );
-}
-
-function Bar({
-  width,
-  height,
-  style,
-}: {
-  width: DimensionValue;
-  height: number;
-  style?: { marginHorizontal: number };
-}) {
-  return (
-    <View
-      style={[
-        {
-          width,
-          height,
-          borderRadius: height / 2,
-          backgroundColor: colors.fill,
-        },
-        style,
-      ]}
     />
   );
 }

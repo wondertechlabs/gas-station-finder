@@ -28,7 +28,7 @@ type SearchItem =
       last: boolean;
       onPress: () => void;
     }
-  | { type: 'status'; key: string; text?: string; hint?: string };
+  | { type: 'status'; key: string; text?: string };
 
 export default function SearchIndex() {
   const [searchText, setSearchText] = useState('');
@@ -114,7 +114,6 @@ export default function SearchIndex() {
       type: 'status',
       key: 'empty',
       text: `Sin resultados para “${searchText.trim()}”`,
-      hint: 'Prueba con el nombre de una ciudad o municipio.',
     });
   } else {
     results.forEach((location, index) =>
@@ -174,30 +173,17 @@ function SearchRow({ item }: { item: SearchItem }) {
     case 'status':
       return (
         <GroupedCell first last>
-          <View style={{ padding: 16, alignItems: 'center', gap: 4 }}>
+          <View style={{ padding: 16, alignItems: 'center' }}>
             {item.text ? (
-              <>
-                <Text
-                  style={{
-                    fontSize: 17,
-                    color: colors.secondaryLabel,
-                    textAlign: 'center',
-                  }}
-                >
-                  {item.text}
-                </Text>
-                {item.hint && (
-                  <Text
-                    style={{
-                      fontSize: 15,
-                      color: colors.tertiaryLabel,
-                      textAlign: 'center',
-                    }}
-                  >
-                    {item.hint}
-                  </Text>
-                )}
-              </>
+              <Text
+                style={{
+                  fontSize: 17,
+                  color: colors.secondaryLabel,
+                  textAlign: 'center',
+                }}
+              >
+                {item.text}
+              </Text>
             ) : (
               <ActivityIndicator />
             )}

@@ -1,32 +1,21 @@
-import { useEffect } from 'react';
-import {
-  ActivityIndicator,
-  Animated,
-  Text,
-  useAnimatedValue,
-} from 'react-native';
+import { ActivityIndicator, Animated, Text } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
+import { useFadeIn } from '~/presentation/components/ui/FadeIn';
 import { colors } from '~/presentation/theme/colors';
 
-// Aviso flotante sobre el mapa mientras llegan las gasolineras: el mapa
-// sigue usable y el aviso se desvanece al terminar.
+// Aviso flotante sobre el mapa mientras llegan las gasolineras.
 export function MapLoadingPill({ visible }: { visible: boolean }) {
-  const insets = useSafeAreaInsets();
-  const opacity = useAnimatedValue(0);
+  return visible ? <Pill /> : null;
+}
 
-  useEffect(() => {
-    Animated.timing(opacity, {
-      toValue: visible ? 1 : 0,
-      duration: 200,
-      useNativeDriver: true,
-    }).start();
-  }, [visible, opacity]);
+function Pill() {
+  const insets = useSafeAreaInsets();
+  const opacity = useFadeIn();
 
   return (
     <Animated.View
       pointerEvents="none"
       accessibilityLiveRegion="polite"
-      accessibilityElementsHidden={!visible}
       style={{
         position: 'absolute',
         top: insets.top + 8,
