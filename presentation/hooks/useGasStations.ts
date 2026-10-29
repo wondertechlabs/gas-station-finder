@@ -1,10 +1,9 @@
-import { useMemo } from 'react';
+import { useEffect } from 'react';
 import { useQuery } from '@tanstack/react-query';
 import { findNearbyGasStations } from '~/application/gasStation/findNearbyGasStations';
 import { gasStationRepository } from '~/composition/gasStation';
 import { MAP_CONFIG, QUERY_CONFIG } from '~/shared/constants';
 import type { Coordinates, GasStation } from '~/domain/gasStation/models';
-import { useSearchQuery } from '~/presentation/stores/gasStationStore';
 import { useCurrentLocation } from '~/presentation/stores/locationStore';
 
 export const gasStationKeys = {
@@ -18,25 +17,23 @@ export const gasStationKeys = {
           location.longitude,
         ] as const)
       : ([...gasStationKeys.lists(), 'no-location'] as const),
-  nearby: (lat: number, lng: number, radius: number) =>
-    [...gasStationKeys.all, 'nearby', lat, lng, radius] as const,
 } as const;
 
 interface UseGasStationsReturn {
   gasStations: GasStation[];
-  filteredStations: GasStation[];
   isLoading: boolean;
+  isRefetching: boolean;
   error: Error | null;
   refetch: () => void;
 }
 
 export const useGasStations = (): UseGasStationsReturn => {
   const currentLocation = useCurrentLocation();
-  const searchQuery = useSearchQuery();
 
   const {
     data: gasStations = [],
     isLoading,
+    isRefetching,
     error,
     refetch,
   } = useQuery<GasStation[]>({
@@ -60,24 +57,14 @@ export const useGasStations = (): UseGasStationsReturn => {
     networkMode: 'online',
   });
 
-  const filteredStations = useMemo(() => {
-    if (!searchQuery.trim()) {
-      return gasStations;
-    }
-
-    const query = searchQuery.toLowerCase().trim();
-    return gasStations.filter(
-      (station): boolean =>
-        station.name.toLowerCase().includes(query) ||
-        station.brand?.toLowerCase().includes(query) ||
-        station.address.toLowerCase().includes(query),
-    );
-  }, [gasStations, searchQuery]);
+  // Recarga cuando el repositorio termina de traer datos en segundo plano
+  // (en iOS, el barrido de todo el país con MapKit).
+  useEffect(() => gasStationRepository.subscribe?.(() => refetch()), [refetch]);
 
   return {
     gasStations,
-    filteredStations,
     isLoading,
+    isRefetching,
     error: error as Error | null,
     refetch,
   };

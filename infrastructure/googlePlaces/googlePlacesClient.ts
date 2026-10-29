@@ -1,9 +1,6 @@
 import { fetchJson } from '~/infrastructure/http/fetchJson';
 import { getGoogleMapsApiKey } from '~/infrastructure/config/env';
-import type {
-  GooglePlacesNearbySearchResponse,
-  GooglePlacesDetailsResponse,
-} from './types';
+import type { GooglePlacesNearbySearchResponse } from './types';
 
 const BASE_URL = 'https://maps.googleapis.com/maps/api/place';
 
@@ -42,36 +39,5 @@ export const GooglePlacesClient = {
     });
 
     return fetchJson<GooglePlacesNearbySearchResponse>(url);
-  },
-
-  async placeDetails(params: {
-    placeId: string;
-    fields?: string;
-    language?: string;
-    region?: string;
-  }): Promise<{ response: Response; data: GooglePlacesDetailsResponse }> {
-    const url = buildUrl('details/json', {
-      place_id: params.placeId,
-      fields:
-        params.fields ??
-        'name,formatted_address,formatted_phone_number,opening_hours,rating,user_ratings_total,types',
-      language: params.language ?? 'es',
-      region: params.region ?? 'ni',
-    });
-
-    return fetchJson<GooglePlacesDetailsResponse>(url);
-  },
-
-  async testKey(): Promise<boolean> {
-    try {
-      const { data } = await this.nearbyGasStations({
-        latitude: 12.1364,
-        longitude: -86.2514,
-        radius: 1000,
-      });
-      return data.status === 'OK' || data.status === 'ZERO_RESULTS';
-    } catch {
-      return false;
-    }
   },
 };

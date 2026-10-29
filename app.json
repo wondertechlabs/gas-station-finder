@@ -11,28 +11,28 @@
       "supportsTablet": true,
       "bundleIdentifier": "dev.donmanuel.gas-station-near-me",
       "infoPlist": {
-        "NSLocationWhenInUseUsageDescription": "Con el acceso a tu ubicación, podremos mostrar las gasolineras cercanas a ti",
-        "NSLocationAlwaysUsageDescription": "Con el acceso a tu ubicación, podremos mostrar las gasolineras cercanas a ti",
-        "ITSAppUsesNonExemptEncryption": false
+        "ITSAppUsesNonExemptEncryption": false,
+        "CADisableMinimumFrameDurationOnPhone": true
       }
-    },
-    "web": {
-      "bundler": "metro"
     },
     "plugins": [
       "expo-router",
-      "expo-font",
-      "expo-web-browser",
       [
         "expo-location",
         {
-          "locationAlwaysAndWhenInUsePermission": "Con el acceso a tu ubicación, podremos mostrar las gasolineras cercanas a ti."
+          "locationWhenInUsePermission": "Usamos tu ubicación para mostrarte las gasolineras cercanas.",
+          "locationAlwaysAndWhenInUsePermission": false,
+          "locationAlwaysPermission": false
         }
-      ]
+      ],
+      "expo-splash-screen",
+      "expo-status-bar",
+      "expo-maps"
     ],
     "experiments": {
       "typedRoutes": true,
-      "tsconfigPaths": true
+      "tsconfigPaths": true,
+      "reactCompiler": true
     },
     "extra": {
       "router": {},
@@ -40,7 +40,7 @@
         "projectId": "3e60f601-fd0a-451c-9dd6-ab95cf0919a8"
       }
     },
-    "owner": "manuelduarte077",
+    "owner": "momotombo",
     "runtimeVersion": {
       "policy": "appVersion"
     },
@@ -51,7 +51,8 @@
       "permissions": [
         "android.permission.ACCESS_COARSE_LOCATION",
         "android.permission.ACCESS_FINE_LOCATION"
-      ]
+      ],
+      "package": "dev.donmanuel.gasstationnearme"
     }
   }
 }

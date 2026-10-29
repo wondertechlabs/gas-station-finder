@@ -1,4 +1,4 @@
-export type GooglePlacesStatus =
+type GooglePlacesStatus =
   | 'OK'
   | 'ZERO_RESULTS'
   | 'OVER_QUERY_LIMIT'
@@ -6,9 +6,9 @@ export type GooglePlacesStatus =
   | 'INVALID_REQUEST'
   | 'UNKNOWN_ERROR';
 
-export type LatLng = { lat: number; lng: number };
+type LatLng = { lat: number; lng: number };
 
-export interface GooglePlaceGeometry {
+interface GooglePlaceGeometry {
   location: LatLng;
 }
 
@@ -29,25 +29,6 @@ export interface GooglePlaceResult {
 
 export interface GooglePlacesNearbySearchResponse {
   results: GooglePlaceResult[];
-  status: GooglePlacesStatus;
-  error_message?: string;
-}
-
-export interface GooglePlaceDetails {
-  name: string;
-  formatted_address: string;
-  formatted_phone_number?: string;
-  opening_hours?: {
-    open_now: boolean;
-    weekday_text?: string[];
-  };
-  rating?: number;
-  user_ratings_total?: number;
-  types: string[];
-}
-
-export interface GooglePlacesDetailsResponse {
-  result?: GooglePlaceDetails;
   status: GooglePlacesStatus;
   error_message?: string;
 }

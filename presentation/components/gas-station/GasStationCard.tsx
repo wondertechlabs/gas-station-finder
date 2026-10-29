@@ -1,82 +1,145 @@
-import React, { useCallback } from 'react';
-import { Alert, Pressable, Text, View } from 'react-native';
-import { Ionicons } from '@expo/vector-icons';
-import { router } from 'expo-router';
+import { memo } from 'react';
+import { Pressable, Text, View } from 'react-native';
+import { Link } from 'expo-router';
 import type { GasStation } from '~/domain/gasStation/models';
-import { useGasStationActions } from '~/presentation/hooks/useGasStationActions';
+import { AppIcon } from '~/presentation/components/ui/AppIcon';
+import {
+  NAVIGATION_APPS,
+  useGasStationActions,
+} from '~/presentation/hooks/useGasStationActions';
+import { colors } from '~/presentation/theme/colors';
+import {
+  formatDistance,
+  openStatus,
+} from '~/presentation/utils/gasStationFormat';
 
 interface Props {
   station: GasStation;
 }
 
-export const GasStationCard = React.memo<Props>(({ station }) => {
+// Fila compacta al estilo de los resultados de Mapas.
+// Toque: abre el detalle. Mantener presionado: vista previa + menú nativo para navegar.
+export const GasStationCard = memo<Props>(({ station }) => {
   const { handleNavigate } = useGasStationActions();
-
-  const onPress = useCallback(() => {
-    router.push({ pathname: '/gas-station-details', params: { stationId: station.id } });
-  }, [station.id]);
-
-  const onNavigate = useCallback(() => {
-    Alert.alert('Navegar', `¿Cómo quieres ir a ${station.name}?`, [
-      { text: 'Google Maps', onPress: () => handleNavigate(station, 'google') },
-      { text: 'Waze', onPress: () => handleNavigate(station, 'waze') },
-      { text: 'Cancelar', style: 'cancel' },
-    ]);
-  }, [station, handleNavigate]);
-
-  const distance = station.distance
-    ? station.distance < 1000
-      ? `${Math.round(station.distance)}m`
-      : `${(station.distance / 1000).toFixed(1)}km`
-    : null;
+  const status = openStatus(station);
+  const prices = station.fuelTypes
+    .map((fuel) => `${fuel.displayName} ${fuel.price.toFixed(2)}`)
+    .join(' · ');
 
   return (
-    <Pressable className="bg-white p-4 mb-3 rounded-xl" onPress={onPress}>
-      <View className="flex-row items-center justify-between mb-2">
-        <Text className="text-lg font-bold text-gray-900 flex-1 mr-2" numberOfLines={1}>
-          {station.name}
-        </Text>
-        {distance && (
-          <Text className="text-sm font-medium text-gray-400">{distance}</Text>
-        )}
-      </View>
-
-      <View className="flex-row items-center mb-3">
-        <View className={`w-2 h-2 rounded-full mr-2 ${station.isOpen ? 'bg-green-500' : 'bg-gray-300'}`} />
-        <Text className={`text-sm ${station.isOpen ? 'text-green-600' : 'text-gray-400'}`}>
-          {station.isOpen ? 'Abierto' : 'Cerrado'}
-        </Text>
-        {station.rating && (
-          <>
-            <Text className="text-gray-300 mx-2">•</Text>
-            <Ionicons name="star" size={12} color="#fbbf24" />
-            <Text className="text-sm text-gray-600 ml-1">{station.rating.toFixed(1)}</Text>
-          </>
-        )}
-      </View>
-
-      <Text className="text-sm text-gray-500 mb-4" numberOfLines={2}>
-        {station.address}
-      </Text>
-
-      {station.fuelTypes.length > 0 && (
-        <View className="flex-row mb-4 gap-3">
-          {station.fuelTypes.slice(0, 3).map((fuel, i) => (
-            <View key={i} className="flex-1 bg-gray-50 rounded-lg py-2 px-3">
-              <Text className="text-xs text-gray-500 text-center">{fuel.displayName}</Text>
-              <Text className="text-sm font-bold text-gray-900 text-center">C${fuel.price}</Text>
+    <Link
+      href={{
+        pathname: '/gas-station-details',
+        params: { stationId: station.id },
+      }}
+      asChild
+    >
+      <Link.Trigger>
+        {/* El estilo va en un View interno: Link asChild no conserva `style` como función. */}
+        <Pressable>
+          <View
+            style={{
+              flexDirection: 'row',
+              alignItems: 'center',
+              gap: 12,
+              paddingVertical: 12,
+              paddingHorizontal: 14,
+              borderRadius: 14,
+              borderCurve: 'continuous',
+              backgroundColor: colors.cellBackground,
+            }}
+          >
+            <View
+              style={{
+                width: 36,
+                height: 36,
+                borderRadius: 18,
+                alignItems: 'center',
+                justifyContent: 'center',
+                backgroundColor: colors.fill,
+              }}
+            >
+              <AppIcon name="fuel" size={18} color={colors.tint} />
             </View>
-          ))}
-        </View>
-      )}
 
-      <Pressable
-        className="bg-primary-500 rounded-lg py-3 flex-row items-center justify-center"
-        onPress={onNavigate}
+            <View style={{ flex: 1, gap: 2 }}>
+              <View
+                style={{ flexDirection: 'row', alignItems: 'baseline', gap: 8 }}
+              >
+                <Text
+                  style={{
+                    flex: 1,
+                    fontSize: 17,
+                    fontWeight: '600',
+                    color: colors.label,
+                  }}
+                  numberOfLines={1}
+                >
+                  {station.name}
+                </Text>
+                {station.distance != null && (
+                  <Text
+                    style={{
+                      fontSize: 15,
+                      color: colors.secondaryLabel,
+                      fontVariant: ['tabular-nums'],
+                    }}
+                  >
+                    {formatDistance(station.distance)}
+                  </Text>
+                )}
+              </View>
+              <Text
+                style={{ fontSize: 15, color: colors.secondaryLabel }}
+                numberOfLines={1}
+              >
+                {station.address}
+              </Text>
+              {/* MapKit no reporta horario ni rating: solo se muestran si existen. */}
+              {(station.isOpen !== undefined || station.rating != null) && (
+                <Text
+                  style={{ fontSize: 13, color: colors.secondaryLabel }}
+                  numberOfLines={1}
+                >
+                  {station.isOpen !== undefined && (
+                    <Text style={{ color: status.color }}>{status.label}</Text>
+                  )}
+                  {station.isOpen !== undefined && station.rating != null
+                    ? '  ·  '
+                    : ''}
+                  {station.rating != null && `★ ${station.rating.toFixed(1)}`}
+                </Text>
+              )}
+              {prices.length > 0 && (
+                <Text
+                  style={{
+                    fontSize: 13,
+                    color: colors.tertiaryLabel,
+                    fontVariant: ['tabular-nums'],
+                  }}
+                  numberOfLines={1}
+                >
+                  {prices}
+                </Text>
+              )}
+            </View>
+          </View>
+        </Pressable>
+      </Link.Trigger>
+      <Link.Preview />
+      <Link.Menu
+        title="Ir a la gasolinera"
+        icon="arrow.triangle.turn.up.right.diamond"
       >
-        <Ionicons name="navigate" size={16} color="white" />
-        <Text className="text-white font-semibold ml-2">Ir a la gasolinera</Text>
-      </Pressable>
-    </Pressable>
+        {NAVIGATION_APPS.map(({ app, label, icon }) => (
+          <Link.MenuAction
+            key={app}
+            title={label}
+            icon={icon}
+            onPress={() => handleNavigate(station, app)}
+          />
+        ))}
+      </Link.Menu>
+    </Link>
   );
 });

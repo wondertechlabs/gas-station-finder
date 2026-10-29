@@ -1,17 +1,25 @@
-import React from 'react';
 import { ActivityIndicator, Text, View } from 'react-native';
-import { COLORS } from '~/shared/constants';
+import { colors } from '~/presentation/theme/colors';
 
 interface LoadingScreenProps {
   message?: string;
-  size?: 'small' | 'large';
 }
 
-export const LoadingScreen = React.memo<LoadingScreenProps>(
-  ({ message = 'Cargando...', size = 'large' }) => (
-    <View className="flex-1 justify-center items-center bg-gray-50">
-      <ActivityIndicator size={size} color={COLORS.PRIMARY} />
-      <Text className="mt-4 text-gray-600">{message}</Text>
+export function LoadingScreen({ message = 'Cargando...' }: LoadingScreenProps) {
+  return (
+    <View
+      style={{
+        flex: 1,
+        alignItems: 'center',
+        justifyContent: 'center',
+        gap: 12,
+        backgroundColor: colors.groupedBackground,
+      }}
+    >
+      <ActivityIndicator />
+      <Text style={{ fontSize: 15, color: colors.secondaryLabel }}>
+        {message}
+      </Text>
     </View>
-  ),
-);
+  );
+}
