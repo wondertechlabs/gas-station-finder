@@ -21,9 +21,20 @@ export default function ListTab() {
     error: locationError,
     getCurrentLocation,
   } = useLocation();
-  const { gasStations, isLoading, isRefetching, error, refetch } =
-    useGasStations();
+  const { gasStations, isLoading, error, refetch } = useGasStations();
   const [department, setDepartment] = useState<DepartmentId | null>(null);
+  // Solo el gesto de "tirar para recargar" muestra el spinner: el barrido de
+  // MapKit dispara refetch en segundo plano y no debe mover la lista.
+  const [isPullRefreshing, setIsPullRefreshing] = useState(false);
+
+  const handlePullRefresh = async () => {
+    setIsPullRefreshing(true);
+    try {
+      await refetch();
+    } finally {
+      setIsPullRefreshing(false);
+    }
+  };
 
   const visibleStations = useMemo(
     () =>
@@ -151,8 +162,8 @@ export default function ListTab() {
         contentInsetAdjustmentBehavior="automatic"
         style={{ backgroundColor: colors.groupedBackground }}
         contentContainerStyle={{ padding: 16 }}
-        refreshing={isRefetching}
-        onRefresh={refetch}
+        refreshing={isPullRefreshing}
+        onRefresh={handlePullRefresh}
       />
       {header}
     </>

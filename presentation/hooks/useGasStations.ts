@@ -22,9 +22,8 @@ export const gasStationKeys = {
 interface UseGasStationsReturn {
   gasStations: GasStation[];
   isLoading: boolean;
-  isRefetching: boolean;
   error: Error | null;
-  refetch: () => void;
+  refetch: () => Promise<unknown>;
 }
 
 export const useGasStations = (): UseGasStationsReturn => {
@@ -33,7 +32,6 @@ export const useGasStations = (): UseGasStationsReturn => {
   const {
     data: gasStations = [],
     isLoading,
-    isRefetching,
     error,
     refetch,
   } = useQuery<GasStation[]>({
@@ -64,7 +62,6 @@ export const useGasStations = (): UseGasStationsReturn => {
   return {
     gasStations,
     isLoading,
-    isRefetching,
     error: error as Error | null,
     refetch,
   };
