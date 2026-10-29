@@ -3,6 +3,7 @@ import type { ColorValue } from 'react-native';
 import { ActivityIndicator, Text, View } from 'react-native';
 import { FlashList } from '@shopify/flash-list';
 import { router, Stack } from 'expo-router';
+import * as Haptics from 'expo-haptics';
 import type { LocationResult } from '~/domain/location/models';
 import { LocationItem } from '~/presentation/components/location/LocationItem';
 import {
@@ -27,7 +28,7 @@ type SearchItem =
       last: boolean;
       onPress: () => void;
     }
-  | { type: 'status'; key: string; text?: string };
+  | { type: 'status'; key: string; text?: string; hint?: string };
 
 export default function SearchIndex() {
   const [searchText, setSearchText] = useState('');
@@ -51,6 +52,7 @@ export default function SearchIndex() {
 
   const handleSelectLocation = useCallback(
     (location: LocationResult) => {
+      Haptics.selectionAsync();
       setSelectedLocation({
         latitude: location.coordinates.latitude,
         longitude: location.coordinates.longitude,
@@ -64,6 +66,7 @@ export default function SearchIndex() {
 
   // Sin selección manual, el mapa sigue la ubicación real del usuario.
   const handleUseCurrentLocation = useCallback(() => {
+    Haptics.selectionAsync();
     setSelectedLocation(null);
     router.navigate('/');
   }, [setSelectedLocation]);
@@ -111,6 +114,7 @@ export default function SearchIndex() {
       type: 'status',
       key: 'empty',
       text: `Sin resultados para “${searchText.trim()}”`,
+      hint: 'Prueba con el nombre de una ciudad o municipio.',
     });
   } else {
     results.forEach((location, index) =>
@@ -137,6 +141,7 @@ export default function SearchIndex() {
         contentInsetAdjustmentBehavior="automatic"
         keyboardShouldPersistTaps="handled"
         keyboardDismissMode="on-drag"
+        automaticallyAdjustKeyboardInsets
         style={{ backgroundColor: colors.groupedBackground }}
         contentContainerStyle={{ padding: 16 }}
       />
@@ -169,17 +174,30 @@ function SearchRow({ item }: { item: SearchItem }) {
     case 'status':
       return (
         <GroupedCell first last>
-          <View style={{ padding: 16, alignItems: 'center' }}>
+          <View style={{ padding: 16, alignItems: 'center', gap: 4 }}>
             {item.text ? (
-              <Text
-                style={{
-                  fontSize: 17,
-                  color: colors.secondaryLabel,
-                  textAlign: 'center',
-                }}
-              >
-                {item.text}
-              </Text>
+              <>
+                <Text
+                  style={{
+                    fontSize: 17,
+                    color: colors.secondaryLabel,
+                    textAlign: 'center',
+                  }}
+                >
+                  {item.text}
+                </Text>
+                {item.hint && (
+                  <Text
+                    style={{
+                      fontSize: 15,
+                      color: colors.tertiaryLabel,
+                      textAlign: 'center',
+                    }}
+                  >
+                    {item.hint}
+                  </Text>
+                )}
+              </>
             ) : (
               <ActivityIndicator />
             )}

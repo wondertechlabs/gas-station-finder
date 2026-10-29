@@ -1,7 +1,8 @@
-import { useMemo, useState } from 'react';
-import { Text, View } from 'react-native';
-import { Stack } from 'expo-router';
-import { FlashList } from '@shopify/flash-list';
+import { useEffect, useMemo, useRef, useState } from 'react';
+import { LayoutAnimation, Text, View } from 'react-native';
+import { router, Stack } from 'expo-router';
+import { FlashList, type FlashListRef } from '@shopify/flash-list';
+import * as Haptics from 'expo-haptics';
 import type { GasStation } from '~/domain/gasStation/models';
 import {
   DEPARTMENTS,
@@ -9,6 +10,7 @@ import {
   type DepartmentId,
 } from '~/domain/location/departments';
 import { GasStationCard } from '~/presentation/components/gas-station/GasStationCard';
+import { LocationUnavailable } from '~/presentation/components/location/LocationUnavailable';
 import { ContentUnavailable } from '~/presentation/components/ui/ContentUnavailable';
 import { LoadingScreen } from '~/presentation/components/ui/LoadingScreen';
 import { useGasStations } from '~/presentation/hooks/useGasStations';
@@ -36,6 +38,21 @@ export default function ListTab() {
     }
   };
 
+  const selectDepartment = (id: DepartmentId | null) => {
+    if (id !== department) Haptics.selectionAsync();
+    setDepartment(id);
+  };
+
+  // El reintento confirma con una vibración si funcionó o falló.
+  const handleRetry = async () => {
+    const result = await refetch();
+    Haptics.notificationAsync(
+      result.status === 'success'
+        ? Haptics.NotificationFeedbackType.Success
+        : Haptics.NotificationFeedbackType.Error,
+    );
+  };
+
   const visibleStations = useMemo(
     () =>
       department
@@ -43,6 +60,24 @@ export default function ListTab() {
         : gasStations,
     [gasStations, department],
   );
+
+  // El barrido de MapKit y el filtro cambian la lista: las filas se deslizan
+  // a su nuevo lugar en vez de saltar bajo el dedo.
+  const listRef = useRef<FlashListRef<GasStation>>(null);
+  const [shownStations, setShownStations] = useState(visibleStations);
+  useEffect(() => {
+    if (shownStations === visibleStations) return;
+    if (shownStations.length > 0) {
+      listRef.current?.prepareForLayoutAnimationRender();
+      LayoutAnimation.configureNext(
+        LayoutAnimation.create(200, 'easeInEaseOut', 'opacity'),
+      );
+    }
+    // Intencional: la animación debe configurarse antes del commit que cambia
+    // la lista, así que la nueva lista se aplica un render después.
+    // eslint-disable-next-line react-hooks/set-state-in-effect
+    setShownStations(visibleStations);
+  }, [visibleStations, shownStations]);
 
   const header = (
     <>
@@ -63,7 +98,7 @@ export default function ListTab() {
             <Stack.Toolbar.MenuAction
               icon="map"
               isOn={department === null}
-              onPress={() => setDepartment(null)}
+              onPress={() => selectDepartment(null)}
             >
               Todo el país
             </Stack.Toolbar.MenuAction>
@@ -72,7 +107,7 @@ export default function ListTab() {
             <Stack.Toolbar.MenuAction
               key={id}
               isOn={department === id}
-              onPress={() => setDepartment(id)}
+              onPress={() => selectDepartment(id)}
             >
               {name}
             </Stack.Toolbar.MenuAction>
@@ -88,13 +123,7 @@ export default function ListTab() {
 
   if (locationError) {
     return (
-      <ContentUnavailable
-        title="Ubicación no disponible"
-        message={locationError}
-        icon="location"
-        actionLabel="Reintentar"
-        onAction={getCurrentLocation}
-      />
+      <LocationUnavailable error={locationError} onRetry={getCurrentLocation} />
     );
   }
 
@@ -105,11 +134,11 @@ export default function ListTab() {
   if (error) {
     return (
       <ContentUnavailable
-        title="No se pudieron cargar"
-        message={error.message}
+        title="No se pudieron cargar las gasolineras"
+        message="Revisa tu conexión a internet e inténtalo de nuevo."
         icon="alert"
         actionLabel="Reintentar"
-        onAction={refetch}
+        onAction={handleRetry}
       />
     );
   }
@@ -129,8 +158,10 @@ export default function ListTab() {
         ) : (
           <ContentUnavailable
             title="No hay gasolineras"
-            message="No encontramos gasolineras cercanas"
+            message="No encontramos gasolineras cerca de esta ubicación. Prueba con otra ciudad."
             icon="search"
+            actionLabel="Buscar otra ciudad"
+            onAction={() => router.navigate('/search')}
           />
         )}
       </>
@@ -140,7 +171,8 @@ export default function ListTab() {
   return (
     <>
       <FlashList
-        data={visibleStations}
+        ref={listRef}
+        data={shownStations}
         keyExtractor={(item: GasStation) => item.id}
         renderItem={({ item }) => <GasStationCard station={item} />}
         ItemSeparatorComponent={Separator}
@@ -153,9 +185,9 @@ export default function ListTab() {
               color: colors.secondaryLabel,
             }}
           >
-            {visibleStations.length === 1
+            {shownStations.length === 1
               ? '1 gasolinera'
-              : `${visibleStations.length} gasolineras`}{' '}
+              : `${shownStations.length} gasolineras`}{' '}
             · por distancia · precios estimados en C$
           </Text>
         }

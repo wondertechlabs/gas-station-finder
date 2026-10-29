@@ -1,7 +1,9 @@
 import { useCallback } from 'react';
 import { router } from 'expo-router';
+import * as Haptics from 'expo-haptics';
 import type { GasStation } from '~/domain/gasStation/models';
 import { StationsMap } from '~/presentation/components/map/StationsMap';
+import { LocationUnavailable } from '~/presentation/components/location/LocationUnavailable';
 import { ContentUnavailable } from '~/presentation/components/ui/ContentUnavailable';
 import { LoadingScreen } from '~/presentation/components/ui/LoadingScreen';
 import { useGasStations } from '~/presentation/hooks/useGasStations';
@@ -19,6 +21,7 @@ export default function GasStationMap() {
   const cameraPosition = useMapCamera();
 
   const handleMarkerPress = useCallback((station: GasStation) => {
+    Haptics.selectionAsync();
     router.push({
       pathname: '/gas-station-details',
       params: {
@@ -33,21 +36,15 @@ export default function GasStationMap() {
 
   if (locationError) {
     return (
-      <ContentUnavailable
-        title="Ubicación no disponible"
-        message={locationError}
-        icon="location"
-        actionLabel="Reintentar"
-        onAction={getCurrentLocation}
-      />
+      <LocationUnavailable error={locationError} onRetry={getCurrentLocation} />
     );
   }
 
   if (error) {
     return (
       <ContentUnavailable
-        title="No se pudieron cargar"
-        message={error.message}
+        title="No se pudieron cargar las gasolineras"
+        message="Revisa tu conexión a internet e inténtalo de nuevo."
         icon="alert"
         actionLabel="Reintentar"
         onAction={refetch}

@@ -3,11 +3,14 @@ import * as Location from 'expo-location';
 import type { Coordinates } from '~/domain/gasStation/models';
 import type { SelectedLocation } from '~/domain/location/models';
 
+/** `denied`: el usuario negó el permiso; `unavailable`: el GPS falló. */
+export type LocationError = 'denied' | 'unavailable';
+
 interface LocationState {
   userLocation: Coordinates | null;
   selectedLocation: SelectedLocation | null;
   isLoading: boolean;
-  error: string | null;
+  error: LocationError | null;
 }
 
 interface LocationActions {
@@ -33,7 +36,7 @@ export const useLocationStore = create<LocationStore>((set, get) => ({
 
       const { status } = await Location.requestForegroundPermissionsAsync();
       if (status !== 'granted') {
-        set({ error: 'Permisos de ubicación denegados' });
+        set({ error: 'denied' });
         return;
       }
 
@@ -60,14 +63,10 @@ export const useLocationStore = create<LocationStore>((set, get) => ({
           longitude: location.coords.longitude,
         },
       });
-    } catch (error) {
+    } catch {
       // Con una posición previa ya en pantalla, un fallo del GPS no la tapa.
       if (get().userLocation) return;
-      const errorMessage =
-        error instanceof Error
-          ? error.message
-          : 'Error al obtener la ubicación actual';
-      set({ error: errorMessage });
+      set({ error: 'unavailable' });
     } finally {
       set({ isLoading: false });
     }

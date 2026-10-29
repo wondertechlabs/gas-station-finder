@@ -54,7 +54,14 @@ export function ContentUnavailableBase({
         {message}
       </Text>
       {actionLabel && onAction && (
-        <Pressable onPress={onAction} hitSlop={12} style={{ paddingTop: 8 }}>
+        <Pressable
+          onPress={onAction}
+          hitSlop={12}
+          style={({ pressed }) => ({
+            paddingTop: 8,
+            opacity: pressed ? 0.4 : 1,
+          })}
+        >
           <Text style={{ fontSize: 17, fontWeight: '600', color: colors.tint }}>
             {actionLabel}
           </Text>

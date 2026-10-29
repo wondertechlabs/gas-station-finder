@@ -35,96 +35,107 @@ export const GasStationCard = memo<Props>(({ station }) => {
       asChild
     >
       <Link.Trigger>
-        {/* El estilo va en un View interno: Link asChild no conserva `style` como función. */}
+        {/* El estilo va en un View interno: Link asChild no conserva `style` como función,
+            pero sí `children` como función, que da el resalte al presionar. */}
         <Pressable>
-          <View
-            style={{
-              flexDirection: 'row',
-              alignItems: 'center',
-              gap: 12,
-              paddingVertical: 12,
-              paddingHorizontal: 14,
-              borderRadius: 14,
-              borderCurve: 'continuous',
-              backgroundColor: colors.cellBackground,
-            }}
-          >
+          {({ pressed }) => (
             <View
               style={{
-                width: 36,
-                height: 36,
-                borderRadius: 18,
+                flexDirection: 'row',
                 alignItems: 'center',
-                justifyContent: 'center',
-                backgroundColor: colors.fill,
+                gap: 12,
+                paddingVertical: 12,
+                paddingHorizontal: 14,
+                borderRadius: 14,
+                borderCurve: 'continuous',
+                backgroundColor: pressed
+                  ? colors.cellHighlight
+                  : colors.cellBackground,
               }}
             >
-              <AppIcon name="fuel" size={18} color={colors.tint} />
-            </View>
-
-            <View style={{ flex: 1, gap: 2 }}>
               <View
-                style={{ flexDirection: 'row', alignItems: 'baseline', gap: 8 }}
+                style={{
+                  width: 36,
+                  height: 36,
+                  borderRadius: 18,
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                  backgroundColor: colors.fill,
+                }}
               >
-                <Text
+                <AppIcon name="fuel" size={18} color={colors.tint} />
+              </View>
+
+              <View style={{ flex: 1, gap: 2 }}>
+                <View
                   style={{
-                    flex: 1,
-                    fontSize: 17,
-                    fontWeight: '600',
-                    color: colors.label,
+                    flexDirection: 'row',
+                    alignItems: 'baseline',
+                    gap: 8,
                   }}
-                  numberOfLines={1}
                 >
-                  {station.name}
-                </Text>
-                {station.distance != null && (
                   <Text
                     style={{
-                      fontSize: 15,
-                      color: colors.secondaryLabel,
+                      flex: 1,
+                      fontSize: 17,
+                      fontWeight: '600',
+                      color: colors.label,
+                    }}
+                    numberOfLines={1}
+                  >
+                    {station.name}
+                  </Text>
+                  {station.distance != null && (
+                    <Text
+                      style={{
+                        fontSize: 15,
+                        color: colors.secondaryLabel,
+                        fontVariant: ['tabular-nums'],
+                      }}
+                    >
+                      {formatDistance(station.distance)}
+                    </Text>
+                  )}
+                </View>
+                <Text
+                  style={{ fontSize: 15, color: colors.secondaryLabel }}
+                  numberOfLines={1}
+                >
+                  {station.address}
+                </Text>
+                {/* MapKit no reporta horario ni rating: solo se muestran si existen. */}
+                {(station.isOpen !== undefined || station.rating != null) && (
+                  <Text
+                    style={{ fontSize: 13, color: colors.secondaryLabel }}
+                    numberOfLines={1}
+                  >
+                    {station.isOpen !== undefined && (
+                      <Text style={{ color: status.color }}>
+                        {status.label}
+                      </Text>
+                    )}
+                    {station.isOpen !== undefined && station.rating != null
+                      ? '  ·  '
+                      : ''}
+                    {station.rating != null && `★ ${station.rating.toFixed(1)}`}
+                  </Text>
+                )}
+                {prices.length > 0 && (
+                  <Text
+                    style={{
+                      fontSize: 13,
+                      color: colors.tertiaryLabel,
                       fontVariant: ['tabular-nums'],
                     }}
+                    numberOfLines={1}
                   >
-                    {formatDistance(station.distance)}
+                    {/* Precios estimados por marca, no oficiales: se rotulan como tal. */}
+                    Estimado: {prices}
                   </Text>
                 )}
               </View>
-              <Text
-                style={{ fontSize: 15, color: colors.secondaryLabel }}
-                numberOfLines={1}
-              >
-                {station.address}
-              </Text>
-              {/* MapKit no reporta horario ni rating: solo se muestran si existen. */}
-              {(station.isOpen !== undefined || station.rating != null) && (
-                <Text
-                  style={{ fontSize: 13, color: colors.secondaryLabel }}
-                  numberOfLines={1}
-                >
-                  {station.isOpen !== undefined && (
-                    <Text style={{ color: status.color }}>{status.label}</Text>
-                  )}
-                  {station.isOpen !== undefined && station.rating != null
-                    ? '  ·  '
-                    : ''}
-                  {station.rating != null && `★ ${station.rating.toFixed(1)}`}
-                </Text>
-              )}
-              {prices.length > 0 && (
-                <Text
-                  style={{
-                    fontSize: 13,
-                    color: colors.tertiaryLabel,
-                    fontVariant: ['tabular-nums'],
-                  }}
-                  numberOfLines={1}
-                >
-                  {/* Precios estimados por marca, no oficiales: se rotulan como tal. */}
-                  Estimado: {prices}
-                </Text>
-              )}
             </View>
-          </View>
+          )}
         </Pressable>
       </Link.Trigger>
       <Link.Preview />

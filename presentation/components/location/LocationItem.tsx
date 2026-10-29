@@ -31,7 +31,7 @@ export const LocationItem = memo<LocationItemProps>(
         alignItems: 'center',
         gap: 12,
         paddingLeft: 16,
-        backgroundColor: pressed ? colors.fill : 'transparent',
+        backgroundColor: pressed ? colors.cellHighlight : 'transparent',
       })}
     >
       <AppIcon name={iconName} size={20} color={iconColor} />

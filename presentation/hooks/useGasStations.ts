@@ -1,5 +1,9 @@
 import { useEffect } from 'react';
-import { keepPreviousData, useQuery } from '@tanstack/react-query';
+import {
+  keepPreviousData,
+  useQuery,
+  type QueryObserverResult,
+} from '@tanstack/react-query';
 import { findNearbyGasStations } from '~/application/gasStation/findNearbyGasStations';
 import { gasStationRepository } from '~/composition/gasStation';
 import { MAP_CONFIG, QUERY_CONFIG } from '~/shared/constants';
@@ -27,7 +31,7 @@ interface UseGasStationsReturn {
   gasStations: GasStation[];
   isLoading: boolean;
   error: Error | null;
-  refetch: () => Promise<unknown>;
+  refetch: () => Promise<QueryObserverResult<GasStation[]>>;
 }
 
 export const useGasStations = (): UseGasStationsReturn => {
