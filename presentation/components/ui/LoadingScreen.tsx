@@ -15,7 +15,7 @@ interface LoadingScreenProps {
 // pasa de 300 ms, para no destellar en cada arranque con caché.
 const SHOW_DELAY_MS = 300;
 
-export function LoadingScreen({ message = 'Cargando...' }: LoadingScreenProps) {
+export function LoadingScreen({ message = 'Cargando…' }: LoadingScreenProps) {
   const opacity = useAnimatedValue(0);
 
   useEffect(() => {

@@ -140,7 +140,7 @@ export const GasStationCard = memo<Props>(({ station }) => {
       </Link.Trigger>
       <Link.Preview />
       <Link.Menu
-        title="Ir a la gasolinera"
+        title="Cómo llegar"
         icon="arrow.triangle.turn.up.right.diamond"
       >
         {NAVIGATION_APPS.map(({ app, label, icon }) => (

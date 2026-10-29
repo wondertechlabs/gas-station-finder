@@ -36,7 +36,7 @@ export default function GasStationMap() {
   }, []);
 
   if (locationLoading) {
-    return <LoadingScreen message="Obteniendo ubicación..." />;
+    return <LoadingScreen message="Buscando tu ubicación…" />;
   }
 
   if (locationError) {

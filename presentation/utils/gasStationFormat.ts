@@ -12,6 +12,6 @@ export function openStatus(station: GasStation) {
     return { label: 'Horario no disponible', color: colors.tertiaryLabel };
   }
   return station.isOpen
-    ? { label: 'Abierto', color: colors.green }
-    : { label: 'Cerrado', color: colors.secondaryLabel };
+    ? { label: 'Abierta', color: colors.green }
+    : { label: 'Cerrada', color: colors.secondaryLabel };
 }

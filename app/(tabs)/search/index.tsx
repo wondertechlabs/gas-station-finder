@@ -89,7 +89,7 @@ export default function SearchIndex() {
         location: {
           id: 'current',
           name:
-            isLoadingAddress || !address ? 'Obteniendo dirección...' : address,
+            isLoadingAddress || !address ? 'Buscando tu dirección…' : address,
           address: `${userLocation.latitude.toFixed(4)}, ${userLocation.longitude.toFixed(4)}`,
           coordinates: userLocation,
         },
@@ -147,7 +147,7 @@ export default function SearchIndex() {
       />
 
       <Stack.SearchBar
-        placeholder="Buscar ciudad..."
+        placeholder="Ciudad o municipio"
         onChangeText={(event) => handleChangeText(event.nativeEvent.text)}
         onCancelButtonPress={() => handleChangeText('')}
       />

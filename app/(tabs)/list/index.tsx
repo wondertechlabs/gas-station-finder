@@ -10,10 +10,10 @@ import {
   type DepartmentId,
 } from '~/domain/location/departments';
 import { GasStationCard } from '~/presentation/components/gas-station/GasStationCard';
+import { GasStationListSkeleton } from '~/presentation/components/gas-station/GasStationListSkeleton';
 import { LocationUnavailable } from '~/presentation/components/location/LocationUnavailable';
 import { ContentUnavailable } from '~/presentation/components/ui/ContentUnavailable';
 import { FadeIn, useWasLoading } from '~/presentation/components/ui/FadeIn';
-import { LoadingScreen } from '~/presentation/components/ui/LoadingScreen';
 import { useGasStations } from '~/presentation/hooks/useGasStations';
 import { useLocation } from '~/presentation/hooks/useLocation';
 import { colors } from '~/presentation/theme/colors';
@@ -75,7 +75,7 @@ export default function ListTab() {
   const header = (
     <>
       <Stack.Title large>
-        {department ? departmentName(department) : 'Estaciones'}
+        {department ? departmentName(department) : 'Gasolineras'}
       </Stack.Title>
       <Stack.Toolbar placement="right">
         <Stack.Toolbar.Menu
@@ -113,7 +113,7 @@ export default function ListTab() {
   if (locationLoading) {
     return (
       <>
-        <LoadingScreen message="Obteniendo ubicación..." />
+        <GasStationListSkeleton />
         {header}
       </>
     );
@@ -128,7 +128,7 @@ export default function ListTab() {
   if (isLoading) {
     return (
       <>
-        <LoadingScreen message="Buscando gasolineras..." />
+        <GasStationListSkeleton />
         {header}
       </>
     );
@@ -153,7 +153,7 @@ export default function ListTab() {
         {department ? (
           <ContentUnavailable
             title={`Sin gasolineras en ${departmentName(department)}`}
-            message="Puede que aún se estén cargando las de todo el país."
+            message="Puede que aún estemos cargando las gasolineras de todo el país."
             icon="search"
             actionLabel="Ver todo el país"
             onAction={() => setDepartment(null)}

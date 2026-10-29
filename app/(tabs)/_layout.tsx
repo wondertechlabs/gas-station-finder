@@ -1,7 +1,10 @@
 import { NativeTabs } from 'expo-router/native-tabs';
+import { useQuickActions } from '~/presentation/hooks/useQuickActions';
 import { colors } from '~/presentation/theme/colors';
 
 export default function TabLayout() {
+  useQuickActions();
+
   return (
     <NativeTabs minimizeBehavior="onScrollDown" tintColor={colors.tint}>
       <NativeTabs.Trigger name="index">
@@ -10,7 +13,7 @@ export default function TabLayout() {
       </NativeTabs.Trigger>
       <NativeTabs.Trigger name="list">
         <NativeTabs.Trigger.Icon sf="list.bullet" md="list" />
-        <NativeTabs.Trigger.Label>Estaciones</NativeTabs.Trigger.Label>
+        <NativeTabs.Trigger.Label>Gasolineras</NativeTabs.Trigger.Label>
       </NativeTabs.Trigger>
       <NativeTabs.Trigger name="search" role="search">
         <NativeTabs.Trigger.Icon sf="magnifyingglass" md="search" />

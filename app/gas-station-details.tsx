@@ -54,8 +54,8 @@ export default function GasStationDetailsScreen() {
   if (!station) {
     return (
       <ContentUnavailable
-        title="Gasolinera no encontrada"
-        message="No se pudo cargar la información"
+        title="No encontramos esta gasolinera"
+        message="Puede que la lista se haya actualizado."
         icon="alert"
         actionLabel="Volver"
         onAction={() => router.back()}
@@ -206,9 +206,9 @@ export default function GasStationDetailsScreen() {
         <Stack.Toolbar.Menu
           icon="arrow.triangle.turn.up.right.diamond.fill"
           variant="prominent"
-          title="Abrir con"
+          title="Cómo llegar"
         >
-          <Stack.Toolbar.Label>Ir a la gasolinera</Stack.Toolbar.Label>
+          <Stack.Toolbar.Label>Abrir en</Stack.Toolbar.Label>
           {NAVIGATION_APPS.map(({ app, label, icon }) => (
             <Stack.Toolbar.MenuAction
               key={app}

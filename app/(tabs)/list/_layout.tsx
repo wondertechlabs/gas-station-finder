@@ -5,7 +5,7 @@ export default function ListLayout() {
     <Stack>
       <Stack.Screen
         name="index"
-        options={{ title: 'Estaciones', headerLargeTitleEnabled: true }}
+        options={{ title: 'Gasolineras', headerLargeTitleEnabled: true }}
       />
     </Stack>
   );

@@ -27,7 +27,7 @@ export function LocationUnavailable({ error, onRetry }: Props) {
     return (
       <ContentUnavailable
         title="Permite el acceso a tu ubicación"
-        message="Para mostrar las gasolineras cercanas, activa la ubicación en Ajustes. También puedes buscar una ciudad en Buscar."
+        message="Para mostrarte las gasolineras cercanas, activa la ubicación en Ajustes. También puedes buscar una ciudad en la pestaña Buscar."
         icon="location"
         actionLabel="Abrir Ajustes"
         onAction={() => Linking.openSettings()}
@@ -38,7 +38,7 @@ export function LocationUnavailable({ error, onRetry }: Props) {
   return (
     <ContentUnavailable
       title="No pudimos ubicarte"
-      message="Revisa que la ubicación esté activada e inténtalo de nuevo, o busca una ciudad en Buscar."
+      message="Revisa que la ubicación esté activada e inténtalo de nuevo, o busca una ciudad en la pestaña Buscar."
       icon="location"
       actionLabel="Reintentar"
       onAction={() =>
